@@ -12,6 +12,7 @@
     "content_scripts": [
         {
             "js": [
+                "thirdParty/jquery-3.6.1.slim.min.js",
                 "scripts/content.js"
             ],
             "matches": [
