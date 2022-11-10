@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Reading time",
-    "version": "1.0",
-    "description": "Add the reading time to Chrome Extension documentation articles",
+    "name": "YouTube Quicksave",
+    "version": "0.0.1",
+    "description": "Quickly add YouTube videos to playlists",
     "icons": {
         "16": "images/icon-16.png",
         "32": "images/icon-32.png",
@@ -15,8 +15,7 @@
                 "scripts/content.js"
             ],
             "matches": [
-                "https://developer.chrome.com/docs/extensions/*",
-                "https://developer.chrome.com/docs/webstore/*"
+                "https://www.youtube.com/watch*"
             ]
         }
     ]
