@@ -2,16 +2,14 @@ import config from '../config/config.js'
 
 const CLIENT_ID = config.web.client_id
 const REDIRECT_URI = config.web.redirect_uris[0]
-const RESPONSE_TYPE = 'id_token'
-const SCOPE = 'openid'
+const RESPONSE_TYPE = 'token'
+const SCOPE = 'https://www.googleapis.com/auth/youtube'
 const STATE = 'meet' + Math.random().toString(36).substring(2, 15)
 const PROMPT = 'consent'
 
 let userSignedIn = false
 
 function createAuthEndpoint() {
-    let nonce = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-
     let openIdEndpointUrl =
         `https://accounts.google.com/o/oauth2/v2/auth
 ?client_id=${encodeURIComponent(CLIENT_ID)}
@@ -19,7 +17,6 @@ function createAuthEndpoint() {
 &redirect_uri=${encodeURIComponent(REDIRECT_URI)}
 &scope=${encodeURIComponent(SCOPE)}
 &state=${encodeURIComponent(STATE)}
-&nonce=${encodeURIComponent(nonce)}
 &prompt=${encodeURIComponent(PROMPT)}`
 
     console.log(openIdEndpointUrl)
