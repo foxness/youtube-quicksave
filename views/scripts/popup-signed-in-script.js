@@ -16,3 +16,15 @@ document.querySelector('#dew-it').addEventListener('click', () => {
         // dew it
     })
 })
+
+$(window).on('load', () => {
+    chrome.runtime.sendMessage({ message: 'getPlaylists' }, (playlists) => {
+        let list = $('<ul></ul>')
+        playlists.forEach(p => {
+            list.append(`<li>${p.title}</li>`)
+        })
+    
+        list.insertAfter('#dew-it')
+    })
+})
+

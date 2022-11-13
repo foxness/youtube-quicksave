@@ -6,13 +6,15 @@ let youtube = new Youtube(config)
 async function handle(request) {
     switch (request.message) {
         case 'signIn':
-            return await youtube.openSignInForm()
+            return await youtube.signInAndFetchPlaylists()
         case 'signOut':
             return await youtube.signOut()
         case 'dewIt':
             return await youtube.dewIt()
-        case 'isUserSignedIn':
-            return youtube.signedIn
+        case 'getPlaylists':
+            return await youtube.getPlaylists()
+        case 'isSignedIn':
+            return youtube.isSignedIn()
     }
 }
 
