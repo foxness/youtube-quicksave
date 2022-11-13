@@ -2,15 +2,16 @@ class Youtube {
     constructor(config) {
         this.CLIENT_ID = config.web.client_id
         this.REDIRECT_URI = config.web.redirect_uris[0]
-        this.RESPONSE_TYPE = 'token'
-        this.SCOPE = 'https://www.googleapis.com/auth/youtube'
-        this.STATE = 'meet' + Math.random().toString(36).substring(2, 15)
-        this.PROMPT = 'consent'
 
         this.signedIn = false
     }
 
     createAuthEndpoint() {
+        this.RESPONSE_TYPE = 'token'
+        this.SCOPE = 'https://www.googleapis.com/auth/youtube'
+        this.STATE = 'meet' + Math.random().toString(36).substring(2, 15)
+        this.PROMPT = 'consent'
+
         let openIdEndpointUrl =
             `https://accounts.google.com/o/oauth2/v2/auth
 ?client_id=${encodeURIComponent(this.CLIENT_ID)}
@@ -24,7 +25,7 @@ class Youtube {
         return openIdEndpointUrl
     }
 
-    openLoginForm(sendResponse) {
+    openSignInForm(sendResponse) {
         if (this.signedIn) {
             console.log("User is already signed in.")
             sendResponse('fail')
@@ -61,7 +62,7 @@ class Youtube {
         })
     }
 
-    logout(sendResponse) {
+    signOut(sendResponse) {
         this.signedIn = false
 
         chrome.action.setPopup({ popup: '/views/popup.html' }, () => {

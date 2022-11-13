@@ -1,5 +1,5 @@
 document.querySelector('#sign-out').addEventListener('click', () => {
-    chrome.runtime.sendMessage({ message: 'logout' }, (response) => {
+    chrome.runtime.sendMessage({ message: 'signOut' }, (response) => {
         if (response === 'success')
             window.close()
     })
