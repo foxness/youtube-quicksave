@@ -79,30 +79,41 @@ class Youtube {
     }
 
     async dewIt() {
-        fetchPlaylists()
+        this.fetchPlaylists()
             .then((data) => {
                 console.log(data) // JSON data parsed by `data.json()` call
             })
-
-        return
     }
 
     async fetchPlaylists() {
+        let endpoint = 'https://www.googleapis.com/youtube/v3/playlists'
+
         let data = {
-            asd: 'asd'
+            part: 'snippet',
+            mine: true
         }
 
-        let url = 'https://www.googleapis.com/youtube/v3/playlists'
+        let url = new URL(endpoint)
+        url.search = new URLSearchParams(data)
+
         let params = {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.accessToken}`
+            }
         }
 
-        const response = await fetch(url, params)
-        return response.json()
+        let response = await fetch(url.toString(), params)
+        let json = await response.json()
+        let result = json.items.map((a) => {
+            return {
+                id: a.id,
+                title: a.snippet.title
+            }
+        })
+
+        return result
     }
 
     // // Example POST method implementation:
