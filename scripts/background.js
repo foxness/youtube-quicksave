@@ -19,6 +19,19 @@ async function handleMessage(request) {
     }
 }
 
+async function handleCommand(command) {
+    if (command != 'quicksave') {
+        return
+    }
+
+    await quicksave()
+}
+
+async function quicksave() {
+    let currentUrl = await getCurrentTabUrl()
+    await youtube.tryAddToPlaylist(currentUrl)
+}
+
 async function getCurrentTabUrl() {
     let queryOptions = { active: true, lastFocusedWindow: true }
     let [tab] = await chrome.tabs.query(queryOptions)
@@ -29,3 +42,5 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     handleMessage(request).then(sendResponse)
     return true // return true to indicate we want to send a response asynchronously
 })
+
+chrome.commands.onCommand.addListener(handleCommand)
