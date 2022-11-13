@@ -6,7 +6,6 @@ class Youtube {
         this.CLIENT_ID = config.web.client_id
         this.REDIRECT_URI = config.web.redirect_uris[0]
 
-        this.signedIn = false
         this.accessToken = null
         this.playlists = null
     }
@@ -15,7 +14,7 @@ class Youtube {
 
     async signInAndFetchPlaylists() {
         await this.openSignInForm()
-        if (!this.signedIn) {
+        if (!this.isSignedIn()) {
             return 'fail'
         }
 
@@ -24,7 +23,6 @@ class Youtube {
     }
 
     async signOut() {
-        this.signedIn = false
         this.accessToken = null
 
         await chrome.action.setPopup({ popup: '/views/popup.html' })
@@ -40,13 +38,13 @@ class Youtube {
     }
 
     isSignedIn() {
-        return this.signedIn
+        return this.accessToken != null
     }
 
     // Private methods
 
     async openSignInForm() {
-        if (this.signedIn) {
+        if (this.isSignedIn()) {
             console.log("User is already signed in.")
             return 'fail'
         }
@@ -86,7 +84,6 @@ class Youtube {
         }
 
         this.accessToken = accessToken
-        this.signedIn = true
 
         console.log("Successfully signed in")
 
