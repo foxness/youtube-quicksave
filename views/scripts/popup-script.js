@@ -1,12 +1,11 @@
-document.querySelector('#sign-in').addEventListener('click', () => {
-    chrome.runtime.sendMessage({ message: 'signIn' }, (response) => {
-        if (response === 'success')
-            window.close()
-    })
+$('#sign-in').click(async () => {
+    let response = await chrome.runtime.sendMessage({ message: 'signIn' })
+    if (response == 'success') {
+        window.close()
+    }
 })
 
-document.querySelector('#user-status').addEventListener('click', () => {
-    chrome.runtime.sendMessage({ message: 'isUserSignedIn' }, (response) => {
-        alert(response)
-    })
+$('#user-status').click(async () => {
+    let signedIn = await chrome.runtime.sendMessage({ message: 'isUserSignedIn' })
+    alert(signedIn)
 })

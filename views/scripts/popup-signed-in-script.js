@@ -1,30 +1,28 @@
-document.querySelector('#sign-out').addEventListener('click', () => {
-    chrome.runtime.sendMessage({ message: 'signOut' }, (response) => {
-        if (response === 'success')
-            window.close()
+async function main() {
+    let playlists = await chrome.runtime.sendMessage({ message: 'getPlaylists' })
+
+    let list = $('<ul></ul>')
+    playlists.forEach(p => {
+        list.append(`<li>${p.title}</li>`)
     })
+
+    list.insertAfter('#dew-it')
+}
+
+$(window).on('load', main)
+
+$('#sign-out').click(async () => {
+    let response = await chrome.runtime.sendMessage({ message: 'signOut' })
+    if (response == 'success') {
+        window.close()
+    }
 })
 
-document.querySelector('#user-status').addEventListener('click', () => {
-    chrome.runtime.sendMessage({ message: 'isUserSignedIn' }, (response) => {
-        alert(response)
-    })
+$('#user-status').click(async () => {
+    let signedIn = await chrome.runtime.sendMessage({ message: 'isUserSignedIn' })
+    alert(signedIn)
 })
 
-document.querySelector('#dew-it').addEventListener('click', () => {
-    chrome.runtime.sendMessage({ message: 'dewIt' }, (response) => {
-        // dew it
-    })
+$('#dew-it').click(async () => {
+    let response = await chrome.runtime.sendMessage({ message: 'dewIt' })
 })
-
-$(window).on('load', () => {
-    chrome.runtime.sendMessage({ message: 'getPlaylists' }, (playlists) => {
-        let list = $('<ul></ul>')
-        playlists.forEach(p => {
-            list.append(`<li>${p.title}</li>`)
-        })
-    
-        list.insertAfter('#dew-it')
-    })
-})
-
