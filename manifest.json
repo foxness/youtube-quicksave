@@ -22,7 +22,7 @@
         "type": "module"
     },
     "commands": {
-        "quicksave": {
+        "quicksave-command": {
             "suggested_key": {
                 "default": "Alt+Q"
             },

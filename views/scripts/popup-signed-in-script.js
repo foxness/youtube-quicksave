@@ -23,6 +23,10 @@ $('#user-status').click(async () => {
     alert(signedIn)
 })
 
+$('#quicksave').click(async () => {
+    let response = await chrome.runtime.sendMessage({ message: 'quicksave' })
+})
+
 $('#dew-it').click(async () => {
     let response = await chrome.runtime.sendMessage({ message: 'dewIt' })
 })

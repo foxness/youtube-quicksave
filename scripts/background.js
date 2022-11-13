@@ -9,9 +9,10 @@ async function handleMessage(request) {
             return await youtube.signInAndFetchPlaylists()
         case 'signOut':
             return await youtube.signOut()
+        case 'quicksave':
+            return await quicksave()
         case 'dewIt':
-            let currentUrl = await getCurrentTabUrl()
-            return await youtube.dewIt(currentUrl)
+            return await quicksave()
         case 'getPlaylists':
             return await youtube.getPlaylists()
         case 'isSignedIn':
@@ -20,7 +21,7 @@ async function handleMessage(request) {
 }
 
 async function handleCommand(command) {
-    if (command != 'quicksave') {
+    if (command != 'quicksave-command') {
         return
     }
 
