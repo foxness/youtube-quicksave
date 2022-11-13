@@ -4,6 +4,7 @@ class Youtube {
         this.REDIRECT_URI = config.web.redirect_uris[0]
 
         this.signedIn = false
+        this.accessToken = null
     }
 
     createAuthEndpoint() {
@@ -41,19 +42,29 @@ class Youtube {
         }
 
         console.log("redirect url: " + redirectUrl)
-        let idToken = redirectUrl.substring(redirectUrl.indexOf('id_token=') + 9)
-        idToken = idToken.substring(0, idToken.indexOf('&'))
+        // https://asdasd.chromiumapp.org/#state=meetasdasd&access_token=asdasd&token_type=Bearer&expires_in=3599&scope=asdasd
 
-        // if (false) {
-        //     // const user_info = KJUR.jws.JWS.readSafeJSONString(b64utoutf8(idToken.split(".")[1]))
-        //     // if !((user_info.iss === 'https://accounts.google.com' || user_info.iss === 'accounts.google.com')
-        //     //     && user_info.aud === CLIENT_ID) {
-        //     // invalid credentials
-        //     console.log("Invalid credentials.")
-        // }
+        let query = new URL(redirectUrl.replace('#', '?')).searchParams
+
+        let state = query.get('state')
+        let accessToken = query.get('access_token')
+        let tokenType = query.get('token_type')
+        let expiresIn = query.get('expires_in')
+        let scope = query.get('scope')
+
+        if (state != this.STATE
+            || accessToken == null
+            || tokenType != 'Bearer'
+            || expiresIn == null
+            || scope != this.SCOPE) {
+
+            return 'fail'
+        }
+
+        this.accessToken = accessToken
+        this.signedIn = true
 
         console.log("User successfully signed in.")
-        this.signedIn = true
 
         await chrome.action.setPopup({ popup: '/views/popup-signed-in.html' })
         return 'success'
@@ -61,36 +72,57 @@ class Youtube {
 
     async signOut() {
         this.signedIn = false
-        await chrome.action.setPopup({ popup: '/views/popup.html' })
+        this.accessToken = null
 
+        await chrome.action.setPopup({ popup: '/views/popup.html' })
         return 'success'
     }
 
     async dewIt() {
-        postData('https://example.com/answer', { answer: 42 })
+        fetchPlaylists()
             .then((data) => {
-                console.log(data); // JSON data parsed by `data.json()` call
+                console.log(data) // JSON data parsed by `data.json()` call
             })
+
+        return
     }
 
-    // Example POST method implementation:
-    async postData(url = '', data = {}) {
-        // Default options are marked with *
-        const response = await fetch(url, {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, *cors, same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
+    async fetchPlaylists() {
+        let data = {
+            asd: 'asd'
+        }
+
+        let url = 'https://www.googleapis.com/youtube/v3/playlists'
+        let params = {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
-                // 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            redirect: 'follow', // manual, *follow, error
-            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: JSON.stringify(data) // body data type must match "Content-Type" header
-        });
-        return response.json(); // parses JSON response into native JavaScript objects
+            body: JSON.stringify(data)
+        }
+
+        const response = await fetch(url, params)
+        return response.json()
     }
+
+    // // Example POST method implementation:
+    // async postData(url = '', data = {}) {
+    //     // Default options are marked with *
+    //     const response = await fetch(url, {
+    //         method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    //         mode: 'cors', // no-cors, *cors, same-origin
+    //         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    //         credentials: 'same-origin', // include, *same-origin, omit
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //             // 'Content-Type': 'application/x-www-form-urlencoded',
+    //         },
+    //         redirect: 'follow', // manual, *follow, error
+    //         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    //         body: JSON.stringify(data) // body data type must match "Content-Type" header
+    //     });
+    //     return response.json(); // parses JSON response into native JavaScript objects
+    // }
 }
 
 export default Youtube
