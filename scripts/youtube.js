@@ -31,8 +31,8 @@ class Youtube {
         return 'success'
     }
 
-    async dewIt() {
-        console.log(this.playlists)
+    async dewIt(url) {
+        await this.tryAddToPlaylist(url)
     }
 
     async getPlaylists() {
@@ -94,6 +94,47 @@ class Youtube {
         return 'success'
     }
 
+    async tryAddToPlaylist(url) {
+        let YOUTUBE_VIDEO_URL = 'https://www.youtube.com/watch'
+        if (!url.startsWith(YOUTUBE_VIDEO_URL)) {
+            return
+        }
+
+        let query = new URL(url).searchParams
+        let videoId = query.get('v')
+        let playlistId = this.playlists.find(p => p.title == 'testyIsBesty').id
+
+        await this.addToPlaylist(videoId, playlistId)
+    }
+
+    async addToPlaylist(videoId, playlistId) {
+        let endpoint = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet'
+
+        let data = {
+            snippet: {
+                playlistId: playlistId,
+                resourceId: {
+                    kind: 'youtube#video',
+                    videoId: videoId
+                }
+            }
+        }
+
+        let params = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.accessToken}`
+            },
+            body: JSON.stringify(data)
+        }
+
+        let response = await fetch(endpoint, params)
+        let json = await response.json()
+        console.log(json)
+        return json
+    }
+
     async fetchPlaylists() {
         let endpoint = 'https://www.googleapis.com/youtube/v3/playlists'
 
@@ -146,25 +187,6 @@ class Youtube {
         console.log(openIdEndpointUrl)
         return openIdEndpointUrl
     }
-
-    // // Example POST method implementation:
-    // async postData(url = '', data = {}) {
-    //     // Default options are marked with *
-    //     const response = await fetch(url, {
-    //         method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    //         mode: 'cors', // no-cors, *cors, same-origin
-    //         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    //         credentials: 'same-origin', // include, *same-origin, omit
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //             // 'Content-Type': 'application/x-www-form-urlencoded',
-    //         },
-    //         redirect: 'follow', // manual, *follow, error
-    //         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    //         body: JSON.stringify(data) // body data type must match "Content-Type" header
-    //     });
-    //     return response.json(); // parses JSON response into native JavaScript objects
-    // }
 }
 
 export default Youtube

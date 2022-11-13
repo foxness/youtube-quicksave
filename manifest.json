@@ -11,7 +11,8 @@
     },
     "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwbZEjmcHJmngi3YwUN4+2B12I9KFD4hbOf3cB9NsidqSlseYD82RAw49zCM+ImirWgcSbxPfTw/FQtbUsKVuGQQqEvaafZRQn96FpXaNbBe+PhHp7rYqanKMxFTpi5pTWaYfjwfw/d+0E/+Alxdj3m7OKau/UaCzGwVrH4gAwqaAsWzyyUoZAx/qQwBBymypZW0gIoLcs11G0sscO4C+1KKu3M6NLrIHIlW1jMxjCtOwee6VPQKHtKHDnj84HYca7kwlr8UH3oZJp19Ksr/JnkeSfeJkxELsD4OfZR1xYylk6EGy/y7WYsvfx7Udu5tb5tLyvQQd/acSOCAz0DIS8QIDAQAB",
     "permissions": [
-        "identity"
+        "identity",
+        "activeTab"
     ],
     "action": {
         "default_popup": "views/popup.html"

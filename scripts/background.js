@@ -3,14 +3,15 @@ import Youtube from './youtube.js'
 
 let youtube = new Youtube(config)
 
-async function handle(request) {
+async function handleMessage(request) {
     switch (request.message) {
         case 'signIn':
             return await youtube.signInAndFetchPlaylists()
         case 'signOut':
             return await youtube.signOut()
         case 'dewIt':
-            return await youtube.dewIt()
+            let currentUrl = await getCurrentTabUrl()
+            return await youtube.dewIt(currentUrl)
         case 'getPlaylists':
             return await youtube.getPlaylists()
         case 'isSignedIn':
@@ -18,7 +19,13 @@ async function handle(request) {
     }
 }
 
+async function getCurrentTabUrl() {
+    let queryOptions = { active: true, lastFocusedWindow: true }
+    let [tab] = await chrome.tabs.query(queryOptions)
+    return tab.url
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    handle(request).then(sendResponse)
-    return true // return true to indicate you want to send a response asynchronously
+    handleMessage(request).then(sendResponse)
+    return true // return true to indicate we want to send a response asynchronously
 })
