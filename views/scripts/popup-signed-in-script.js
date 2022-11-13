@@ -19,7 +19,7 @@ $('#sign-out').click(async () => {
 })
 
 $('#user-status').click(async () => {
-    let signedIn = await chrome.runtime.sendMessage({ message: 'isUserSignedIn' })
+    let signedIn = await chrome.runtime.sendMessage({ message: 'isSignedIn' })
     alert(signedIn)
 })
 
