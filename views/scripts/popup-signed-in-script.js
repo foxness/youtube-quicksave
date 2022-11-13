@@ -5,8 +5,14 @@ document.querySelector('#sign-out').addEventListener('click', () => {
     })
 })
 
-document.querySelector('button').addEventListener('click', () => {
+document.querySelector('#user-status').addEventListener('click', () => {
     chrome.runtime.sendMessage({ message: 'isUserSignedIn' }, (response) => {
         alert(response)
+    })
+})
+
+document.querySelector('#dew-it').addEventListener('click', () => {
+    chrome.runtime.sendMessage({ message: 'dewIt' }, (response) => {
+        // dew it
     })
 })

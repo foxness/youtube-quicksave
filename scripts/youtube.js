@@ -25,49 +25,71 @@ class Youtube {
         return openIdEndpointUrl
     }
 
-    openSignInForm(sendResponse) {
+    async openSignInForm(sendResponse) {
         if (this.signedIn) {
             console.log("User is already signed in.")
-            sendResponse('fail')
-            return
+            return 'fail'
         }
 
-        chrome.identity.launchWebAuthFlow({
+        let redirectUrl = await chrome.identity.launchWebAuthFlow({
             'url': this.createAuthEndpoint(),
             'interactive': true
-        }, (redirectUrl) => {
-            if (chrome.runtime.lastError) {
-                sendResponse('fail')
-                return
-            }
-
-            console.log("redirect url: " + redirectUrl)
-            let idToken = redirectUrl.substring(redirectUrl.indexOf('id_token=') + 9)
-            idToken = idToken.substring(0, idToken.indexOf('&'))
-
-            // if (false) {
-            //     // const user_info = KJUR.jws.JWS.readSafeJSONString(b64utoutf8(idToken.split(".")[1]))
-            //     // if !((user_info.iss === 'https://accounts.google.com' || user_info.iss === 'accounts.google.com')
-            //     //     && user_info.aud === CLIENT_ID) {
-            //     // invalid credentials
-            //     console.log("Invalid credentials.")
-            // }
-
-            console.log("User successfully signed in.")
-            this.signedIn = true
-
-            chrome.action.setPopup({ popup: '/views/popup-signed-in.html' }, () => {
-                sendResponse('success')
-            })
         })
+
+        if (chrome.runtime.lastError) {
+            return 'fail'
+        }
+
+        console.log("redirect url: " + redirectUrl)
+        let idToken = redirectUrl.substring(redirectUrl.indexOf('id_token=') + 9)
+        idToken = idToken.substring(0, idToken.indexOf('&'))
+
+        // if (false) {
+        //     // const user_info = KJUR.jws.JWS.readSafeJSONString(b64utoutf8(idToken.split(".")[1]))
+        //     // if !((user_info.iss === 'https://accounts.google.com' || user_info.iss === 'accounts.google.com')
+        //     //     && user_info.aud === CLIENT_ID) {
+        //     // invalid credentials
+        //     console.log("Invalid credentials.")
+        // }
+
+        console.log("User successfully signed in.")
+        this.signedIn = true
+
+        await chrome.action.setPopup({ popup: '/views/popup-signed-in.html' })
+        return 'success'
     }
 
-    signOut(sendResponse) {
+    async signOut() {
         this.signedIn = false
+        await chrome.action.setPopup({ popup: '/views/popup.html' })
 
-        chrome.action.setPopup({ popup: '/views/popup.html' }, () => {
-            sendResponse('success')
-        })
+        return 'success'
+    }
+
+    async dewIt() {
+        postData('https://example.com/answer', { answer: 42 })
+            .then((data) => {
+                console.log(data); // JSON data parsed by `data.json()` call
+            })
+    }
+
+    // Example POST method implementation:
+    async postData(url = '', data = {}) {
+        // Default options are marked with *
+        const response = await fetch(url, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(data) // body data type must match "Content-Type" header
+        });
+        return response.json(); // parses JSON response into native JavaScript objects
     }
 }
 
