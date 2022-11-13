@@ -10,6 +10,17 @@ class Youtube {
         this.playlists = null
     }
 
+    static async fromSerialized(config, serialized) {
+        let youtube = new Youtube(config)
+        let parsed = JSON.parse(serialized)
+
+        youtube.accessToken = parsed.accessToken
+        youtube.playlists = parsed.playlists
+
+        await youtube.updatePopup()
+        return youtube
+    }
+
     // Public methods
 
     async signInAndFetchPlaylists() {
@@ -24,8 +35,8 @@ class Youtube {
 
     async signOut() {
         this.accessToken = null
+        await this.updatePopup()
 
-        await chrome.action.setPopup({ popup: '/views/popup.html' })
         return 'success'
     }
 
@@ -39,6 +50,15 @@ class Youtube {
 
     isSignedIn() {
         return this.accessToken != null
+    }
+
+    getSerialized() {
+        let serialized = {
+            accessToken: this.accessToken,
+            playlists: this.playlists
+        }
+
+        return JSON.stringify(serialized)
     }
 
     // Private methods
@@ -84,10 +104,9 @@ class Youtube {
         }
 
         this.accessToken = accessToken
+        await this.updatePopup()
 
-        console.log("Successfully signed in")
-
-        await chrome.action.setPopup({ popup: '/views/popup-signed-in.html' })
+        console.log("successfully signed in")
         return 'success'
     }
 
@@ -128,7 +147,10 @@ class Youtube {
 
         let response = await fetch(endpoint, params)
         let json = await response.json()
+
+        console.log('video quicksaved')
         console.log(json)
+
         return json
     }
 
@@ -164,6 +186,18 @@ class Youtube {
 
         console.log("Fetched playlists")
         console.log(result)
+    }
+
+    async updatePopup() {
+        let popup
+
+        if (this.isSignedIn()) {
+            popup = '/views/popup-signed-in.html'
+        } else {
+            popup = '/views/popup.html'
+        }
+        
+        await chrome.action.setPopup({ popup: popup })
     }
 
     createAuthEndpoint() {
