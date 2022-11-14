@@ -7,6 +7,9 @@ class Youtube {
         this.CLIENT_SECRET = config.web.client_secret
         this.REDIRECT_URI = config.web.redirect_uris[0]
 
+        this.SCOPE = 'https://www.googleapis.com/auth/youtube'
+
+        this.state = 'meet' + Math.random().toString(36).substring(2, 15)
         this.authCode = null
         this.refreshToken = null
         this.accessToken = null
@@ -18,12 +21,12 @@ class Youtube {
         let youtube = new Youtube(config)
         let parsed = JSON.parse(serialized)
 
+        youtube.state = parsed.state
         youtube.refreshToken = parsed.refreshToken
         youtube.accessToken = parsed.accessToken
         youtube.accessTokenExpirationDate = parsed.accessTokenExpirationDate
         youtube.playlists = parsed.playlists
 
-        await youtube.updatePopup()
         return youtube
     }
 
@@ -46,8 +49,6 @@ class Youtube {
 
     async signOut() {
         this.accessToken = null
-        await this.updatePopup()
-
         return 'success'
     }
 
@@ -65,6 +66,7 @@ class Youtube {
 
     getSerialized() {
         let serialized = {
+            state: this.state,
             refreshToken: this.refreshToken,
             accessToken: this.accessToken,
             accessTokenExpirationDate: this.accessTokenExpirationDate,
@@ -103,7 +105,7 @@ class Youtube {
         let code = query.get('code')
         let scope = query.get('scope')
 
-        if (state != this.STATE || code == null || scope != this.SCOPE) {
+        if (state != this.state || code == null || scope != this.SCOPE) {
             return 'fail'
         }
 
@@ -155,7 +157,6 @@ class Youtube {
         this.accessTokenExpirationDate = this.getExpirationDate(expiresIn)
 
         console.log('fetched refresh token')
-        await this.updatePopup()
         return 'success'
     }
 
@@ -199,7 +200,6 @@ class Youtube {
         this.accessTokenExpirationDate = this.getExpirationDate(expiresIn)
 
         console.log('refreshed access token')
-        await this.updatePopup()
         return 'success'
     }
 
@@ -293,30 +293,15 @@ class Youtube {
         return json
     }
 
-    async updatePopup() {
-        let popup
-
-        if (this.isSignedIn()) {
-            popup = '/views/popup-signed-in.html'
-        } else {
-            popup = '/views/popup.html'
-        }
-
-        await chrome.action.setPopup({ popup: popup })
-    }
-
     createAuthEndpoint() {
         let endpoint = 'https://accounts.google.com/o/oauth2/v2/auth'
-
-        this.SCOPE = 'https://www.googleapis.com/auth/youtube'
-        this.STATE = 'meet' + Math.random().toString(36).substring(2, 15)
 
         let data = {
             client_id: this.CLIENT_ID,
             response_type: 'code',
             redirect_uri: this.REDIRECT_URI,
             scope: this.SCOPE,
-            state: this.STATE,
+            state: this.state,
             prompt: 'consent',
             access_type: 'offline'
         }
