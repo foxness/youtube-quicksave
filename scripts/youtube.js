@@ -48,7 +48,7 @@ class Youtube {
     }
 
     async signOut() {
-        this.accessToken = null
+        this.refreshToken = null
         return 'success'
     }
 
