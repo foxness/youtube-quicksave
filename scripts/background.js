@@ -15,8 +15,10 @@ async function setupYoutube() {
 
     if (serialized) {
         youtube = await Youtube.fromSerialized(config, serialized)
+        console.log('setup youtube from serialized')
     } else {
         youtube = new Youtube(config)
+        console.log('setup new youtube')
     }
 }
 
@@ -66,18 +68,22 @@ async function signOut() {
     return result
 }
 
-async function serializeYoutube() {
-    let serialized = youtube.getSerialized()
-    await chrome.storage.sync.set({ YOUTUBE_KEY: serialized })
-}
-
 async function quicksave() {
     let currentUrl = await getCurrentTabUrl()
     await youtube.tryAddToPlaylist(currentUrl)
+    await serializeYoutube()
 }
 
 async function getPlaylists() {
-    return await youtube.getPlaylists()
+    let result = await youtube.getPlaylists()
+    await serializeYoutube()
+    return result
+}
+
+async function serializeYoutube() {
+    let serialized = youtube.getSerialized()
+    await chrome.storage.sync.set({ YOUTUBE_KEY: serialized })
+    console.log('serialized youtube')
 }
 
 function isSignedIn() {

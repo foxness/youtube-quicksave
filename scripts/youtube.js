@@ -125,8 +125,7 @@ class Youtube {
         let params = {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.accessToken}`
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
         }
@@ -134,7 +133,6 @@ class Youtube {
         let response = await fetch(endpoint, params)
         let json = await response.json()
 
-        console.log('fetched refresh token')
         console.log(json)
         
         let accessToken = json.access_token
@@ -156,9 +154,61 @@ class Youtube {
         this.refreshToken = refreshToken
         this.accessTokenExpirationDate = this.getExpirationDate(expiresIn)
 
-        console.log("successfully signed in")
+        console.log('fetched refresh token')
         await this.updatePopup()
         return 'success'
+    }
+
+    async refreshAccessToken() {
+        let endpoint = 'https://oauth2.googleapis.com/token'
+
+        let data = {
+            client_id: this.CLIENT_ID,
+            client_secret: this.CLIENT_SECRET,
+            refresh_token: this.refreshToken,
+            grant_type: 'refresh_token'
+        }
+
+        let params = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }
+
+        let response = await fetch(endpoint, params)
+        let json = await response.json()
+
+        console.log(json)
+        
+        let accessToken = json.access_token
+        let expiresIn = json.expires_in
+        let scope = json.scope
+        let tokenType = json.token_type
+
+        if (accessToken == null
+            || expiresIn == null
+            || scope != this.SCOPE
+            || tokenType != 'Bearer') {
+
+            return 'fail'
+        }
+
+        this.accessToken = accessToken
+        this.accessTokenExpirationDate = this.getExpirationDate(expiresIn)
+
+        console.log('refreshed access token')
+        await this.updatePopup()
+        return 'success'
+    }
+
+    async ensureValidAccessToken() {
+        if (new Date() < this.accessTokenExpirationDate) {
+            return
+        }
+
+        await this.refreshAccessToken()
     }
 
     async tryAddToPlaylist(url) {
@@ -174,38 +224,9 @@ class Youtube {
         await this.addToPlaylist(videoId, playlistId)
     }
 
-    async addToPlaylist(videoId, playlistId) {
-        let endpoint = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet'
-
-        let data = {
-            snippet: {
-                playlistId: playlistId,
-                resourceId: {
-                    kind: 'youtube#video',
-                    videoId: videoId
-                }
-            }
-        }
-
-        let params = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.accessToken}`
-            },
-            body: JSON.stringify(data)
-        }
-
-        let response = await fetch(endpoint, params)
-        let json = await response.json()
-
-        console.log('video quicksaved')
-        console.log(json)
-
-        return json
-    }
-
     async fetchPlaylists() {
+        await this.ensureValidAccessToken()
+
         let endpoint = 'https://www.googleapis.com/youtube/v3/playlists'
 
         let data = {
@@ -235,8 +256,41 @@ class Youtube {
 
         this.playlists = result
 
-        console.log("Fetched playlists")
+        console.log("fetched playlists")
         console.log(result)
+    }
+
+    async addToPlaylist(videoId, playlistId) {
+        await this.ensureValidAccessToken()
+
+        let endpoint = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet'
+
+        let data = {
+            snippet: {
+                playlistId: playlistId,
+                resourceId: {
+                    kind: 'youtube#video',
+                    videoId: videoId
+                }
+            }
+        }
+
+        let params = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.accessToken}`
+            },
+            body: JSON.stringify(data)
+        }
+
+        let response = await fetch(endpoint, params)
+        let json = await response.json()
+
+        console.log('video quicksaved')
+        console.log(json)
+
+        return json
     }
 
     async updatePopup() {
