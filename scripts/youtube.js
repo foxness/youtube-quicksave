@@ -24,7 +24,7 @@ class Youtube {
         youtube.state = parsed.state
         youtube.refreshToken = parsed.refreshToken
         youtube.accessToken = parsed.accessToken
-        youtube.accessTokenExpirationDate = parsed.accessTokenExpirationDate
+        youtube.accessTokenExpirationDate = new Date(parsed.accessTokenExpirationDate)
         youtube.playlists = parsed.playlists
 
         return youtube
