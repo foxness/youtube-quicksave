@@ -4,9 +4,13 @@ class Youtube {
 
     constructor(config) {
         this.CLIENT_ID = config.web.client_id
+        this.CLIENT_SECRET = config.web.client_secret
         this.REDIRECT_URI = config.web.redirect_uris[0]
 
+        this.authCode = null
+        this.refreshToken = null
         this.accessToken = null
+        this.accessTokenExpirationDate = null
         this.playlists = null
     }
 
@@ -25,6 +29,11 @@ class Youtube {
 
     async signInAndFetchPlaylists() {
         await this.openSignInForm()
+        if (this.authCode == null) {
+            return 'fail'
+        }
+
+        await this.fetchRefreshToken()
         if (!this.isSignedIn()) {
             return 'fail'
         }
@@ -49,7 +58,7 @@ class Youtube {
     }
 
     isSignedIn() {
-        return this.accessToken != null
+        return this.refreshToken != null
     }
 
     getSerialized() {
@@ -80,31 +89,70 @@ class Youtube {
 
         console.log("redirect url: " + redirectUrl)
         // https://asdasd.chromiumapp.org/
-        // #state=meetasdasd
-        // &access_token=asdasd
-        // &token_type=Bearer
-        // &expires_in=3599
+        // ?state=meetasdasd
+        // &code=asdasd
         // &scope=asdasd
 
-        let query = new URL(redirectUrl.replace('#', '?')).searchParams
+        let query = new URL(redirectUrl).searchParams
 
         let state = query.get('state')
-        let accessToken = query.get('access_token')
-        let tokenType = query.get('token_type')
-        let expiresIn = query.get('expires_in')
+        let code = query.get('code')
         let scope = query.get('scope')
 
-        if (state != this.STATE
-            || accessToken == null
-            || tokenType != 'Bearer'
+        if (state != this.STATE || code == null || scope != this.SCOPE) {
+            return 'fail'
+        }
+
+        this.authCode = code
+        return 'success'
+    }
+
+    async fetchRefreshToken() {
+        let endpoint = 'https://oauth2.googleapis.com/token'
+
+        let data = {
+            code: this.authCode,
+            client_id: this.CLIENT_ID,
+            client_secret: this.CLIENT_SECRET,
+            redirect_uri: this.REDIRECT_URI,
+            grant_type: 'authorization_code'
+        }
+
+        let params = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.accessToken}`
+            },
+            body: JSON.stringify(data)
+        }
+
+        let response = await fetch(endpoint, params)
+        let json = await response.json()
+
+        console.log('fetched refresh token')
+        console.log(json)
+        
+        let accessToken = json.access_token
+        let expiresIn = json.expires_in
+        let refreshToken = json.refresh_token
+        let scope = json.scope
+        let tokenType = json.token_type
+
+        if (accessToken == null
             || expiresIn == null
-            || scope != this.SCOPE) {
+            || refreshToken == null
+            || scope != this.SCOPE
+            || tokenType != 'Bearer') {
 
             return 'fail'
         }
 
         this.accessToken = accessToken
         await this.updatePopup()
+
+        this.refreshToken = refreshToken
+        this.accessTokenExpirationDate = this.getExpirationDate(expiresIn)
 
         console.log("successfully signed in")
         return 'success'
@@ -208,17 +256,22 @@ class Youtube {
 
         let data = {
             client_id: this.CLIENT_ID,
-            response_type: 'token',
+            response_type: 'code',
             redirect_uri: this.REDIRECT_URI,
             scope: this.SCOPE,
             state: this.STATE,
-            prompt: 'consent'
+            prompt: 'consent',
+            access_type: 'offline'
         }
 
         let url = new URL(endpoint)
         url.search = new URLSearchParams(data)
 
         return url.toString()
+    }
+
+    getExpirationDate(expiresIn) {
+        return new Date(new Date().getTime() + expiresIn * 1000)
     }
 }
 
