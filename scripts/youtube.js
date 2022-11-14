@@ -18,7 +18,9 @@ class Youtube {
         let youtube = new Youtube(config)
         let parsed = JSON.parse(serialized)
 
+        youtube.refreshToken = parsed.refreshToken
         youtube.accessToken = parsed.accessToken
+        youtube.accessTokenExpirationDate = parsed.accessTokenExpirationDate
         youtube.playlists = parsed.playlists
 
         await youtube.updatePopup()
@@ -63,7 +65,9 @@ class Youtube {
 
     getSerialized() {
         let serialized = {
+            refreshToken: this.refreshToken,
             accessToken: this.accessToken,
+            accessTokenExpirationDate: this.accessTokenExpirationDate,
             playlists: this.playlists
         }
 
@@ -149,12 +153,11 @@ class Youtube {
         }
 
         this.accessToken = accessToken
-        await this.updatePopup()
-
         this.refreshToken = refreshToken
         this.accessTokenExpirationDate = this.getExpirationDate(expiresIn)
 
         console.log("successfully signed in")
+        await this.updatePopup()
         return 'success'
     }
 
