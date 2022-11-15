@@ -40,7 +40,8 @@ async function handleCommand(command) {
         return
     }
 
-    await quicksave()
+    let youtube = await getYoutube()
+    await quicksave(youtube)
 }
 
 async function getYoutube() {
