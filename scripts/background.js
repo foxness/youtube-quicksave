@@ -7,6 +7,42 @@ function main() {
     setupListeners()
 }
 
+function setupListeners() {
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        handleMessage(request).then(sendResponse)
+        return true // return true to indicate we want to send a response asynchronously
+    })
+
+    chrome.commands.onCommand.addListener(handleCommand)
+}
+
+async function handleMessage(request) {
+    let youtube = await getYoutube()
+
+    switch (request.message) {
+        case 'signIn':
+            return await signIn(youtube)
+        case 'signOut':
+            return await signOut(youtube)
+        case 'quicksave':
+            return await quicksave(youtube)
+        case 'dewIt':
+            return await quicksave(youtube)
+        case 'getPlaylists':
+            return await getPlaylists(youtube)
+        case 'isSignedIn':
+            return youtube.isSignedIn()
+    }
+}
+
+async function handleCommand(command) {
+    if (command != 'quicksave-command') {
+        return
+    }
+
+    await quicksave()
+}
+
 async function getYoutube() {
     let serialized = (await chrome.storage.sync.get([YOUTUBE_KEY]))[YOUTUBE_KEY]
     let youtube
@@ -23,42 +59,7 @@ async function getYoutube() {
     return youtube
 }
 
-function setupListeners() {
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-        handleMessage(request).then(sendResponse)
-        return true // return true to indicate we want to send a response asynchronously
-    })
-
-    chrome.commands.onCommand.addListener(handleCommand)
-}
-
-async function handleMessage(request) {
-    switch (request.message) {
-        case 'signIn':
-            return await signIn()
-        case 'signOut':
-            return await signOut()
-        case 'quicksave':
-            return await quicksave()
-        case 'dewIt':
-            return await quicksave()
-        case 'getPlaylists':
-            return await getPlaylists()
-        case 'isSignedIn':
-            return await isSignedIn()
-    }
-}
-
-async function handleCommand(command) {
-    if (command != 'quicksave-command') {
-        return
-    }
-
-    await quicksave()
-}
-
-async function signIn() {
-    let youtube = await getYoutube()
+async function signIn(youtube) {
     let result = await youtube.signInAndFetchPlaylists()
 
     await serializeYoutube(youtube)
@@ -67,8 +68,7 @@ async function signIn() {
     return result
 }
 
-async function signOut() {
-    let youtube = await getYoutube()
+async function signOut(youtube) {
     let result = await youtube.signOut()
 
     await serializeYoutube(youtube)
@@ -77,15 +77,13 @@ async function signOut() {
     return result
 }
 
-async function quicksave() {
-    let youtube = await getYoutube()
+async function quicksave(youtube) {
     let currentUrl = await getCurrentTabUrl()
     await youtube.tryAddToPlaylist(currentUrl)
     await serializeYoutube(youtube)
 }
 
-async function getPlaylists() {
-    let youtube = await getYoutube()
+async function getPlaylists(youtube) {
     let result = await youtube.getPlaylists()
     await serializeYoutube(youtube)
     return result
@@ -94,11 +92,6 @@ async function getPlaylists() {
 async function serializeYoutube(youtube) {
     let serialized = youtube.getSerialized()
     await chrome.storage.sync.set({ [YOUTUBE_KEY]: serialized })
-}
-
-async function isSignedIn() {
-    let youtube = await getYoutube()
-    return youtube.isSignedIn()
 }
 
 async function updatePopup(youtube) {
