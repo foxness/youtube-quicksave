@@ -1,13 +1,11 @@
 import config from '../config/config.js'
-import Youtube from './youtube.js'
-
-const YOUTUBE_KEY = 'youtube'
+import QuicksaveManager from './quicksaveManager.js'
 
 async function main() {
     setupListeners()
 
-    let youtube = await getYoutube()
-    updatePopup(youtube)
+    let manager = await getQuicksaveManager()
+    manager.updatePopup()
 }
 
 function setupListeners() {
@@ -20,21 +18,21 @@ function setupListeners() {
 }
 
 async function handleMessage(request) {
-    let youtube = await getYoutube()
+    let manager = await getQuicksaveManager()
 
     switch (request.message) {
         case 'signIn':
-            return await signIn(youtube)
+            return await manager.signIn()
         case 'signOut':
-            return await signOut(youtube)
+            return await manager.signOut()
         case 'quicksave':
-            return await quicksave(youtube)
+            return await manager.quicksave()
         case 'dewIt':
-            return await quicksave(youtube)
+            return await manager.quicksave()
         case 'getPlaylists':
-            return await getPlaylists(youtube)
+            return await manager.getPlaylists()
         case 'isSignedIn':
-            return youtube.isSignedIn()
+            return manager.isSignedIn()
     }
 }
 
@@ -43,77 +41,12 @@ async function handleCommand(command) {
         return
     }
 
-    let youtube = await getYoutube()
-    await quicksave(youtube)
+    let manager = await getQuicksaveManager()
+    await manager.quicksave()
 }
 
-async function getYoutube() {
-    let serialized = (await chrome.storage.sync.get([YOUTUBE_KEY]))[YOUTUBE_KEY]
-    let youtube
-
-    if (serialized) {
-        console.log('setup youtube from serialized')
-        youtube = await Youtube.fromSerialized(config, serialized)
-    } else {
-        console.log('setup new youtube')
-        youtube = new Youtube(config)
-    }
-
-    await updatePopup(youtube)
-    return youtube
-}
-
-async function signIn(youtube) {
-    let result = await youtube.signInAndFetchPlaylists()
-
-    await serializeYoutube(youtube)
-    await updatePopup(youtube)
-
-    return result
-}
-
-async function signOut(youtube) {
-    let result = await youtube.signOut()
-
-    await serializeYoutube(youtube)
-    await updatePopup(youtube)
-    
-    return result
-}
-
-async function quicksave(youtube) {
-    let currentUrl = await getCurrentTabUrl()
-    await youtube.tryAddToPlaylist(currentUrl)
-    await serializeYoutube(youtube)
-}
-
-async function getPlaylists(youtube) {
-    let result = await youtube.getPlaylists()
-    await serializeYoutube(youtube)
-    return result
-}
-
-async function serializeYoutube(youtube) {
-    let serialized = youtube.getSerialized()
-    await chrome.storage.sync.set({ [YOUTUBE_KEY]: serialized })
-}
-
-async function updatePopup(youtube) {
-    let popup
-
-    if (youtube.isSignedIn()) {
-        popup = '/views/popup-signed-in.html'
-    } else {
-        popup = '/views/popup.html'
-    }
-
-    await chrome.action.setPopup({ popup: popup })
-}
-
-async function getCurrentTabUrl() {
-    let queryOptions = { active: true, lastFocusedWindow: true }
-    let [tab] = await chrome.tabs.query(queryOptions)
-    return tab.url
+async function getQuicksaveManager() {
+    return await QuicksaveManager.init(config)
 }
 
 main()

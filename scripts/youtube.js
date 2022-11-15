@@ -1,6 +1,6 @@
 class Youtube {
 
-    // Constructor
+    // Initialization
 
     constructor(config) {
         this.CLIENT_ID = config.web.client_id
