@@ -3,8 +3,11 @@ import Youtube from './youtube.js'
 
 const YOUTUBE_KEY = 'youtube'
 
-function main() {
+async function main() {
     setupListeners()
+
+    let youtube = await getYoutube()
+    updatePopup(youtube)
 }
 
 function setupListeners() {
