@@ -1,12 +1,35 @@
 async function main() {
     let playlists = await chrome.runtime.sendMessage({ message: 'getPlaylists' })
 
-    let list = $('<ul></ul>')
+    let playlistContainer = $('<div>', { id: 'playlistContainer' })
+    let fieldset = $('<fieldset>')
+    
+    let legend = $('<legend>').text('Select a playlist for Quicksave:')
+    fieldset.append(legend)
+
     playlists.forEach(p => {
-        list.append(`<li>${p.title}</li>`)
+        let div = $('<div>')
+        let label = $('<label>')
+        let radio = $('<input>', { type: 'radio', name: 'quicksave-playlist-0', value: p.id }).prop('checked', p.quicksave)
+        radio.click(async () => {
+            let message = {
+                kind: 'playlistSelected',
+                playlistId: p.id
+            }
+            
+            await chrome.runtime.sendMessage({ message: message })
+            console.log('radio ' + p.title)
+        })
+
+        label.append(radio)
+        label.append(p.title)
+        
+        div.append(label)
+        fieldset.append(div)
     })
 
-    list.insertAfter('#dew-it')
+    playlistContainer.append(fieldset)
+    playlistContainer.insertAfter('#dew-it')
 }
 
 $(window).on('load', main)
