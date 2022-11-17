@@ -77,7 +77,8 @@ class QuicksaveManager {
 
     async selectPlaylist(playlistId) {
         this.quicksavePlaylistId = playlistId
-        return await this.serializeQuicksavePlaylistId()
+        await this.serializeQuicksavePlaylistId()
+        console.log(`playlist selected: ${playlistId}`)
     }
 
     async setupQuicksavePlaylistIdUsingRecent() {
@@ -105,13 +106,10 @@ class QuicksaveManager {
         let serialized = (await chrome.storage.sync.get([QuicksaveManager.QUICKSAVE_PLAYLIST_ID_KEY]))[QuicksaveManager.QUICKSAVE_PLAYLIST_ID_KEY]
 
         if (serialized) {
-            console.log('restored quicksave playlist')
             return serialized
         } else if (youtube.playlists != null && youtube.playlists.length != 0) {
-            console.log('got quicksave playlist from recent')
             return youtube.playlists[0].id
         } else {
-            console.log('new quicksave playlist')
             return null
         }
     }
