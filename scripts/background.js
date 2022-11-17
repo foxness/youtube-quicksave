@@ -34,6 +34,8 @@ async function handleMessage(request) {
         case 'isSignedIn':
             return manager.isSignedIn()
     }
+
+    return 'fail'
 }
 
 async function handleCommand(command) {
