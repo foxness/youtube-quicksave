@@ -19,8 +19,9 @@ function setupListeners() {
 
 async function handleMessage(request) {
     let manager = await getQuicksaveManager()
+    let message = request.message
 
-    switch (request.message) {
+    switch (message) {
         case 'signIn':
             return await manager.signIn()
         case 'signOut':
@@ -33,6 +34,11 @@ async function handleMessage(request) {
             return await manager.getPlaylists()
         case 'isSignedIn':
             return manager.isSignedIn()
+    }
+
+    if (message.kind == 'playlistSelected') {
+        let id = message.playlistId
+        return await manager.selectPlaylist(id)
     }
 
     return 'fail'

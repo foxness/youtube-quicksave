@@ -10,11 +10,11 @@ async function main() {
     playlists.forEach(p => {
         let div = $('<div>')
         let label = $('<label>')
-        let radio = $('<input>', { type: 'radio', name: 'quicksave-playlist-0', value: p.id })
+        let radio = $('<input>', { type: 'radio', name: 'quicksave-playlist-0', value: p.id }).prop('checked', p.quicksave)
         radio.click(async () => {
             let message = {
                 kind: 'playlistSelected',
-                id: p.id
+                playlistId: p.id
             }
             
             await chrome.runtime.sendMessage({ message: message })

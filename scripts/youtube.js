@@ -211,7 +211,7 @@ class Youtube {
         await this.refreshAccessToken()
     }
 
-    async tryAddToPlaylist(url) {
+    async tryAddToPlaylist(url, playlistId) {
         let YOUTUBE_VIDEO_URL = 'https://www.youtube.com/watch'
         if (!url.startsWith(YOUTUBE_VIDEO_URL)) {
             return
@@ -219,7 +219,6 @@ class Youtube {
 
         let query = new URL(url).searchParams
         let videoId = query.get('v')
-        let playlistId = this.playlists.find(p => p.title == 'testyIsBesty').id
 
         await this.addToPlaylist(videoId, playlistId)
     }
