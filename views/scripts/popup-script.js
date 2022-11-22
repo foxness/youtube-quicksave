@@ -40,7 +40,7 @@ async function makeQuicksaveLog() {
     let quicksaveLog = await chrome.runtime.sendMessage({ message: 'getQuicksaveLog' })
 
     let container = $('#quicksave-log')
-    let textarea = $('<textarea>', { rows: 10 }).text(quicksaveLog)
+    let textarea = $('<textarea>', { rows: 10 }).prop('readonly', true).text(quicksaveLog)
     
     container.append(textarea)
     textarea.scrollTop(textarea[0].scrollHeight)
