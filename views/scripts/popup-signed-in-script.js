@@ -1,7 +1,12 @@
 async function main() {
+    await makePlaylistSelector()
+    await makeQuicksaveLog()
+}
+
+async function makePlaylistSelector() {
     let playlists = await chrome.runtime.sendMessage({ message: 'getPlaylists' })
 
-    let playlistContainer = $('<div>', { id: 'playlistContainer' })
+    let container = $('#playlist-selector')
     let fieldset = $('<fieldset>')
     
     let legend = $('<legend>').text('Select a playlist for Quicksave:')
@@ -28,8 +33,17 @@ async function main() {
         fieldset.append(div)
     })
 
-    playlistContainer.append(fieldset)
-    playlistContainer.insertAfter('#dew-it')
+    container.append(fieldset)
+}
+
+async function makeQuicksaveLog() {
+    let quicksaveLog = await chrome.runtime.sendMessage({ message: 'getQuicksaveLog' })
+
+    let container = $('#quicksave-log')
+    let textarea = $('<textarea>', { rows: 10 }).text(quicksaveLog)
+    
+    container.append(textarea)
+    textarea.scrollTop(textarea[0].scrollHeight)
 }
 
 $(window).on('load', main)

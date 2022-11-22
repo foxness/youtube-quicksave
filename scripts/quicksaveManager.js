@@ -67,6 +67,10 @@ class QuicksaveManager {
         })
     }
 
+    async getQuicksaveLog() {
+        return this.log
+    }
+
     async updatePopup() {
         let popup
 
@@ -141,11 +145,13 @@ class QuicksaveManager {
         let videoId = data.videoId
         let videoTitle = data.videoTitle
         let playlistTitle = data.playlistTitle
+        
+        let logItem = `[${date}] [${videoId}: ${videoTitle}] was quicksaved to [${playlistTitle}]\n`
 
-        this.log += `[${date}] [${videoId}: ${videoTitle}] was quicksaved to [${playlistTitle}]\n`
+        this.log += logItem
         await this.serializeLog()
 
-        console.log(this.log)
+        console.log(this.logItem)
     }
 
     formatDate(date) {
@@ -163,7 +169,7 @@ class QuicksaveManager {
         minutes = minutes.padStart(2, '0')
         seconds = seconds.padStart(2, '0')
 
-        return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`
+        return `${year}/${month}${day} ${hours}:${minutes}:${seconds}`
     }
 
     async getCurrentTabUrl() {

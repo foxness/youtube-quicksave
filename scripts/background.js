@@ -32,6 +32,8 @@ async function handleMessage(request) {
             return await manager.quicksave()
         case 'getPlaylists':
             return await manager.getPlaylists()
+        case 'getQuicksaveLog':
+            return await manager.getQuicksaveLog()
         case 'isSignedIn':
             return manager.isSignedIn()
     }

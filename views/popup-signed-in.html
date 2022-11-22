@@ -8,7 +8,7 @@
     <script src="../thirdParty/jquery-3.6.1.slim.min.js"></script>
     <style>
         body {
-            width: 300px;
+            width: 500px;
             height: auto;
         }
 
@@ -44,6 +44,11 @@
             background-color: black;
             transform: translateX(-50%) scale(1.3);
         }
+
+        textarea {
+            font: 0.5rem monospace;
+            width: 100%;
+        }
     </style>
 </head>
 
@@ -53,6 +58,8 @@
     <button id='user-status'>User Status</button>
     <button id='quicksave'>Quicksave</button>
     <button id='dew-it'>Dew It</button>
+    <div id='playlist-selector'></div>
+    <div id='quicksave-log'></div>
     <script src="scripts/popup-signed-in-script.js"></script>
 </body>
 
