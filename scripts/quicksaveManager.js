@@ -4,21 +4,24 @@ class QuicksaveManager {
 
     // Constants
 
-    static YOUTUBE_KEY = 'youtube'
-    static QUICKSAVE_PLAYLIST_ID_KEY = 'quicksavePlaylistId0'
+    static KEY_YOUTUBE = 'youtube'
+    static KEY_QUICKSAVE_PLAYLIST_ID = 'quicksavePlaylistId0'
+    static KEY_LOG = 'log'
 
     // Initialization
 
-    constructor(youtube, quicksavePlaylistId) {
+    constructor(youtube, quicksavePlaylistId, log) {
         this.youtube = youtube
         this.quicksavePlaylistId = quicksavePlaylistId
+        this.log = log
     }
 
     static async init(config) {
         let youtube = await QuicksaveManager.getYoutube(config)
         let quicksavePlaylistId = await QuicksaveManager.getQuicksavePlaylistId(youtube)
+        let log = await QuicksaveManager.getLog()
 
-        return new QuicksaveManager(youtube, quicksavePlaylistId)
+        return new QuicksaveManager(youtube, quicksavePlaylistId, log)
     }
 
     // Public methods
@@ -44,8 +47,9 @@ class QuicksaveManager {
 
     async quicksave() {
         let currentUrl = await this.getCurrentTabUrl()
-        await this.youtube.tryAddToPlaylist(currentUrl, this.quicksavePlaylistId)
+        let data = await this.youtube.tryAddToPlaylist(currentUrl, this.quicksavePlaylistId)
         await this.serializeYoutube()
+        await this.logQuicksave(data)
 
         return 'success'
     }
@@ -93,7 +97,7 @@ class QuicksaveManager {
     // Private methods
 
     static async getYoutube(config) {
-        let serialized = (await chrome.storage.sync.get([QuicksaveManager.YOUTUBE_KEY]))[QuicksaveManager.YOUTUBE_KEY]
+        let serialized = (await chrome.storage.sync.get([QuicksaveManager.KEY_YOUTUBE]))[QuicksaveManager.KEY_YOUTUBE]
 
         if (serialized) {
             return Youtube.fromSerialized(config, serialized)
@@ -103,7 +107,7 @@ class QuicksaveManager {
     }
 
     static async getQuicksavePlaylistId(youtube) {
-        let serialized = (await chrome.storage.sync.get([QuicksaveManager.QUICKSAVE_PLAYLIST_ID_KEY]))[QuicksaveManager.QUICKSAVE_PLAYLIST_ID_KEY]
+        let serialized = (await chrome.storage.sync.get([QuicksaveManager.KEY_QUICKSAVE_PLAYLIST_ID]))[QuicksaveManager.KEY_QUICKSAVE_PLAYLIST_ID]
 
         if (serialized) {
             return serialized
@@ -114,13 +118,34 @@ class QuicksaveManager {
         }
     }
 
+    static async getLog() {
+        let serialized = (await chrome.storage.sync.get([QuicksaveManager.KEY_LOG]))[QuicksaveManager.KEY_LOG]
+        return serialized != null ? serialized : ''
+    }
+
     async serializeYoutube() {
         let serialized = this.youtube.getSerialized()
-        await chrome.storage.sync.set({ [QuicksaveManager.YOUTUBE_KEY]: serialized })
+        await chrome.storage.sync.set({ [QuicksaveManager.KEY_YOUTUBE]: serialized })
     }
 
     async serializeQuicksavePlaylistId() {
-        await chrome.storage.sync.set({ [QuicksaveManager.QUICKSAVE_PLAYLIST_ID_KEY]: this.quicksavePlaylistId })
+        await chrome.storage.sync.set({ [QuicksaveManager.KEY_QUICKSAVE_PLAYLIST_ID]: this.quicksavePlaylistId })
+    }
+
+    async serializeLog() {
+        await chrome.storage.sync.set({ [QuicksaveManager.KEY_LOG]: this.log })
+    }
+
+    async logQuicksave(data) {
+        let date = new Date().toJSON()
+        let videoId = data.videoId
+        let videoTitle = data.videoTitle
+        let playlistTitle = data.playlistTitle
+
+        this.log += `[${date}] [${videoId}: ${videoTitle}] was quicksaved to [${playlistTitle}]\n`
+        await this.serializeLog()
+
+        console.log(this.log)
     }
 
     async getCurrentTabUrl() {
