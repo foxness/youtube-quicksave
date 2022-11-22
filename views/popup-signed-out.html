@@ -8,20 +8,11 @@
     <script src="../thirdParty/jquery-3.6.1.slim.min.js"></script>
     <style>
         body {
-            width: 500px;
+            width: 300px;
             height: auto;
         }
 
-        legend,
-        label {
-            font: 1rem sans-serif;
-        }
-
-        input {
-            margin: .5rem;
-        }
-
-        #sign-out {
+        div {
             position: relative;
             left: 50%;
             transform: translateX(-50%);
@@ -40,27 +31,18 @@
             transition-duration: 0.3s;
         }
 
-        #sign-out:hover {
+        div:hover {
             background-color: black;
             transform: translateX(-50%) scale(1.3);
-        }
-
-        textarea {
-            font: 0.5rem monospace;
-            width: 100%;
         }
     </style>
 </head>
 
 <body>
-    <h1>Successfully Signed-In</h1>
-    <div id='sign-out'>Sign Out</div>
+    <h1>Sign-In With Your Google Account to Use This Extension</h1>
+    <div id='sign-in'>Sign In</div>
     <button id='user-status'>User Status</button>
-    <button id='quicksave'>Quicksave</button>
-    <button id='dew-it'>Dew It</button>
-    <div id='playlist-selector'></div>
-    <div id='quicksave-log'></div>
-    <script src="scripts/popup-signed-in-script.js"></script>
+    <script src="scripts/popup-signed-out-script.js"></script>
 </body>
 
 </html>

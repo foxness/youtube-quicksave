@@ -75,9 +75,9 @@ class QuicksaveManager {
         let popup
 
         if (this.youtube.isSignedIn()) {
-            popup = '/views/popup-signed-in.html'
-        } else {
             popup = '/views/popup.html'
+        } else {
+            popup = '/views/popup-signed-out.html'
         }
 
         await chrome.action.setPopup({ popup: popup })
