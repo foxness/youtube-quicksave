@@ -220,7 +220,7 @@ class Youtube {
         let query = new URL(url).searchParams
         let videoId = query.get('v')
 
-        await this.addToPlaylist(videoId, playlistId)
+        return await this.addToPlaylist(videoId, playlistId)
     }
 
     async fetchPlaylists() {
@@ -289,7 +289,12 @@ class Youtube {
         console.log('video quicksaved')
         console.log(json)
 
-        return json
+        return {
+            videoId: videoId,
+            videoTitle: json.snippet.title,
+            playlistId: playlistId,
+            playlistTitle: this.playlists.find(p => p.id == playlistId).title
+        }
     }
 
     createAuthEndpoint() {
