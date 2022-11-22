@@ -28,20 +28,20 @@ class QuicksaveManager {
 
     async signIn() {
         let result = await this.youtube.signInAndFetchPlaylists()
-    
+
         await this.setupQuicksavePlaylistIdUsingRecent()
         await this.serializeYoutube()
         await this.updatePopup()
-    
+
         return result
     }
 
     async signOut() {
         let result = await this.youtube.signOut()
-    
+
         await this.serializeYoutube()
         await this.updatePopup()
-        
+
         return result
     }
 
@@ -69,13 +69,13 @@ class QuicksaveManager {
 
     async updatePopup() {
         let popup
-    
+
         if (this.youtube.isSignedIn()) {
             popup = '/views/popup-signed-in.html'
         } else {
             popup = '/views/popup.html'
         }
-    
+
         await chrome.action.setPopup({ popup: popup })
     }
 
@@ -137,7 +137,7 @@ class QuicksaveManager {
     }
 
     async logQuicksave(data) {
-        let date = new Date().toJSON()
+        let date = this.formatDate(new Date())
         let videoId = data.videoId
         let videoTitle = data.videoTitle
         let playlistTitle = data.playlistTitle
@@ -146,6 +146,24 @@ class QuicksaveManager {
         await this.serializeLog()
 
         console.log(this.log)
+    }
+
+    formatDate(date) {
+        let year = date.getFullYear()
+        let month = '' + (date.getMonth() + 1)
+        let day = '' + date.getDate()
+
+        let hours = '' + date.getHours()
+        let minutes = '' + date.getMinutes()
+        let seconds = '' + date.getSeconds()
+
+        month = month.padStart(2, '0')
+        day = day.padStart(2, '0')
+        hours = hours.padStart(2, '0')
+        minutes = minutes.padStart(2, '0')
+        seconds = seconds.padStart(2, '0')
+
+        return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`
     }
 
     async getCurrentTabUrl() {
