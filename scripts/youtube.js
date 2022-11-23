@@ -52,8 +52,37 @@ class Youtube {
         return 'success'
     }
 
-    async dewIt(url) {
-        await this.tryAddToPlaylist(url)
+    async deduplicatePlaylist(playlistId) {
+        let videos = await this.fetchPlaylistVideos(playlistId)
+
+        // assumes that the playlist is sorted by 'Date added (newest)'
+        // after reversing, only the oldest duplicate survives
+        videos.reverse()
+
+        let processedVideoIds = []
+        let videosToDelete = []
+
+        for (let i = 0; i < videos.length; i++) {
+            let videoA = videos[i]
+
+            if (processedVideoIds.includes(videoA.videoId)) {
+                continue
+            }
+
+            for (let j = i + 1; j < videos.length; j++) {
+                let videoB = videos[j]
+
+                if (videoA.videoId == videoB.videoId) {
+                    videosToDelete.push(videoB)
+                }
+            }
+
+            processedVideoIds.push(videoA.videoId)
+        }
+
+        await this.removeVideosFromPlaylist(videosToDelete.map(v => v.itemId))
+        console.log(`deleted ${videosToDelete.length} duplicate videos:`)
+        console.log(videosToDelete)
     }
 
     async getPlaylists() {
@@ -294,6 +323,90 @@ class Youtube {
             videoTitle: json.snippet.title,
             playlistId: playlistId,
             playlistTitle: this.playlists.find(p => p.id == playlistId).title
+        }
+    }
+
+    async fetchPlaylistVideos(playlistId) {
+        await this.ensureValidAccessToken()
+
+        console.log(`started fetching playlist videos`)
+
+        let endpoint = 'https://www.googleapis.com/youtube/v3/playlistItems'
+
+        let data = {
+            part: 'snippet',
+            playlistId: playlistId,
+            maxResults: 50
+        }
+
+        let url = new URL(endpoint)
+        url.search = new URLSearchParams(data)
+
+        let params = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.accessToken}`
+            }
+        }
+
+        let videos = []
+        let pageIndex = 0
+        while (true) {
+            console.log(`fetching page ${pageIndex + 1}`)
+            let response = await fetch(url.toString(), params)
+            let json = await response.json()
+
+            let pageItems = json.items.map((a) => {
+                return {
+                    itemId: a.id,
+                    videoId: a.snippet.resourceId.videoId,
+                    videoTitle: a.snippet.title
+                }
+            })
+
+            videos.push(...pageItems)
+
+            let nextPageToken = json.nextPageToken
+            if (!nextPageToken) {
+                break
+            }
+
+            data.pageToken = nextPageToken
+            url.search = new URLSearchParams(data)
+            pageIndex++
+        }
+
+        console.log(`finished fetching playlist videos`)
+
+        return videos
+    }
+
+    async removeVideosFromPlaylist(itemIdsToDelete) {
+        await this.ensureValidAccessToken()
+
+        let endpoint = 'https://www.googleapis.com/youtube/v3/playlistItems'
+
+        let url = new URL(endpoint)
+        let params = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.accessToken}`
+            }
+        }
+
+        for (let itemId of itemIdsToDelete) {
+            let data = {
+                id: itemId
+            }
+            
+            url.search = new URLSearchParams(data)
+            let response = await fetch(url.toString(), params)
+
+            if (!response.ok) {
+                throw 'Bad response'
+            }
         }
     }
 
