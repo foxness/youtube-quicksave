@@ -158,7 +158,7 @@ class QuicksaveManager {
         this.log += logItem
         await this.serializeLog()
 
-        console.log(this.logItem)
+        console.log(logItem)
     }
 
     formatDate(date) {
