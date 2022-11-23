@@ -345,9 +345,7 @@ class Youtube {
         }
 
         let videos = []
-
-        let i = 0
-        while (i < 3) {
+        while (true) {
             let response = await fetch(url.toString(), params)
             let json = await response.json()
 
@@ -367,8 +365,8 @@ class Youtube {
                 break
             }
 
-            params.pageToken = nextPageToken
-            i++
+            data.pageToken = nextPageToken
+            url.search = new URLSearchParams(data)
         }
 
         console.log(`videos`)
