@@ -54,6 +54,13 @@ class QuicksaveManager {
         return 'success'
     }
 
+    async deduplicate() {
+        await this.youtube.deduplicatePlaylist(this.quicksavePlaylistId)
+        await this.serializeYoutube()
+
+        return 'success'
+    }
+
     async getPlaylists() {
         let playlists = await this.youtube.getPlaylists()
         await this.serializeYoutube()

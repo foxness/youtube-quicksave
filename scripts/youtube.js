@@ -52,8 +52,33 @@ class Youtube {
         return 'success'
     }
 
-    async dewIt(url) {
-        await this.tryAddToPlaylist(url)
+    async deduplicatePlaylist(playlistId) {
+        let videos = await this.fetchPlaylistVideos(playlistId)
+
+        let processedVideoIds = []
+        let itemIdsToDelete = []
+
+        for (let i = 0; i < videos.length; i++) {
+            let videoA = videos[i]
+
+            if (processedVideoIds.includes(videoA.videoId)) {
+                continue
+            }
+
+            for (let j = i + 1; j < videos.length; j++) {
+                let videoB = videos[j]
+
+                if (videoA.videoId == videoB.videoId) {
+                    itemIdsToDelete.push(videoB.itemId)
+                }
+            }
+
+            processedVideoIds.push(videoA.videoId)
+        }
+
+        console.log(itemIdsToDelete)
+
+        // await this.removeVideosFromPlaylist(playlistId, itemIdsToDelete)
     }
 
     async getPlaylists() {
@@ -295,6 +320,61 @@ class Youtube {
             playlistId: playlistId,
             playlistTitle: this.playlists.find(p => p.id == playlistId).title
         }
+    }
+
+    async fetchPlaylistVideos(playlistId) {
+        await this.ensureValidAccessToken()
+
+        let endpoint = 'https://www.googleapis.com/youtube/v3/playlistItems'
+
+        let data = {
+            part: 'snippet',
+            playlistId: playlistId,
+            maxResults: 50
+        }
+
+        let url = new URL(endpoint)
+        url.search = new URLSearchParams(data)
+
+        let params = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.accessToken}`
+            }
+        }
+
+        let videos = []
+
+        let i = 0
+        while (i < 3) {
+            let response = await fetch(url.toString(), params)
+            let json = await response.json()
+
+            console.log(json)
+
+            let pageItems = json.items.map((a) => {
+                return {
+                    itemId: a.id,
+                    videoId: a.snippet.resourceId.videoId
+                }
+            })
+
+            videos.push(...pageItems)
+
+            let nextPageToken = json.nextPageToken
+            if (!nextPageToken) {
+                break
+            }
+
+            params.pageToken = nextPageToken
+            i++
+        }
+
+        console.log(`videos`)
+        console.log(videos)
+
+        return videos
     }
 
     createAuthEndpoint() {

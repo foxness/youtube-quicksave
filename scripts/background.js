@@ -29,7 +29,7 @@ async function handleMessage(request) {
         case 'quicksave':
             return await manager.quicksave()
         case 'dewIt':
-            return await manager.quicksave()
+            return await manager.deduplicate()
         case 'getPlaylists':
             return await manager.getPlaylists()
         case 'getQuicksaveLog':
