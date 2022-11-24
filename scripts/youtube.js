@@ -153,14 +153,7 @@ class Youtube {
             grant_type: 'authorization_code'
         }
 
-        let params = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }
-
+        let params = this.getRequestParams('POST', false, data)
         let response = await fetch(endpoint, params)
         let json = await response.json()
 
@@ -199,14 +192,7 @@ class Youtube {
             grant_type: 'refresh_token'
         }
 
-        let params = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }
-
+        let params = this.getRequestParams('POST', false, data)
         let response = await fetch(endpoint, params)
         let json = await response.json()
 
@@ -265,14 +251,7 @@ class Youtube {
         let url = new URL(endpoint)
         url.search = new URLSearchParams(data)
 
-        let params = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.accessToken}`
-            }
-        }
-
+        let params = this.getRequestParams('GET', true, null)
         let response = await fetch(url.toString(), params)
         let json = await response.json()
         let result = json.items.map((a) => {
@@ -303,15 +282,7 @@ class Youtube {
             }
         }
 
-        let params = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.accessToken}`
-            },
-            body: JSON.stringify(data)
-        }
-
+        let params = this.getRequestParams('POST', true, data)
         let response = await fetch(endpoint, params)
         let json = await response.json()
 
@@ -342,13 +313,7 @@ class Youtube {
         let url = new URL(endpoint)
         url.search = new URLSearchParams(data)
 
-        let params = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.accessToken}`
-            }
-        }
+        let params = this.getRequestParams('GET', true, null)
 
         let videos = []
         let pageIndex = 0
@@ -388,13 +353,7 @@ class Youtube {
         let endpoint = 'https://www.googleapis.com/youtube/v3/playlistItems'
 
         let url = new URL(endpoint)
-        let params = {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.accessToken}`
-            }
-        }
+        let params = this.getRequestParams('DELETE', true, null)
 
         for (let itemId of itemIdsToDelete) {
             let data = {
@@ -409,6 +368,8 @@ class Youtube {
             }
         }
     }
+
+    // Helper
 
     createAuthEndpoint() {
         let endpoint = 'https://accounts.google.com/o/oauth2/v2/auth'
@@ -431,6 +392,25 @@ class Youtube {
 
     getExpirationDate(expiresIn) {
         return new Date(new Date().getTime() + expiresIn * 1000)
+    }
+
+    getRequestParams(method, isAuthed, data) {
+        let params = {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        if (isAuthed) {
+            params.headers['Authorization'] = `Bearer ${this.accessToken}`
+        }
+
+        if (data) {
+            params.body = JSON.stringify(data)
+        }
+
+        return params
     }
 }
 
