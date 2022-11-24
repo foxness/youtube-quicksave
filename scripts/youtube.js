@@ -3,11 +3,16 @@ class Youtube {
     // Initialization
 
     constructor(config) {
+        this.ENDPOINT_AUTH = 'https://accounts.google.com/o/oauth2/v2/auth'
+        this.ENDPOINT_TOKEN = 'https://oauth2.googleapis.com/token'
+        this.ENDPOINT_PLAYLISTS = 'https://www.googleapis.com/youtube/v3/playlists'
+        this.ENDPOINT_PLAYLIST_ITEMS = 'https://www.googleapis.com/youtube/v3/playlistItems'
+
+        this.SCOPE = 'https://www.googleapis.com/auth/youtube'
+
         this.CLIENT_ID = config.web.client_id
         this.CLIENT_SECRET = config.web.client_secret
         this.REDIRECT_URI = config.web.redirect_uris[0]
-
-        this.SCOPE = 'https://www.googleapis.com/auth/youtube'
 
         this.state = 'meet' + Math.random().toString(36).substring(2, 15)
         this.authCode = null
@@ -152,7 +157,7 @@ class Youtube {
         }
 
         let requestParams = {
-            endpoint: 'https://oauth2.googleapis.com/token',
+            endpoint: this.ENDPOINT_TOKEN,
             method: 'POST',
             isAuthed: false,
             urlQueryData: null,
@@ -195,7 +200,7 @@ class Youtube {
         }
 
         let requestParams = {
-            endpoint: 'https://oauth2.googleapis.com/token',
+            endpoint: this.ENDPOINT_TOKEN,
             method: 'POST',
             isAuthed: false,
             urlQueryData: null,
@@ -253,7 +258,7 @@ class Youtube {
         }
 
         let requestParams = {
-            endpoint: 'https://www.googleapis.com/youtube/v3/playlists',
+            endpoint: this.ENDPOINT_PLAYLISTS,
             method: 'GET',
             isAuthed: true,
             urlQueryData: urlQueryData,
@@ -292,7 +297,7 @@ class Youtube {
         }
 
         let requestParams = {
-            endpoint: 'https://www.googleapis.com/youtube/v3/playlistItems',
+            endpoint: this.ENDPOINT_PLAYLIST_ITEMS,
             method: 'POST',
             isAuthed: true,
             urlQueryData: urlQueryData,
@@ -327,7 +332,7 @@ class Youtube {
             console.log(`fetching page ${pageIndex + 1}`)
 
             let requestParams = {
-                endpoint: 'https://www.googleapis.com/youtube/v3/playlistItems',
+                endpoint: this.ENDPOINT_PLAYLIST_ITEMS,
                 method: 'GET',
                 isAuthed: true,
                 urlQueryData: urlQueryData,
@@ -368,7 +373,7 @@ class Youtube {
             }
 
             let requestParams = {
-                endpoint: 'https://www.googleapis.com/youtube/v3/playlistItems',
+                endpoint: this.ENDPOINT_PLAYLIST_ITEMS,
                 method: 'DELETE',
                 isAuthed: true,
                 urlQueryData: urlQueryData,
@@ -419,8 +424,6 @@ class Youtube {
     }
 
     createAuthEndpoint() {
-        let endpoint = 'https://accounts.google.com/o/oauth2/v2/auth'
-
         let urlQueryData = {
             client_id: this.CLIENT_ID,
             response_type: 'code',
@@ -431,7 +434,7 @@ class Youtube {
             access_type: 'offline'
         }
 
-        return this.addQueryToUrl(endpoint, urlQueryData)
+        return this.addQueryToUrl(this.ENDPOINT_AUTH, urlQueryData)
     }
 
     addQueryToUrl(endpoint, urlQueryData) {
