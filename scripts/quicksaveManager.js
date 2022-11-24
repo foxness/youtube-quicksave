@@ -1,27 +1,27 @@
-import Youtube from './youtube.js'
+import Storage from './storage.js'
 
 class QuicksaveManager {
 
-    // Constants
-
-    static KEY_YOUTUBE = 'youtube'
-    static KEY_QUICKSAVE_PLAYLIST_ID = 'quicksavePlaylistId0'
-    static KEY_LOG = 'log'
-
     // Initialization
 
-    constructor(youtube, quicksavePlaylistId, log) {
+    constructor(storage, youtube, quicksavePlaylistId, log) {
+        this.storage = storage
         this.youtube = youtube
         this.quicksavePlaylistId = quicksavePlaylistId
         this.log = log
     }
 
     static async init(config) {
-        let youtube = await QuicksaveManager.getYoutube(config)
-        let quicksavePlaylistId = await QuicksaveManager.getQuicksavePlaylistId(youtube)
-        let log = await QuicksaveManager.getLog()
+        let storage = new Storage(config)
+        let youtube = await storage.getYoutube()
+        let quicksavePlaylistId = await storage.getQuicksavePlaylistId()
+        let log = await storage.getLog()
 
-        return new QuicksaveManager(youtube, quicksavePlaylistId, log)
+        if (quicksavePlaylistId == null && youtube.playlists != null && youtube.playlists.length > 0) {
+            quicksavePlaylistId = youtube.playlists[0].id
+        }
+
+        return new QuicksaveManager(storage, youtube, quicksavePlaylistId, log)
     }
 
     // Public methods
@@ -107,44 +107,16 @@ class QuicksaveManager {
 
     // Private methods
 
-    static async getYoutube(config) {
-        let serialized = (await chrome.storage.sync.get([QuicksaveManager.KEY_YOUTUBE]))[QuicksaveManager.KEY_YOUTUBE]
-
-        if (serialized) {
-            return Youtube.fromSerialized(config, serialized)
-        } else {
-            return new Youtube(config)
-        }
-    }
-
-    static async getQuicksavePlaylistId(youtube) {
-        let serialized = (await chrome.storage.sync.get([QuicksaveManager.KEY_QUICKSAVE_PLAYLIST_ID]))[QuicksaveManager.KEY_QUICKSAVE_PLAYLIST_ID]
-
-        if (serialized) {
-            return serialized
-        } else if (youtube.playlists != null && youtube.playlists.length != 0) {
-            return youtube.playlists[0].id
-        } else {
-            return null
-        }
-    }
-
-    static async getLog() {
-        let serialized = (await chrome.storage.sync.get([QuicksaveManager.KEY_LOG]))[QuicksaveManager.KEY_LOG]
-        return serialized != null ? serialized : ''
-    }
-
     async serializeYoutube() {
-        let serialized = this.youtube.getSerialized()
-        await chrome.storage.sync.set({ [QuicksaveManager.KEY_YOUTUBE]: serialized })
+        await this.storage.setYoutube(this.youtube)
     }
 
     async serializeQuicksavePlaylistId() {
-        await chrome.storage.sync.set({ [QuicksaveManager.KEY_QUICKSAVE_PLAYLIST_ID]: this.quicksavePlaylistId })
+        await this.storage.setQuicksavePlaylistId(this.quicksavePlaylistId)
     }
 
     async serializeLog() {
-        await chrome.storage.sync.set({ [QuicksaveManager.KEY_LOG]: this.log })
+        await this.storage.setLog(this.log)
     }
 
     async logQuicksave(data) {
