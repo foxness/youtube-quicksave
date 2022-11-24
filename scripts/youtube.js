@@ -245,8 +245,6 @@ class Youtube {
     }
 
     async fetchPlaylists() {
-        await this.ensureValidAccessToken()
-
         let data = {
             part: 'snippet',
             mine: true
@@ -275,8 +273,6 @@ class Youtube {
     }
 
     async addToPlaylist(videoId, playlistId) {
-        await this.ensureValidAccessToken()
-
         let urlQueryData = {
             part: 'snippet'
         }
@@ -312,8 +308,6 @@ class Youtube {
     }
 
     async fetchPlaylistVideos(playlistId) {
-        await this.ensureValidAccessToken()
-
         console.log(`started fetching playlist videos`)
 
         let data = {
@@ -362,8 +356,6 @@ class Youtube {
     }
 
     async removeVideosFromPlaylist(itemIdsToDelete) {
-        await this.ensureValidAccessToken()
-
         for (let itemId of itemIdsToDelete) {
             let data = {
                 id: itemId
@@ -388,6 +380,10 @@ class Youtube {
     async executeRequest(params) {
         let {endpoint, method, isAuthed, urlQueryData, bodyData} = params
 
+        if (isAuthed) {
+            await this.ensureValidAccessToken()
+        }
+
         let url
         if (urlQueryData) {
             let urlEndpoint = new URL(endpoint)
@@ -400,6 +396,25 @@ class Youtube {
         let requestParams = this.getRequestParams(method, isAuthed, bodyData)
         console.log(requestParams)
         return await fetch(url, requestParams)
+    }
+
+    getRequestParams(method, isAuthed, data) {
+        let params = {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        if (isAuthed) {
+            params.headers['Authorization'] = `Bearer ${this.accessToken}`
+        }
+
+        if (data) {
+            params.body = JSON.stringify(data)
+        }
+
+        return params
     }
 
     createAuthEndpoint() {
@@ -423,25 +438,6 @@ class Youtube {
 
     getExpirationDate(expiresIn) {
         return new Date(new Date().getTime() + expiresIn * 1000)
-    }
-
-    getRequestParams(method, isAuthed, data) {
-        let params = {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
-
-        if (isAuthed) {
-            params.headers['Authorization'] = `Bearer ${this.accessToken}`
-        }
-
-        if (data) {
-            params.body = JSON.stringify(data)
-        }
-
-        return params
     }
 }
 
