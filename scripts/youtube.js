@@ -143,8 +143,6 @@ class Youtube {
     }
 
     async fetchRefreshToken() {
-        let endpoint = 'https://oauth2.googleapis.com/token'
-
         let data = {
             code: this.authCode,
             client_id: this.CLIENT_ID,
@@ -153,10 +151,15 @@ class Youtube {
             grant_type: 'authorization_code'
         }
 
-        let params = this.getRequestParams('POST', false, data)
-        let response = await fetch(endpoint, params)
+        let response = await this.executeRequest({
+            endpoint: 'https://oauth2.googleapis.com/token',
+            method: 'POST',
+            isAuthed: false,
+            urlQueryData: null,
+            bodyData: data
+        })
+        
         let json = await response.json()
-
         console.log(json)
         
         let accessToken = json.access_token
@@ -183,8 +186,6 @@ class Youtube {
     }
 
     async refreshAccessToken() {
-        let endpoint = 'https://oauth2.googleapis.com/token'
-
         let data = {
             client_id: this.CLIENT_ID,
             client_secret: this.CLIENT_SECRET,
@@ -192,10 +193,15 @@ class Youtube {
             grant_type: 'refresh_token'
         }
 
-        let params = this.getRequestParams('POST', false, data)
-        let response = await fetch(endpoint, params)
+        let response = await this.executeRequest({
+            endpoint: 'https://oauth2.googleapis.com/token',
+            method: 'POST',
+            isAuthed: false,
+            urlQueryData: null,
+            bodyData: data
+        })
+        
         let json = await response.json()
-
         console.log(json)
         
         let accessToken = json.access_token
@@ -241,18 +247,19 @@ class Youtube {
     async fetchPlaylists() {
         await this.ensureValidAccessToken()
 
-        let endpoint = 'https://www.googleapis.com/youtube/v3/playlists'
-
         let data = {
             part: 'snippet',
             mine: true
         }
 
-        let url = new URL(endpoint)
-        url.search = new URLSearchParams(data)
-
-        let params = this.getRequestParams('GET', true, null)
-        let response = await fetch(url.toString(), params)
+        let response = await this.executeRequest({
+            endpoint: 'https://www.googleapis.com/youtube/v3/playlists',
+            method: 'GET',
+            isAuthed: true,
+            urlQueryData: data,
+            bodyData: null
+        })
+        
         let json = await response.json()
         let result = json.items.map((a) => {
             return {
@@ -270,9 +277,11 @@ class Youtube {
     async addToPlaylist(videoId, playlistId) {
         await this.ensureValidAccessToken()
 
-        let endpoint = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet'
+        let urlQueryData = {
+            part: 'snippet'
+        }
 
-        let data = {
+        let bodyData = {
             snippet: {
                 playlistId: playlistId,
                 resourceId: {
@@ -282,10 +291,15 @@ class Youtube {
             }
         }
 
-        let params = this.getRequestParams('POST', true, data)
-        let response = await fetch(endpoint, params)
-        let json = await response.json()
+        let response = await this.executeRequest({
+            endpoint: 'https://www.googleapis.com/youtube/v3/playlistItems',
+            method: 'POST',
+            isAuthed: true,
+            urlQueryData: urlQueryData,
+            bodyData: bodyData
+        })
 
+        let json = await response.json()
         console.log('video quicksaved')
         console.log(json)
 
@@ -302,24 +316,25 @@ class Youtube {
 
         console.log(`started fetching playlist videos`)
 
-        let endpoint = 'https://www.googleapis.com/youtube/v3/playlistItems'
-
         let data = {
             part: 'snippet',
             playlistId: playlistId,
             maxResults: 50
         }
 
-        let url = new URL(endpoint)
-        url.search = new URLSearchParams(data)
-
-        let params = this.getRequestParams('GET', true, null)
-
         let videos = []
         let pageIndex = 0
         while (true) {
             console.log(`fetching page ${pageIndex + 1}`)
-            let response = await fetch(url.toString(), params)
+
+            let response = await this.executeRequest({
+                endpoint: 'https://www.googleapis.com/youtube/v3/playlistItems',
+                method: 'GET',
+                isAuthed: true,
+                urlQueryData: data,
+                bodyData: null
+            })
+
             let json = await response.json()
 
             let pageItems = json.items.map((a) => {
@@ -338,7 +353,6 @@ class Youtube {
             }
 
             data.pageToken = nextPageToken
-            url.search = new URLSearchParams(data)
             pageIndex++
         }
 
@@ -350,18 +364,18 @@ class Youtube {
     async removeVideosFromPlaylist(itemIdsToDelete) {
         await this.ensureValidAccessToken()
 
-        let endpoint = 'https://www.googleapis.com/youtube/v3/playlistItems'
-
-        let url = new URL(endpoint)
-        let params = this.getRequestParams('DELETE', true, null)
-
         for (let itemId of itemIdsToDelete) {
             let data = {
                 id: itemId
             }
-            
-            url.search = new URLSearchParams(data)
-            let response = await fetch(url.toString(), params)
+
+            let response = await this.executeRequest({
+                endpoint: 'https://www.googleapis.com/youtube/v3/playlistItems',
+                method: 'DELETE',
+                isAuthed: true,
+                urlQueryData: data,
+                bodyData: null
+            })
 
             if (!response.ok) {
                 throw 'Bad response'
@@ -370,6 +384,23 @@ class Youtube {
     }
 
     // Helper
+
+    async executeRequest(params) {
+        let {endpoint, method, isAuthed, urlQueryData, bodyData} = params
+
+        let url
+        if (urlQueryData) {
+            let urlEndpoint = new URL(endpoint)
+            urlEndpoint.search = new URLSearchParams(urlQueryData)
+            url = urlEndpoint.toString()
+        } else {
+            url = endpoint
+        }
+
+        let requestParams = this.getRequestParams(method, isAuthed, bodyData)
+        console.log(requestParams)
+        return await fetch(url, requestParams)
+    }
 
     createAuthEndpoint() {
         let endpoint = 'https://accounts.google.com/o/oauth2/v2/auth'
