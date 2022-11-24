@@ -1,4 +1,5 @@
 import Youtube from './youtube.js'
+import Logger from './logger.js'
 
 class Storage {
 
@@ -30,9 +31,11 @@ class Storage {
         return await this.getValue(Storage.KEY_QUICKSAVE_PLAYLIST_ID)
     }
 
-    async getLog() {
+    async getLogger() {
         let serialized = await this.getValue(Storage.KEY_LOG)
-        return serialized != null ? serialized : ''
+        let log = serialized != null ? serialized : ''
+
+        return new Logger(log)
     }
 
     // Setters
@@ -46,7 +49,8 @@ class Storage {
         await this.setValue(Storage.KEY_QUICKSAVE_PLAYLIST_ID, quicksavePlaylistId)
     }
 
-    async setLog(log) {
+    async setLogger(logger) {
+        let log = logger.getLog()
         await this.setValue(Storage.KEY_LOG, log)
     }
 
