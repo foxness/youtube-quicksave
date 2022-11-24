@@ -392,21 +392,14 @@ class Youtube {
             await this.ensureValidAccessToken()
         }
 
-        let url
-        if (urlQueryData) {
-            let urlEndpoint = new URL(endpoint)
-            urlEndpoint.search = new URLSearchParams(urlQueryData)
-            url = urlEndpoint.toString()
-        } else {
-            url = endpoint
-        }
-
+        let url = this.addQueryToUrl(endpoint, urlQueryData)
         let params = this.getRequestParams(method, isAuthed, bodyData)
         console.log(params)
+
         return await fetch(url, params)
     }
 
-    getRequestParams(method, isAuthed, data) {
+    getRequestParams(method, isAuthed, bodyData) {
         let params = {
             method: method,
             headers: {
@@ -418,8 +411,8 @@ class Youtube {
             params.headers['Authorization'] = `Bearer ${this.accessToken}`
         }
 
-        if (data) {
-            params.body = JSON.stringify(data)
+        if (bodyData) {
+            params.body = JSON.stringify(bodyData)
         }
 
         return params
@@ -428,7 +421,7 @@ class Youtube {
     createAuthEndpoint() {
         let endpoint = 'https://accounts.google.com/o/oauth2/v2/auth'
 
-        let data = {
+        let urlQueryData = {
             client_id: this.CLIENT_ID,
             response_type: 'code',
             redirect_uri: this.REDIRECT_URI,
@@ -438,8 +431,16 @@ class Youtube {
             access_type: 'offline'
         }
 
+        return this.addQueryToUrl(endpoint, urlQueryData)
+    }
+
+    addQueryToUrl(endpoint, urlQueryData) {
+        if (!urlQueryData) {
+            return endpoint
+        }
+
         let url = new URL(endpoint)
-        url.search = new URLSearchParams(data)
+        url.search = new URLSearchParams(urlQueryData)
 
         return url.toString()
     }
