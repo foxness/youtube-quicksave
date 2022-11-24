@@ -14,7 +14,7 @@ class Youtube {
         this.CLIENT_SECRET = config.web.client_secret
         this.REDIRECT_URI = config.web.redirect_uris[0]
 
-        this.state = 'meet' + Math.random().toString(36).substring(2, 15)
+        this.state = 'meet' + this.getRandomState()
         this.authCode = null
         this.refreshToken = null
         this.accessToken = null
@@ -450,6 +450,10 @@ class Youtube {
 
     getExpirationDate(expiresIn) {
         return new Date(new Date().getTime() + expiresIn * 1000)
+    }
+
+    getRandomState() {
+        return Math.random().toString(36).substring(2, 15)
     }
 }
 
