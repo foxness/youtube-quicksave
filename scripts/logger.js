@@ -10,13 +10,19 @@ class Logger {
 
     logQuicksave(data) {
         let date = this.formatDate(new Date())
+        let logItem = `[${date}] `
+
         let videoId = data.videoId
         let videoTitle = data.videoTitle
         let playlistTitle = data.playlistTitle
-        
-        let logItem = `[${date}] [${videoId}: ${videoTitle}] was quicksaved to [${playlistTitle}]\n`
-        this.log += logItem
 
+        if (data.alreadyInPlaylist) {
+            logItem += `[ALREADY_IN_PLAYLIST] [${videoId}: ${videoTitle}] in [${playlistTitle}]\n`
+        } else {
+            logItem += `[${videoId}: ${videoTitle}] was quicksaved to [${playlistTitle}]\n`
+        }
+
+        this.log += logItem
         console.log(logItem)
     }
 
@@ -41,7 +47,7 @@ class Logger {
         minutes = minutes.padStart(2, '0')
         seconds = seconds.padStart(2, '0')
 
-        return `${year}/${month}${day} ${hours}:${minutes}:${seconds}`
+        return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`
     }
 }
 

@@ -167,7 +167,7 @@ class Youtube {
         let response = await this.executeRequest(requestParams)
         let json = await response.json()
         console.log(json)
-        
+
         let accessToken = json.access_token
         let expiresIn = json.expires_in
         let refreshToken = json.refresh_token
@@ -210,7 +210,7 @@ class Youtube {
         let response = await this.executeRequest(requestParams)
         let json = await response.json()
         console.log(json)
-        
+
         let accessToken = json.access_token
         let expiresIn = json.expires_in
         let scope = json.scope
@@ -281,7 +281,15 @@ class Youtube {
         console.log(result)
     }
 
-    async addToPlaylist(videoId, playlistId) {
+    async addToPlaylist(videoId, playlistId, preventDuplicate = true) {
+        if (preventDuplicate) {
+            let video = await this.checkIfPlaylistContainsVideo(playlistId, videoId)
+            if (video) {
+                video.alreadyInPlaylist = true
+                return video
+            }
+        }
+
         let urlQueryData = {
             part: 'snippet'
         }
@@ -366,32 +374,41 @@ class Youtube {
         return videos
     }
 
-    async removeVideosFromPlaylist(itemIdsToDelete) {
-        for (let itemId of itemIdsToDelete) {
-            let urlQueryData = {
-                id: itemId
-            }
+    async checkIfPlaylistContainsVideo(playlistId, videoId) {
+        let urlQueryData = {
+            part: 'snippet',
+            playlistId: playlistId,
+            videoId: videoId,
+            maxResults: 1
+        }
 
-            let requestParams = {
-                endpoint: this.ENDPOINT_PLAYLIST_ITEMS,
-                method: 'DELETE',
-                isAuthed: true,
-                urlQueryData: urlQueryData,
-                bodyData: null
-            }
+        let requestParams = {
+            endpoint: this.ENDPOINT_PLAYLIST_ITEMS,
+            method: 'GET',
+            isAuthed: true,
+            urlQueryData: urlQueryData,
+            bodyData: null
+        }
 
-            let response = await this.executeRequest(requestParams)
+        let response = await this.executeRequest(requestParams)
+        let json = await response.json()
 
-            if (!response.ok) {
-                throw 'Bad response'
-            }
+        if (!Array.isArray(json.items) || json.items.length == 0) {
+            return null
+        }
+
+        return {
+            videoId: videoId,
+            videoTitle: json.items[0].snippet.title,
+            playlistId: playlistId,
+            playlistTitle: this.playlists.find(p => p.id == playlistId).title
         }
     }
 
     // Helper
 
     async executeRequest(requestParams) {
-        let {endpoint, method, isAuthed, urlQueryData, bodyData} = requestParams
+        let { endpoint, method, isAuthed, urlQueryData, bodyData } = requestParams
 
         if (isAuthed) {
             await this.ensureValidAccessToken()
@@ -399,7 +416,6 @@ class Youtube {
 
         let url = this.addQueryToUrl(endpoint, urlQueryData)
         let params = this.getRequestParams(method, isAuthed, bodyData)
-        console.log(params)
 
         return await fetch(url, params)
     }
