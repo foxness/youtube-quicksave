@@ -10,13 +10,19 @@ class Logger {
 
     logQuicksave(data) {
         let date = this.formatDate(new Date())
-        let videoId = data.videoId
-        let videoTitle = data.videoTitle
-        let playlistTitle = data.playlistTitle
-        
-        let logItem = `[${date}] [${videoId}: ${videoTitle}] was quicksaved to [${playlistTitle}]\n`
-        this.log += logItem
 
+        let logItem
+        if (data == 'alreadyInPlaylist') {
+            logItem = `[${date}] alreadyInPlaylist\n`
+        } else {
+            let videoId = data.videoId
+            let videoTitle = data.videoTitle
+            let playlistTitle = data.playlistTitle
+            
+            logItem = `[${date}] [${videoId}: ${videoTitle}] was quicksaved to [${playlistTitle}]\n`
+        }
+
+        this.log += logItem
         console.log(logItem)
     }
 
