@@ -19,7 +19,7 @@ class Logger {
         if (data.alreadyInPlaylist) {
             logItem += `[ALREADY_IN_PLAYLIST] [${videoId}: ${videoTitle}] in [${playlistTitle}]\n`
         } else {
-            logItem += `[${videoId}: ${videoTitle}] was quicksaved to [${playlistTitle}]\n`
+            logItem += `[QS] [${videoId}: ${videoTitle}] was quicksaved to [${playlistTitle}]\n`
         }
 
         this.log += logItem
