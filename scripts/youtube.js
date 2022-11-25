@@ -282,8 +282,12 @@ class Youtube {
     }
 
     async addToPlaylist(videoId, playlistId, preventDuplicate = true) {
-        if (preventDuplicate && await this.checkIfPlaylistContainsVideo(playlistId, videoId)) {
-            return 'alreadyInPlaylist'
+        if (preventDuplicate) {
+            let video = await this.checkIfPlaylistContainsVideo(playlistId, videoId)
+            if (video) {
+                video.alreadyInPlaylist = true
+                return video
+            }
         }
 
         let urlQueryData = {
@@ -372,7 +376,7 @@ class Youtube {
 
     async checkIfPlaylistContainsVideo(playlistId, videoId) {
         let urlQueryData = {
-            part: 'contentDetails',
+            part: 'snippet',
             playlistId: playlistId,
             videoId: videoId,
             maxResults: 1
@@ -389,17 +393,16 @@ class Youtube {
         let response = await this.executeRequest(requestParams)
         let json = await response.json()
 
-        console.log(json)
+        if (!Array.isArray(json.items) || json.items.length == 0) {
+            return null
+        }
 
-        // let pageItems = json.items.map((a) => {
-        //     return {
-        //         itemId: a.id,
-        //         videoId: a.snippet.resourceId.videoId,
-        //         videoTitle: a.snippet.title
-        //     }
-        // })
-
-        return json.items.length > 0
+        return {
+            videoId: videoId,
+            videoTitle: json.items[0].snippet.title,
+            playlistId: playlistId,
+            playlistTitle: this.playlists.find(p => p.id == playlistId).title
+        }
     }
 
     // Helper
