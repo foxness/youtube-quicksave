@@ -18,7 +18,16 @@ async function handleMessage(message) {
         case 'quicksaveStart':
             return await showQuicksaveStart(quicksaveId)
         case 'quicksaveSuccess':
-            return await showQuicksaveSuccess(quicksaveId)
+            let quicksaveData = {
+                quicksaveId: quicksaveId,
+                videoId: message.videoId,
+                videoTitle: message.videoTitle,
+                playlistId: message.playlistId,
+                playlistTitle: message.playlistTitle,
+                alreadyInPlaylist: message.alreadyInPlaylist
+            }
+
+            return await showQuicksaveSuccess(quicksaveData)
     }
 
     return 'fail'
@@ -33,14 +42,30 @@ async function showQuicksaveStart(quicksaveId) {
     quicksaveToasts[quicksaveId] = $.toast(toastParams)
 }
 
-async function showQuicksaveSuccess(quicksaveId) {
-    let toastParams = {
-        text: 'success!'
+async function showQuicksaveSuccess(quicksaveData) {
+    let {
+        quicksaveId,
+        videoId,
+        videoTitle,
+        playlistId,
+        playlistTitle,
+        alreadyInPlaylist
+    } = quicksaveData
+
+    let text
+    if (alreadyInPlaylist) {
+        text = `[${videoTitle}] is already in [${playlistTitle}]\n`
+    } else {
+        text = `[${videoTitle}] was quicksaved to [${playlistTitle}]\n`
     }
-    
+
+    let toastParams = {
+        text: text
+    }
+
     let quicksaveToast = quicksaveToasts[quicksaveId]
     quicksaveToast.update(toastParams)
-    await sleep(1000)
+    await sleep(10000)
     quicksaveToast.reset()
 
     delete quicksaveToasts[quicksaveId]
