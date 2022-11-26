@@ -70,6 +70,11 @@ if (typeof Object.create !== 'function') {
                 if (this.options.heading) {
                     _toastContent += '<h2 class="jq-toast-heading">' + this.options.heading + '</h2>';
                 };
+
+                if (this.options.icon == 'loading') {
+                    _toastContent += '<div class="loading-spinner-outer"><div class="loading-spinner-inner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>';
+                }
+
                 _toastContent += this.options.text;
             }
 
@@ -88,11 +93,15 @@ if (typeof Object.create !== 'function') {
             }
 
             if (this.options.icon !== false) {
-                this._toastEl.addClass('jq-has-icon');
+                if (this.options.icon == 'loading') {
+                    this._toastEl.addClass('jq-has-loading-icon');
+                } else {
+                    this._toastEl.addClass('jq-has-icon');
 
-                if ($.inArray(this.options.icon, this._defaultIcons) !== -1) {
-                    this._toastEl.addClass('jq-icon-' + this.options.icon);
-                };
+                    if ($.inArray(this.options.icon, this._defaultIcons) !== -1) {
+                        this._toastEl.addClass('jq-icon-' + this.options.icon);
+                    };
+                }
             };
 
             if (this.options.class !== false) {
