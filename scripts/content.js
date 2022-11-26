@@ -1,3 +1,5 @@
+let quicksaveToast = null
+
 function main() {
     setupListeners()
 }
@@ -12,14 +14,35 @@ function setupListeners() {
 async function handleMessage(message) {
     switch (message.kind) {
         case 'quicksaveStart':
-            return await showQuicksaveIndicator()
+            return await showQuicksaveStart()
+        case 'quicksaveSuccess':
+            return await showQuicksaveSuccess()
     }
 
     return 'fail'
 }
 
-async function showQuicksaveIndicator() {
-    $.toast('showing quicksave indicator...')
+async function showQuicksaveStart() {
+    let toastParams = {
+        text: 'quicksaving...',
+        hideAfter: false
+    }
+
+    quicksaveToast = $.toast(toastParams)
+}
+
+async function showQuicksaveSuccess() {
+    let toastParams = {
+        text: 'success!'
+    }
+    
+    quicksaveToast.update(toastParams)
+    await sleep(1000)
+    quicksaveToast.reset()
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 main()

@@ -52,7 +52,7 @@ async function handleCommand(command) {
     }
 
     let manager = await getQuicksaveManager()
-    await manager.indicator()
+    await manager.quicksave()
 }
 
 async function getQuicksaveManager() {

@@ -46,16 +46,20 @@ class QuicksaveManager {
     }
 
     async quicksave() {
-        let currentUrl = (await this.getCurrentTab()).url
-        let data = await this.youtube.tryAddToPlaylist(currentUrl, this.quicksavePlaylistId)
-        await this.serializeYoutube()
-        await this.logQuicksave(data)
-    }
+        let currentTab = await this.getCurrentTab()
 
-    async indicator() {
-        let currentTabId = (await this.getCurrentTab()).id
         let message = { kind: 'quicksaveStart' }
-        let response = await chrome.tabs.sendMessage(currentTabId, message)
+        chrome.tabs.sendMessage(currentTab.id, message) // intentionally no await
+
+        let sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+        await sleep(3000)
+        
+        // let data = await this.youtube.tryAddToPlaylist(currentTab.url, this.quicksavePlaylistId)
+        // await this.serializeYoutube()
+        // await this.logQuicksave(data)
+
+        message = { kind: 'quicksaveSuccess' }
+        chrome.tabs.sendMessage(currentTab.id, message) // intentionally no await
     }
 
     async deduplicate() {
