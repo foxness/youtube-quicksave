@@ -37,11 +37,11 @@
             ],
             "js": [
                 "thirdParty/jquery-3.6.1.min.js",
-                "thirdParty/jquery.toast.min.js",
+                "thirdParty/jquery.toast.js",
                 "scripts/content.js"
             ],
             "css": [
-                "thirdParty/jquery.toast.min.css"
+                "thirdParty/jquery.toast.css"
             ]
         }
     ]
