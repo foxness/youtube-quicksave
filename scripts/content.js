@@ -1,4 +1,4 @@
-let quicksaveToast = null
+let quicksaveToasts = {}
 
 function main() {
     setupListeners()
@@ -12,33 +12,38 @@ function setupListeners() {
 }
 
 async function handleMessage(message) {
+    let quicksaveId = message.quicksaveId
+
     switch (message.kind) {
         case 'quicksaveStart':
-            return await showQuicksaveStart()
+            return await showQuicksaveStart(quicksaveId)
         case 'quicksaveSuccess':
-            return await showQuicksaveSuccess()
+            return await showQuicksaveSuccess(quicksaveId)
     }
 
     return 'fail'
 }
 
-async function showQuicksaveStart() {
+async function showQuicksaveStart(quicksaveId) {
     let toastParams = {
         text: 'quicksaving...',
         hideAfter: false
     }
 
-    quicksaveToast = $.toast(toastParams)
+    quicksaveToasts[quicksaveId] = $.toast(toastParams)
 }
 
-async function showQuicksaveSuccess() {
+async function showQuicksaveSuccess(quicksaveId) {
     let toastParams = {
         text: 'success!'
     }
     
+    let quicksaveToast = quicksaveToasts[quicksaveId]
     quicksaveToast.update(toastParams)
     await sleep(1000)
     quicksaveToast.reset()
+
+    delete quicksaveToasts[quicksaveId]
 }
 
 function sleep(ms) {

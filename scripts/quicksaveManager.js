@@ -46,19 +46,20 @@ class QuicksaveManager {
     }
 
     async quicksave() {
+        let quicksaveId = this.getRandomId()
         let currentTab = await this.getCurrentTab()
 
-        let message = { kind: 'quicksaveStart' }
+        let message = { kind: 'quicksaveStart', quicksaveId: quicksaveId }
         chrome.tabs.sendMessage(currentTab.id, message) // intentionally no await
 
-        let sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
-        await sleep(3000)
+        // let sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+        // await sleep(3000)
         
-        // let data = await this.youtube.tryAddToPlaylist(currentTab.url, this.quicksavePlaylistId)
-        // await this.serializeYoutube()
-        // await this.logQuicksave(data)
+        let data = await this.youtube.tryAddToPlaylist(currentTab.url, this.quicksavePlaylistId)
+        await this.serializeYoutube()
+        await this.logQuicksave(data)
 
-        message = { kind: 'quicksaveSuccess' }
+        message = { kind: 'quicksaveSuccess', quicksaveId: quicksaveId }
         chrome.tabs.sendMessage(currentTab.id, message) // intentionally no await
     }
 
@@ -139,6 +140,10 @@ class QuicksaveManager {
         let tab = (await chrome.tabs.query(queryOptions))[0]
 
         return tab
+    }
+
+    getRandomId() {
+        return Math.random().toString(36).substring(2, 15)
     }
 }
 
