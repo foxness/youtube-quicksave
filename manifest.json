@@ -32,12 +32,16 @@
     },
     "content_scripts": [
         {
-            "js": [
-                "thirdParty/jquery-3.6.1.slim.min.js",
-                "scripts/content.js"
-            ],
             "matches": [
                 "https://www.youtube.com/watch*"
+            ],
+            "js": [
+                "thirdParty/jquery-3.6.1.min.js",
+                "thirdParty/jquery.toast.min.js",
+                "scripts/content.js"
+            ],
+            "css": [
+                "thirdParty/jquery.toast.min.css"
             ]
         }
     ]

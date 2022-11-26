@@ -19,7 +19,7 @@ async function handleMessage(message) {
 }
 
 async function showQuicksaveIndicator() {
-    console.log('showing quicksave indicator...')
+    $.toast('showing quicksave indicator...')
 }
 
 main()
