@@ -54,6 +54,18 @@ if (typeof Object.create !== 'function') {
                 _toastContent += '<span class="close-jq-toast-single">&times;</span>';
             };
 
+            if (this.options.icon !== false) {
+                if ($.inArray(this.options.icon, this._defaultIcons) !== -1) {
+                    if (this.options.icon == 'loading') {
+                        _toastContent += '<div class="jq-toast-icon jq-toast-icon-loading"><div class="loading-spinner-inner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>';
+                    } else {
+                        _toastContent += `<div class="jq-toast-icon jg-simple-icon jq-toast-icon-${this.options.icon}"></div>`;
+                    }
+                    
+                    this._toastEl.addClass('jq-icon-' + this.options.icon);
+                };
+            };
+
             if (this.options.text instanceof Array) {
 
                 if (this.options.heading) {
@@ -71,11 +83,7 @@ if (typeof Object.create !== 'function') {
                     _toastContent += '<h2 class="jq-toast-heading">' + this.options.heading + '</h2>';
                 };
 
-                if (this.options.icon == 'loading') {
-                    _toastContent += '<div class="loading-spinner-outer"><div class="loading-spinner-inner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>';
-                }
-
-                _toastContent += this.options.text;
+                _toastContent += `<span class="jq-toast-text">${this.options.text}</span>`;
             }
 
             this._toastEl.html(_toastContent);
@@ -91,18 +99,6 @@ if (typeof Object.create !== 'function') {
             if (this.options.textAlign) {
                 this._toastEl.css('text-align', this.options.textAlign);
             }
-
-            if (this.options.icon !== false) {
-                if (this.options.icon == 'loading') {
-                    this._toastEl.addClass('jq-has-loading-icon');
-                } else {
-                    this._toastEl.addClass('jq-has-icon');
-
-                    if ($.inArray(this.options.icon, this._defaultIcons) !== -1) {
-                        this._toastEl.addClass('jq-icon-' + this.options.icon);
-                    };
-                }
-            };
 
             if (this.options.class !== false) {
                 this._toastEl.addClass(this.options.class)
