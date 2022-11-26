@@ -32,7 +32,7 @@ class Storage {
     }
 
     async getLogger() {
-        let serialized = await this.getValue(Storage.KEY_LOG)
+        let serialized = await this.getValue(Storage.KEY_LOG, true)
         let log = serialized != null ? serialized : ''
 
         return new Logger(log)
@@ -51,17 +51,19 @@ class Storage {
 
     async setLogger(logger) {
         let log = logger.getLog()
-        await this.setValue(Storage.KEY_LOG, log)
+        await this.setValue(Storage.KEY_LOG, log, true)
     }
 
     // Private methods
 
-    async getValue(key) {
-        return (await chrome.storage.sync.get([key]))[key]
+    async getValue(key, useLocal = false) {
+        let storage = useLocal ? chrome.storage.local : chrome.storage.sync
+        return (await storage.get([key]))[key]
     }
 
-    async setValue(key, value) {
-        await chrome.storage.sync.set({ [key]: value })
+    async setValue(key, value, useLocal = false) {
+        let storage = useLocal ? chrome.storage.local : chrome.storage.sync
+        await storage.set({ [key]: value })
     }
 }
 
