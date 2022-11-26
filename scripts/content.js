@@ -37,12 +37,9 @@ async function handleMessage(message) {
 
 async function showQuicksaveStart(quicksaveId) {
     let toastParams = {
-        text: styledToastText('Quicksaving...'),
-        icon: 'info',
-        position: {
-            left: 10,
-            top: 9
-        },
+        text: 'Quicksaving...',
+        icon: 'loading',
+        position: 'top-left',
         hideAfter: false
     }
 
@@ -56,7 +53,7 @@ async function showQuicksaveSuccess(quicksaveData) {
 
     quicksaveToast.update(toastParams)
     await sleep(DURATION_TOAST)
-    quicksaveToast.reset()
+    quicksaveToast.close()
 
     delete quicksaveToasts[quicksaveId]
 }
@@ -73,10 +70,10 @@ function getSecondaryToastParams(quicksaveData) {
 
     let text, icon
     if (alreadyInPlaylist) {
-        text = styledToastText(`Already in <b>${playlistTitle}</b>`)
+        text = `Already in <b>${playlistTitle}</b>`
         icon = 'warning'
     } else {
-        text = styledToastText(`Quicksaved to <b>${playlistTitle}</b>`)
+        text = `Quicksaved to <b>${playlistTitle}</b>`
         icon = 'success'
     }
 
@@ -90,10 +87,6 @@ function getSecondaryToastParams(quicksaveData) {
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
-}
-
-function styledToastText(text) {
-    return `<p style="font-size:2rem">${text}</p>`
 }
 
 main()

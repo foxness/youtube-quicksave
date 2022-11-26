@@ -14,7 +14,7 @@ if (typeof Object.create !== 'function') {
     var Toast = {
 
         _positionClasses: ['bottom-left', 'bottom-right', 'top-right', 'top-left', 'bottom-center', 'top-center', 'mid-center'],
-        _defaultIcons: ['success', 'error', 'info', 'warning'],
+        _defaultIcons: ['loading', 'success', 'error', 'info', 'warning'],
 
         init: function (options, elem) {
             this.prepareOptions(options, $.toast.options);
