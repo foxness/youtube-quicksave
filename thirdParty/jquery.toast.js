@@ -43,9 +43,9 @@ if (typeof Object.create !== 'function') {
 
             var _toastContent = '';
 
-            this._toastEl = this._toastEl || $('<div></div>', {
-                class: 'jq-toast-single'
-            });
+            this._toastEl = this._toastEl || $('<div></div>');
+            this._toastEl.removeClass()
+            this._toastEl.addClass('jq-toast-single')
 
             // For the loader on top
             _toastContent += '<span class="jq-toast-loader"></span>';

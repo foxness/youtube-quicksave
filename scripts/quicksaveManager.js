@@ -53,7 +53,7 @@ class QuicksaveManager {
         chrome.tabs.sendMessage(currentTab.id, message) // intentionally no await
 
         let sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
-        await sleep(60000)
+        await sleep(5000)
         
         let quicksaveData = await this.youtube.tryAddToPlaylist(currentTab.url, this.quicksavePlaylistId)
         await this.serializeYoutube()
