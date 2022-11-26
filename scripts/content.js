@@ -1,8 +1,25 @@
 function main() {
-    const shareButton = $('ytd-segmented-like-dislike-button-renderer').eq(0).next().children().eq(0).children().eq(0)
-    // shareButton.click()
+    setupListeners()
 }
 
-$(window).on('load', function() {
-    setTimeout(main, 1000)
-})
+function setupListeners() {
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        handleMessage(request).then(sendResponse)
+        return true // return true to indicate we want to send a response asynchronously
+    })
+}
+
+async function handleMessage(message) {
+    switch (message.kind) {
+        case 'quicksaveStart':
+            return await showQuicksaveIndicator()
+    }
+
+    return 'fail'
+}
+
+async function showQuicksaveIndicator() {
+    console.log('showing quicksave indicator...')
+}
+
+main()

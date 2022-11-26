@@ -46,10 +46,16 @@ class QuicksaveManager {
     }
 
     async quicksave() {
-        let currentUrl = await this.getCurrentTabUrl()
+        let currentUrl = (await this.getCurrentTab()).url
         let data = await this.youtube.tryAddToPlaylist(currentUrl, this.quicksavePlaylistId)
         await this.serializeYoutube()
         await this.logQuicksave(data)
+    }
+
+    async indicator() {
+        let currentTabId = (await this.getCurrentTab()).id
+        let message = { kind: 'quicksaveStart' }
+        let response = await chrome.tabs.sendMessage(currentTabId, message)
     }
 
     async deduplicate() {
@@ -124,10 +130,11 @@ class QuicksaveManager {
         await this.serializeLogger()
     }
 
-    async getCurrentTabUrl() {
+    async getCurrentTab() {
         let queryOptions = { active: true, lastFocusedWindow: true }
-        let [tab] = await chrome.tabs.query(queryOptions)
-        return tab.url
+        let tab = (await chrome.tabs.query(queryOptions))[0]
+
+        return tab
     }
 }
 
