@@ -35,7 +35,8 @@ async function handleMessage(message) {
 
 async function showQuicksaveStart(quicksaveId) {
     let toastParams = {
-        text: 'quicksaving...',
+        text: 'Quicksaving...',
+        icon: 'info',
         hideAfter: false
     }
 
@@ -52,15 +53,18 @@ async function showQuicksaveSuccess(quicksaveData) {
         alreadyInPlaylist
     } = quicksaveData
 
-    let text
+    let text, icon
     if (alreadyInPlaylist) {
-        text = `[${videoTitle}] is already in [${playlistTitle}]\n`
+        text = `Already in [${playlistTitle}]`
+        icon = 'warning'
     } else {
-        text = `[${videoTitle}] was quicksaved to [${playlistTitle}]\n`
+        text = `Quicksaved to [${playlistTitle}]`
+        icon = 'success'
     }
 
     let toastParams = {
-        text: text
+        text: text,
+        icon: icon
     }
 
     let quicksaveToast = quicksaveToasts[quicksaveId]
