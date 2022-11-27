@@ -14,14 +14,12 @@ function setupListeners() {
 }
 
 async function handleMessage(message) {
-    let quicksaveId = message.quicksaveId
-
     switch (message.kind) {
         case 'quicksaveStart':
-            return await showQuicksaveStart(quicksaveId)
+            return await showQuicksaveStart(message.quicksaveId)
         case 'quicksaveSuccess':
             let quicksaveData = {
-                quicksaveId: quicksaveId,
+                quicksaveId: message.quicksaveId,
                 videoId: message.videoId,
                 videoTitle: message.videoTitle,
                 playlistId: message.playlistId,
@@ -30,6 +28,8 @@ async function handleMessage(message) {
             }
 
             return await showQuicksaveSuccess(quicksaveData)
+        case 'getHoverUrl':
+            return await getHoverUrl()
     }
 
     return 'fail'
@@ -83,6 +83,13 @@ function getSecondaryToastParams(quicksaveData) {
     }
 
     return toastParams
+}
+
+async function getHoverUrl() {
+    let url = 'testy'
+
+    alert(url)
+    return url
 }
 
 function sleep(ms) {

@@ -23,11 +23,17 @@
         "type": "module"
     },
     "commands": {
-        "quicksave-command": {
+        "command-quicksave-current": {
             "suggested_key": {
                 "default": "Alt+Q"
             },
             "description": "Quicksave current video"
+        },
+        "command-quicksave-hover": {
+            "suggested_key": {
+                "default": "Alt+W"
+            },
+            "description": "Quicksave video under cursor"
         }
     },
     "content_scripts": [

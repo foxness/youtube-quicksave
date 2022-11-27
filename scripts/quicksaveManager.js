@@ -45,7 +45,8 @@ class QuicksaveManager {
         return result
     }
 
-    async quicksave() {
+    async quicksaveCurrent() {
+        console.log('quicksaveCurrent()')
         let quicksaveId = this.getRandomId()
         let currentTab = await this.getCurrentTab()
 
@@ -61,6 +62,27 @@ class QuicksaveManager {
 
         message = { kind: 'quicksaveSuccess', quicksaveId: quicksaveId, ...quicksaveData }
         chrome.tabs.sendMessage(currentTab.id, message) // intentionally no await
+    }
+
+    async quicksaveHover() {
+        console.log('quicksaveHover()')
+        // let quicksaveId = this.getRandomId()
+        let currentTab = await this.getCurrentTab()
+
+        let message = { kind: 'getHoverUrl' }
+        let hoverUrl = await chrome.tabs.sendMessage(currentTab.id, message)
+
+        console.log(`got hover url: ${hoverUrl})`)
+
+        // let sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+        // await sleep(2000)
+        
+        // let quicksaveData = await this.youtube.tryAddToPlaylist(currentTab.url, this.quicksavePlaylistId)
+        // await this.serializeYoutube()
+        // await this.logQuicksave(quicksaveData)
+
+        // message = { kind: 'quicksaveSuccess', quicksaveId: quicksaveId, ...quicksaveData }
+        // chrome.tabs.sendMessage(currentTab.id, message) // intentionally no await
     }
 
     async deduplicate() {
