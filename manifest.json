@@ -23,17 +23,23 @@
         "type": "module"
     },
     "commands": {
-        "quicksave-command": {
+        "command-quicksave-current": {
             "suggested_key": {
                 "default": "Alt+Q"
             },
             "description": "Quicksave current video"
+        },
+        "command-quicksave-hover": {
+            "suggested_key": {
+                "default": "Alt+W"
+            },
+            "description": "Quicksave video under cursor"
         }
     },
     "content_scripts": [
         {
             "matches": [
-                "https://www.youtube.com/watch*"
+                "https://www.youtube.com/*"
             ],
             "js": [
                 "thirdParty/jquery-3.6.1.min.js",

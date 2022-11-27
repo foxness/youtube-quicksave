@@ -45,22 +45,19 @@ class QuicksaveManager {
         return result
     }
 
-    async quicksave() {
-        let quicksaveId = this.getRandomId()
+    async quicksaveCurrent() {
         let currentTab = await this.getCurrentTab()
-
-        let message = { kind: 'quicksaveStart', quicksaveId: quicksaveId }
-        chrome.tabs.sendMessage(currentTab.id, message) // intentionally no await
-
-        // let sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
-        // await sleep(2000)
+        let url = currentTab.url
         
-        let quicksaveData = await this.youtube.tryAddToPlaylist(currentTab.url, this.quicksavePlaylistId)
-        await this.serializeYoutube()
-        await this.logQuicksave(quicksaveData)
+        await this.tryQuicksave(currentTab, url)
+    }
 
-        message = { kind: 'quicksaveSuccess', quicksaveId: quicksaveId, ...quicksaveData }
-        chrome.tabs.sendMessage(currentTab.id, message) // intentionally no await
+    async quicksaveHover() {
+        let currentTab = await this.getCurrentTab()
+        let message = { kind: 'getHoverUrl' }
+        let hoverUrl = await chrome.tabs.sendMessage(currentTab.id, message)
+
+        await this.tryQuicksave(currentTab, hoverUrl)
     }
 
     async deduplicate() {
@@ -124,6 +121,31 @@ class QuicksaveManager {
     }
 
     // Misc
+
+    async tryQuicksave(tab, url) {
+        if (!url) {
+            return
+        }
+
+        let videoId = await this.youtube.tryGetVideoId(url)
+        if (!videoId) {
+            return
+        }
+
+        let quicksaveId = this.getRandomId()
+        let message = { kind: 'quicksaveStart', quicksaveId: quicksaveId }
+        chrome.tabs.sendMessage(tab.id, message) // intentionally no await
+
+        // let sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+        // await sleep(2000)
+        
+        let quicksaveData = await this.youtube.addToPlaylist(videoId, this.quicksavePlaylistId)
+        await this.serializeYoutube()
+        await this.logQuicksave(quicksaveData)
+
+        message = { kind: 'quicksaveDone', quicksaveId: quicksaveId, ...quicksaveData }
+        chrome.tabs.sendMessage(tab.id, message) // intentionally no await
+    }
 
     async setupQuicksavePlaylistIdUsingRecent() {
         this.quicksavePlaylistId = this.youtube.playlists[0].id

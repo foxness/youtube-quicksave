@@ -27,7 +27,7 @@ async function handleMessage(request) {
         case 'signOut':
             return await manager.signOut()
         case 'quicksave':
-            return await manager.quicksave()
+            return await manager.quicksaveCurrent()
         case 'dewIt':
             return await manager.deduplicate()
         case 'getPlaylists':
@@ -47,12 +47,16 @@ async function handleMessage(request) {
 }
 
 async function handleCommand(command) {
-    if (command != 'quicksave-command') {
-        return
-    }
-
     let manager = await getQuicksaveManager()
-    await manager.quicksave()
+
+    switch (command) {
+        case 'command-quicksave-current':
+            manager.quicksaveCurrent() // intentionally no await
+            break
+        case 'command-quicksave-hover':
+            manager.quicksaveHover() // intentionally no await
+            break
+    }
 }
 
 async function getQuicksaveManager() {

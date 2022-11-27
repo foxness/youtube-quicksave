@@ -1,6 +1,8 @@
 let DURATION_TOAST = 3000
 
 let quicksaveToasts = {}
+let mouseX = null
+let mouseY = null
 
 function main() {
     setupListeners()
@@ -11,25 +13,23 @@ function setupListeners() {
         handleMessage(request).then(sendResponse)
         return true // return true to indicate we want to send a response asynchronously
     })
+
+    $(document).mousemove((event) => {
+        mouseX = event.clientX
+        mouseY = event.clientY
+    })
 }
 
 async function handleMessage(message) {
-    let quicksaveId = message.quicksaveId
-
     switch (message.kind) {
         case 'quicksaveStart':
-            return await showQuicksaveStart(quicksaveId)
-        case 'quicksaveSuccess':
-            let quicksaveData = {
-                quicksaveId: quicksaveId,
-                videoId: message.videoId,
-                videoTitle: message.videoTitle,
-                playlistId: message.playlistId,
-                playlistTitle: message.playlistTitle,
-                alreadyInPlaylist: message.alreadyInPlaylist
-            }
-
-            return await showQuicksaveSuccess(quicksaveData)
+            return await showQuicksaveStart(message.quicksaveId)
+        case 'quicksaveDone':
+            let quicksaveData = message
+            delete quicksaveData.kind
+            return await showQuicksaveDone(quicksaveData)
+        case 'getHoverUrl':
+            return await getHoverUrl()
     }
 
     return 'fail'
@@ -46,7 +46,7 @@ async function showQuicksaveStart(quicksaveId) {
     quicksaveToasts[quicksaveId] = $.toast(toastParams)
 }
 
-async function showQuicksaveSuccess(quicksaveData) {
+async function showQuicksaveDone(quicksaveData) {
     let quicksaveId = quicksaveData.quicksaveId
     let toastParams = getSecondaryToastParams(quicksaveData)
     let quicksaveToast = quicksaveToasts[quicksaveId]
@@ -59,21 +59,19 @@ async function showQuicksaveSuccess(quicksaveData) {
 }
 
 function getSecondaryToastParams(quicksaveData) {
-    let {
-        quicksaveId,
-        videoId,
-        videoTitle,
-        playlistId,
-        playlistTitle,
-        alreadyInPlaylist
-    } = quicksaveData
-
     let text, icon
-    if (alreadyInPlaylist) {
-        text = `Already in <b>${playlistTitle}</b>`
-        icon = 'warning'
+    if (quicksaveData.error) {
+        switch (quicksaveData.error) {
+            case 'alreadyInPlaylist':
+                text = `Already in <b>${quicksaveData.playlistTitle}</b>`
+                icon = 'warning'
+                break
+            default:
+                console.log(quicksaveData)
+                throw 'Unexpected error'
+        }
     } else {
-        text = `Quicksaved to <b>${playlistTitle}</b>`
+        text = `Quicksaved to <b>${quicksaveData.playlistTitle}</b>`
         icon = 'success'
     }
 
@@ -83,6 +81,15 @@ function getSecondaryToastParams(quicksaveData) {
     }
 
     return toastParams
+}
+
+async function getHoverUrl() {
+    let url = document.elementsFromPoint(mouseX, mouseY)
+        .filter(e => e.tagName.toLowerCase() == 'a')
+        .map(a => a.href)
+        [0]
+        
+    return url
 }
 
 function sleep(ms) {

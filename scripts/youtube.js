@@ -9,6 +9,7 @@ class Youtube {
         this.ENDPOINT_PLAYLIST_ITEMS = 'https://www.googleapis.com/youtube/v3/playlistItems'
 
         this.SCOPE = 'https://www.googleapis.com/auth/youtube'
+        this.URL_WATCH_PAGE = 'https://www.youtube.com/watch'
 
         this.CLIENT_ID = config.web.client_id
         this.CLIENT_SECRET = config.web.client_secret
@@ -239,16 +240,15 @@ class Youtube {
         await this.refreshAccessToken()
     }
 
-    async tryAddToPlaylist(url, playlistId) {
-        let YOUTUBE_VIDEO_URL = 'https://www.youtube.com/watch'
-        if (!url.startsWith(YOUTUBE_VIDEO_URL)) {
-            return
+    async tryGetVideoId(url) {
+        if (!url.startsWith(this.URL_WATCH_PAGE)) {
+            return null
         }
 
         let query = new URL(url).searchParams
         let videoId = query.get('v')
 
-        return await this.addToPlaylist(videoId, playlistId)
+        return videoId
     }
 
     async fetchPlaylists() {
@@ -285,7 +285,7 @@ class Youtube {
         if (preventDuplicate) {
             let video = await this.checkIfPlaylistContainsVideo(playlistId, videoId)
             if (video) {
-                video.alreadyInPlaylist = true
+                video.error = 'alreadyInPlaylist'
                 return video
             }
         }
@@ -314,8 +314,6 @@ class Youtube {
 
         let response = await this.executeRequest(requestParams)
         let json = await response.json()
-        console.log('video quicksaved')
-        console.log(json)
 
         return {
             videoId: videoId,
