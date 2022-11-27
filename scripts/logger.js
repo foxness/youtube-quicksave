@@ -16,8 +16,16 @@ class Logger {
         let videoTitle = data.videoTitle
         let playlistTitle = data.playlistTitle
 
-        if (data.alreadyInPlaylist) {
-            logItem += `[ALREADY_IN_PLAYLIST] [${videoId}: ${videoTitle}] in [${playlistTitle}]\n`
+        if (data.error) {
+            switch (data.error) {
+                case 'alreadyInPlaylist':
+                    logItem += `[ALREADY_IN_PLAYLIST] [${videoId}: ${videoTitle}] in [${playlistTitle}]\n`
+                    break
+                default:
+                    logItem += `[UNEXPECTED_ERROR] ${data.error}\n`
+                    console.log(data)
+                    throw 'Unexpected error'
+            }
         } else {
             logItem += `[QS] [${videoId}: ${videoTitle}] was quicksaved to [${playlistTitle}]\n`
         }

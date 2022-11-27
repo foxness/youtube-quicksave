@@ -123,6 +123,15 @@ class QuicksaveManager {
     // Misc
 
     async tryQuicksave(tab, url) {
+        if (!url) {
+            return
+        }
+
+        let videoId = await this.youtube.tryGetVideoId(url)
+        if (!videoId) {
+            return
+        }
+
         let quicksaveId = this.getRandomId()
         let message = { kind: 'quicksaveStart', quicksaveId: quicksaveId }
         chrome.tabs.sendMessage(tab.id, message) // intentionally no await
@@ -130,11 +139,11 @@ class QuicksaveManager {
         // let sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
         // await sleep(2000)
         
-        let quicksaveData = await this.youtube.tryAddToPlaylist(url, this.quicksavePlaylistId)
+        let quicksaveData = await this.youtube.addToPlaylist(videoId, this.quicksavePlaylistId)
         await this.serializeYoutube()
         await this.logQuicksave(quicksaveData)
 
-        message = { kind: 'quicksaveSuccess', quicksaveId: quicksaveId, ...quicksaveData }
+        message = { kind: 'quicksaveDone', quicksaveId: quicksaveId, ...quicksaveData }
         chrome.tabs.sendMessage(tab.id, message) // intentionally no await
     }
 

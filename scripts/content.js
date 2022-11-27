@@ -24,17 +24,10 @@ async function handleMessage(message) {
     switch (message.kind) {
         case 'quicksaveStart':
             return await showQuicksaveStart(message.quicksaveId)
-        case 'quicksaveSuccess':
-            let quicksaveData = {
-                quicksaveId: message.quicksaveId,
-                videoId: message.videoId,
-                videoTitle: message.videoTitle,
-                playlistId: message.playlistId,
-                playlistTitle: message.playlistTitle,
-                alreadyInPlaylist: message.alreadyInPlaylist
-            }
-
-            return await showQuicksaveSuccess(quicksaveData)
+        case 'quicksaveDone':
+            let quicksaveData = message
+            delete quicksaveData.kind
+            return await showQuicksaveDone(quicksaveData)
         case 'getHoverUrl':
             return await getHoverUrl()
     }
@@ -53,7 +46,7 @@ async function showQuicksaveStart(quicksaveId) {
     quicksaveToasts[quicksaveId] = $.toast(toastParams)
 }
 
-async function showQuicksaveSuccess(quicksaveData) {
+async function showQuicksaveDone(quicksaveData) {
     let quicksaveId = quicksaveData.quicksaveId
     let toastParams = getSecondaryToastParams(quicksaveData)
     let quicksaveToast = quicksaveToasts[quicksaveId]
@@ -66,21 +59,19 @@ async function showQuicksaveSuccess(quicksaveData) {
 }
 
 function getSecondaryToastParams(quicksaveData) {
-    let {
-        quicksaveId,
-        videoId,
-        videoTitle,
-        playlistId,
-        playlistTitle,
-        alreadyInPlaylist
-    } = quicksaveData
-
     let text, icon
-    if (alreadyInPlaylist) {
-        text = `Already in <b>${playlistTitle}</b>`
-        icon = 'warning'
+    if (quicksaveData.error) {
+        switch (quicksaveData.error) {
+            case 'alreadyInPlaylist':
+                text = `Already in <b>${quicksaveData.playlistTitle}</b>`
+                icon = 'warning'
+                break
+            default:
+                console.log(quicksaveData)
+                throw 'Unexpected error'
+        }
     } else {
-        text = `Quicksaved to <b>${playlistTitle}</b>`
+        text = `Quicksaved to <b>${quicksaveData.playlistTitle}</b>`
         icon = 'success'
     }
 
