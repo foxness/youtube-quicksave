@@ -72,7 +72,7 @@ class QuicksaveManager {
         let message = { kind: 'getHoverUrl' }
         let hoverUrl = await chrome.tabs.sendMessage(currentTab.id, message)
 
-        console.log(`got hover url: ${hoverUrl})`)
+        console.log(`got hover url: ${hoverUrl}`)
 
         // let sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
         // await sleep(2000)

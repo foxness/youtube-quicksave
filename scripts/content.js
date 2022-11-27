@@ -1,6 +1,8 @@
 let DURATION_TOAST = 3000
 
 let quicksaveToasts = {}
+let mouseX = null
+let mouseY = null
 
 function main() {
     setupListeners()
@@ -10,6 +12,11 @@ function setupListeners() {
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         handleMessage(request).then(sendResponse)
         return true // return true to indicate we want to send a response asynchronously
+    })
+
+    $(document).mousemove((event) => {
+        mouseX = event.clientX
+        mouseY = event.clientY
     })
 }
 
@@ -86,9 +93,11 @@ function getSecondaryToastParams(quicksaveData) {
 }
 
 async function getHoverUrl() {
-    let url = 'testy'
-
-    alert(url)
+    let url = document.elementsFromPoint(mouseX, mouseY)
+        .filter(e => e.tagName.toLowerCase() == 'a')
+        .map(a => a.href)
+        [0]
+        
     return url
 }
 
