@@ -54,8 +54,7 @@ class QuicksaveManager {
 
     async quicksaveHover() {
         let currentTab = await this.getCurrentTab()
-        let message = { kind: 'getHoverUrl' }
-        let hoverUrl = await chrome.tabs.sendMessage(currentTab.id, message)
+        let hoverUrl = await this.sendGetHoverUrl(currentTab)
 
         await this.tryQuicksave(currentTab, hoverUrl)
     }
@@ -132,9 +131,12 @@ class QuicksaveManager {
             return
         }
 
+        await this.quicksave(tab, videoId)
+    }
+
+    async quicksave(tab, videoId) {
         let quicksaveId = this.getRandomId()
-        let message = { kind: 'quicksaveStart', quicksaveId: quicksaveId }
-        chrome.tabs.sendMessage(tab.id, message) // intentionally no await
+        this.sendQuicksaveStart(tab, quicksaveId)
 
         // let sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
         // await sleep(2000)
@@ -143,8 +145,24 @@ class QuicksaveManager {
         await this.serializeYoutube()
         await this.logQuicksave(quicksaveData)
 
-        message = { kind: 'quicksaveDone', quicksaveId: quicksaveId, ...quicksaveData }
+        this.sendQuicksaveDone(tab, quicksaveId, quicksaveData)
+    }
+
+    sendQuicksaveStart(tab, quicksaveId) {
+        let message = { kind: 'quicksaveStart', quicksaveId: quicksaveId }
         chrome.tabs.sendMessage(tab.id, message) // intentionally no await
+    }
+
+    sendQuicksaveDone(tab, quicksaveId, quicksaveData) {
+        let message = { kind: 'quicksaveDone', quicksaveId: quicksaveId, ...quicksaveData }
+        chrome.tabs.sendMessage(tab.id, message) // intentionally no await
+    }
+
+    async sendGetHoverUrl(tab) {
+        let message = { kind: 'getHoverUrl' }
+        let hoverUrl = await chrome.tabs.sendMessage(tab.id, message)
+
+        return hoverUrl
     }
 
     async setupQuicksavePlaylistIdUsingRecent() {
