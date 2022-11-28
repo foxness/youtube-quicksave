@@ -50,7 +50,7 @@ if (typeof Object.create !== 'function') {
             // For the loader on top
             _toastContent += '<span class="jq-toast-loader"></span>'
 
-            if (this.options.allowToastClose) {
+            if (this.options.showCloseButton) {
                 _toastContent += '<span class="close-jq-toast-single">&times</span>'
             }
 
@@ -149,25 +149,8 @@ if (typeof Object.create !== 'function') {
             })
 
             this._toastEl.find('.close-jq-toast-single').on('click', function (e) {
-
                 e.preventDefault()
-
-                if (that.options.showHideTransition === 'fade') {
-                    that._toastEl.trigger('beforeHide')
-                    that._toastEl.fadeOut(function () {
-                        that._toastEl.trigger('afterHidden')
-                    })
-                } else if (that.options.showHideTransition === 'slide') {
-                    that._toastEl.trigger('beforeHide')
-                    that._toastEl.slideUp(function () {
-                        that._toastEl.trigger('afterHidden')
-                    })
-                } else {
-                    that._toastEl.trigger('beforeHide')
-                    that._toastEl.hide(function () {
-                        that._toastEl.trigger('afterHidden')
-                    })
-                }
+                that.close()
             })
 
             if (typeof this.options.beforeShow == 'function') {
@@ -332,7 +315,24 @@ if (typeof Object.create !== 'function') {
         },
 
         close: function () {
-            this._toastEl.find('.close-jq-toast-single').click()
+            let that = this
+
+            if (that.options.showHideTransition === 'fade') {
+                that._toastEl.trigger('beforeHide')
+                that._toastEl.fadeOut(function () {
+                    that._toastEl.trigger('afterHidden')
+                })
+            } else if (that.options.showHideTransition === 'slide') {
+                that._toastEl.trigger('beforeHide')
+                that._toastEl.slideUp(function () {
+                    that._toastEl.trigger('afterHidden')
+                })
+            } else {
+                that._toastEl.trigger('beforeHide')
+                that._toastEl.hide(function () {
+                    that._toastEl.trigger('afterHidden')
+                })
+            }
         }
     }
 
@@ -341,7 +341,6 @@ if (typeof Object.create !== 'function') {
         toast.init(options, this)
 
         return {
-
             reset: function (what) {
                 toast.reset(what)
             },
@@ -360,7 +359,7 @@ if (typeof Object.create !== 'function') {
         text: '',
         heading: '',
         showHideTransition: 'fade',
-        allowToastClose: true,
+        showCloseButton: true,
         hideAfter: 3000,
         loader: true,
         loaderBg: '#9EC600',

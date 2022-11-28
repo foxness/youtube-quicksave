@@ -40,6 +40,7 @@ async function showQuicksaveStart(quicksaveId) {
         text: 'Quicksaving...',
         icon: 'loading',
         position: 'top-left',
+        showCloseButton: false,
         hideAfter: false
     }
 
