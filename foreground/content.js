@@ -65,7 +65,8 @@ function getSecondaryToastParams(quicksaveData) {
     if (quicksaveData.error) {
         switch (quicksaveData.error) {
             case 'alreadyInPlaylist':
-                text = `Already in <b>${quicksaveData.playlistTitle}</b>`
+                let link = makePlaylistLink(quicksaveData.playlistTitle, quicksaveData.playlistId)
+                text = `Already in ${link}`
                 icon = 'info'
                 break
             default:
@@ -73,7 +74,8 @@ function getSecondaryToastParams(quicksaveData) {
                 throw 'Unexpected error'
         }
     } else {
-        text = `Quicksaved to <b>${quicksaveData.playlistTitle}</b>`
+        let link = makePlaylistLink(quicksaveData.playlistTitle, quicksaveData.playlistId)
+        text = `Quicksaved to ${link}`
         icon = 'success'
     }
 
@@ -92,6 +94,11 @@ async function getHoverUrl() {
         [0]
         
     return url
+}
+
+function makePlaylistLink(playlistTitle, playlistId) {
+    let playlistLink = `/playlist?list=${playlistId}`
+    return `<a href="${playlistLink}" target="_blank" rel="noopener noreferrer">${playlistTitle}</a>`
 }
 
 function sleep(ms) {

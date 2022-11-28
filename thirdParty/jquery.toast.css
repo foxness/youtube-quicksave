@@ -67,12 +67,19 @@
 }
 
 .jq-toast-single a {
-    color: #eee;
-    text-decoration: none;
+    color: inherit;
     font-weight: bold;
-    border-bottom: 1px solid white;
-    padding-bottom: 3px;
-    font-size: 12px;
+    text-decoration: underline;
+    text-underline-offset: 5px;
+}
+
+.jq-toast-single a:hover {
+    color: #f1f1f1;
+}
+
+.jq-toast-single a:active {
+    color: #f1f1f1;
+    background-color: hotpink;
 }
 
 .jq-toast-single ul {
