@@ -50,5 +50,18 @@
                 "thirdParty/jquery.toast.css"
             ]
         }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "images/info.png",
+                "images/warning.png",
+                "images/error.png",
+                "images/success.png"
+            ],
+            "matches": [
+                "https://www.youtube.com/*"
+            ]
+        }
     ]
 }

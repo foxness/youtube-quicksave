@@ -59,7 +59,8 @@ if (typeof Object.create !== 'function') {
                     if (this.options.icon == 'loading') {
                         _toastContent += '<div class="jq-toast-icon jq-toast-icon-loading"><div class="loading-spinner-inner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>';
                     } else {
-                        _toastContent += `<div class="jq-toast-icon jg-simple-icon jq-toast-icon-${this.options.icon}"></div>`;
+                        let imgUrl = chrome.runtime.getURL(`images/${this.options.icon}.png`);
+                        _toastContent += `<div class="jq-toast-icon jq-toast-icon-${this.options.icon}"><img src="${imgUrl}"></div>`;
                     }
                     
                     this._toastEl.addClass('jq-icon-' + this.options.icon);
