@@ -98,7 +98,7 @@ async function getHoverUrl() {
 
 function makePlaylistLink(playlistTitle, playlistId) {
     let playlistLink = `/playlist?list=${playlistId}`
-    return `<a href="${playlistLink}">${playlistTitle}</a>`
+    return `<a href="${playlistLink}" target="_blank" rel="noopener noreferrer">${playlistTitle}</a>`
 }
 
 function sleep(ms) {
