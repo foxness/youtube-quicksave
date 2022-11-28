@@ -3,6 +3,8 @@ class Logger {
     // Initialization
 
     constructor(log) {
+        this.LOG_ERRORS = false
+
         this.log = log
     }
 
@@ -30,7 +32,10 @@ class Logger {
             logItem += `[QS] [${videoId}: ${videoTitle}] was quicksaved to [${playlistTitle}]\n`
         }
 
-        this.log += logItem
+        if (!data.error || this.LOG_ERRORS) {
+            this.log += logItem
+        }
+        
         console.log(logItem)
     }
 
