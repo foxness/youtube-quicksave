@@ -19,7 +19,7 @@
         "default_popup": "views/popup.html"
     },
     "background": {
-        "service_worker": "scripts/background.js",
+        "service_worker": "background/background.js",
         "type": "module"
     },
     "commands": {
@@ -44,7 +44,7 @@
             "js": [
                 "thirdParty/jquery-3.6.1.min.js",
                 "thirdParty/jquery.toast.js",
-                "scripts/content.js"
+                "foreground/content.js"
             ],
             "css": [
                 "thirdParty/jquery.toast.css"
