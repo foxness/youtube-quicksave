@@ -64,7 +64,7 @@ function getSecondaryToastParams(quicksaveData) {
         switch (quicksaveData.error) {
             case 'alreadyInPlaylist':
                 text = `Already in <b>${quicksaveData.playlistTitle}</b>`
-                icon = 'warning'
+                icon = 'info'
                 break
             default:
                 console.log(quicksaveData)

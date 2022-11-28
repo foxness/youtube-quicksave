@@ -133,19 +133,19 @@
 } */
 
 .jq-toast-icon-info img { /* https://stackoverflow.com/a/50942954 */
-  filter: invert(90%) sepia(4%) saturate(1792%) hue-rotate(182deg) brightness(105%) contrast(94%);
+  filter: invert(11%) sepia(63%) saturate(1442%) hue-rotate(166deg) brightness(98%) contrast(102%);
 }
 
 .jq-toast-icon-warning img {
-  filter: invert(99%) sepia(70%) saturate(697%) hue-rotate(303deg) brightness(109%) contrast(98%);
+  filter: invert(9%) sepia(40%) saturate(6571%) hue-rotate(21deg) brightness(89%) contrast(106%);
 }
 
 .jq-toast-icon-error img {
-  filter: invert(95%) sepia(2%) saturate(2155%) hue-rotate(314deg) brightness(91%) contrast(109%);
+  filter: invert(100%) sepia(15%) saturate(36%) hue-rotate(262deg) brightness(111%) contrast(89%);
 }
 
 .jq-toast-icon-success img {
-  filter: invert(3%) sepia(4%) saturate(34%) hue-rotate(314deg) brightness(95%) contrast(93%);
+  filter: invert(15%) sepia(28%) saturate(1106%) hue-rotate(110deg) brightness(99%) contrast(95%);
 }
 
 
@@ -156,23 +156,23 @@
 }
 
 .jq-icon-info {
-    background-color: #31708f;
-    color: #d9edf7;
+    background-color: #00A6ED;
+    color: #002a3c;
 }
 
 .jq-icon-warning {
-    background-color: #8a6d3b;
-    color: #fcf8e3;
+    background-color: #FF8E72;
+    color: #4b0f00;
 }
 
 .jq-icon-error {
-    background-color: #a94442;
-    color: #f2dede;
+    background-color: #ED6A5E;
+    color: #f1f1f1;
 }
 
 .jq-icon-success {
     background-color: #4CE0B3;
-    color: #0f0f0f;
+    color: #0a3729;
 }
 
 
