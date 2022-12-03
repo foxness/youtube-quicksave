@@ -168,7 +168,6 @@ class Youtube {
 
         let response = await this.executeRequest(requestParams)
         let json = await response.json()
-        console.log(json)
 
         let accessToken = json.access_token
         let expiresIn = json.expires_in
@@ -257,7 +256,8 @@ class Youtube {
     async fetchPlaylists() {
         let urlQueryData = {
             part: 'snippet',
-            mine: true
+            mine: true,
+            maxResults: 50 // todo: fetch all pages using page token
         }
 
         let requestParams = {
@@ -279,9 +279,7 @@ class Youtube {
         })
 
         this.playlists = result
-
-        console.log("fetched playlists")
-        console.log(result)
+        console.log(`fetched ${this.playlists.length} playlists`)
     }
 
     async addToPlaylist(videoId, playlistId, preventDuplicate = true) {
