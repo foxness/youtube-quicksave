@@ -84,7 +84,6 @@ class QuicksaveManager {
     async selectPlaylist(playlistId) {
         this.quicksavePlaylistId = playlistId
         await this.serializeQuicksavePlaylistId()
-        console.log(`playlist selected: ${playlistId}`)
     }
 
     async updatePopup() {

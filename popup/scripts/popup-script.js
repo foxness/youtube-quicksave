@@ -12,27 +12,27 @@ async function makePlaylistSelector() {
     let legend = $('<legend>').text('Select a playlist for Quicksave:')
     fieldset.append(legend)
 
-    playlists.forEach(p => {
-        let div = $('<div>')
-        let label = $('<label>')
-        let radio = $('<input>', { type: 'radio', name: 'quicksave-playlist-0', value: p.id }).prop('checked', p.quicksave)
-        radio.click(async () => {
-            let message = {
-                kind: 'playlistSelected',
-                playlistId: p.id
-            }
-            
-            await chrome.runtime.sendMessage({ message: message })
-            console.log('radio ' + p.title)
-        })
+    let select = $('<select>')
 
-        label.append(radio)
-        label.append(p.title)
-        
-        div.append(label)
-        fieldset.append(div)
+    playlists.forEach(p => {
+        let option = $('<option>', { value: p.id }).text(p.title).prop('selected', p.quicksave)
+        select.append(option)
     })
 
+    select.change(async () => {
+        let optionSelected = $('option:selected', select)
+        let playlistId = select.val()
+        
+        let message = {
+            kind: 'playlistSelected',
+            playlistId: playlistId
+        }
+        
+        await chrome.runtime.sendMessage({ message: message })
+        console.log(`selected ${optionSelected.text()}`)
+    })
+
+    fieldset.append(select)
     container.append(fieldset)
 }
 
