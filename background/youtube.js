@@ -10,6 +10,7 @@ class Youtube {
 
         this.SCOPE = 'https://www.googleapis.com/auth/youtube'
         this.URL_WATCH_PAGE = 'https://www.youtube.com/watch'
+        this.URL_SHORTS_PAGE = 'https://www.youtube.com/shorts/'
 
         this.CLIENT_ID = config.web.client_id
         this.CLIENT_SECRET = config.web.client_secret
@@ -241,12 +242,14 @@ class Youtube {
     }
 
     async tryGetVideoId(url) {
-        if (!url.startsWith(this.URL_WATCH_PAGE)) {
-            return null
-        }
+        let videoId = null
 
-        let query = new URL(url).searchParams
-        let videoId = query.get('v')
+        if (url.startsWith(this.URL_WATCH_PAGE)) {
+            let query = new URL(url).searchParams
+            videoId = query.get('v')
+        } else if (url.startsWith(this.URL_SHORTS_PAGE)) {
+            videoId = url.split('/').at(-1)
+        }
 
         return videoId
     }
