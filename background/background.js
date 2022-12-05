@@ -9,19 +9,18 @@ async function main() {
 }
 
 function setupListeners() {
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-        handleMessage(request).then(sendResponse)
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        handleMessage(message).then(sendResponse)
         return true // return true to indicate we want to send a response asynchronously
     })
 
     chrome.commands.onCommand.addListener(handleCommand)
 }
 
-async function handleMessage(request) {
+async function handleMessage(message) {
     let manager = await getQuicksaveManager()
-    let message = request.message
 
-    switch (message) {
+    switch (message.kind) {
         case 'signIn':
             return await manager.signIn()
         case 'signOut':
@@ -38,7 +37,7 @@ async function handleMessage(request) {
             return manager.isSignedIn()
     }
 
-    if (message.kind == 'playlistSelected') {
+    if (message.kind == 'playlistSelect') {
         let id = message.playlistId
         return await manager.selectPlaylist(id)
     }

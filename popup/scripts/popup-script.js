@@ -4,7 +4,7 @@ async function main() {
 }
 
 async function makePlaylistSelector() {
-    let playlists = await chrome.runtime.sendMessage({ message: 'getPlaylists' })
+    let playlists = await chrome.runtime.sendMessage({ kind: 'getPlaylists' })
 
     let container = $('#playlist-selector')
     let fieldset = $('<fieldset>')
@@ -24,11 +24,11 @@ async function makePlaylistSelector() {
         let playlistId = select.val()
         
         let message = {
-            kind: 'playlistSelected',
+            kind: 'playlistSelect',
             playlistId: playlistId
         }
         
-        await chrome.runtime.sendMessage({ message: message })
+        await chrome.runtime.sendMessage(message)
         console.log(`selected ${optionSelected.text()}`)
     })
 
@@ -37,7 +37,7 @@ async function makePlaylistSelector() {
 }
 
 async function makeQuicksaveLog() {
-    let quicksaveLog = await chrome.runtime.sendMessage({ message: 'getQuicksaveLog' })
+    let quicksaveLog = await chrome.runtime.sendMessage({ kind: 'getQuicksaveLog' })
 
     let container = $('#quicksave-log')
     let textarea = $('<textarea>', { rows: 10 }).prop('readonly', true).text(quicksaveLog)
@@ -49,21 +49,21 @@ async function makeQuicksaveLog() {
 $(window).on('load', main)
 
 $('#sign-out').click(async () => {
-    let response = await chrome.runtime.sendMessage({ message: 'signOut' })
+    let response = await chrome.runtime.sendMessage({ kind: 'signOut' })
     if (response == 'success') {
         window.close()
     }
 })
 
 $('#user-status').click(async () => {
-    let signedIn = await chrome.runtime.sendMessage({ message: 'isSignedIn' })
+    let signedIn = await chrome.runtime.sendMessage({ kind: 'isSignedIn' })
     alert(signedIn)
 })
 
 $('#quicksave').click(async () => {
-    let response = await chrome.runtime.sendMessage({ message: 'quicksave' })
+    let response = await chrome.runtime.sendMessage({ kind: 'quicksave' })
 })
 
 $('#dew-it').click(async () => {
-    let response = await chrome.runtime.sendMessage({ message: 'dewIt' })
+    let response = await chrome.runtime.sendMessage({ kind: 'dewIt' })
 })

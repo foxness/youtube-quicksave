@@ -9,8 +9,8 @@ function main() {
 }
 
 function setupListeners() {
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-        handleMessage(request).then(sendResponse)
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        handleMessage(message).then(sendResponse)
         return true // return true to indicate we want to send a response asynchronously
     })
 

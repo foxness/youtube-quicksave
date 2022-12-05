@@ -48,7 +48,7 @@ class QuicksaveManager {
     async quicksaveCurrent() {
         let currentTab = await this.getCurrentTab()
         let url = currentTab.url
-        
+
         await this.tryQuicksave(currentTab, url)
     }
 
@@ -139,7 +139,7 @@ class QuicksaveManager {
 
         // let sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
         // await sleep(2000)
-        
+
         let quicksaveData = await this.youtube.addToPlaylist(videoId, this.quicksavePlaylistId)
         await this.serializeYoutube()
         await this.logQuicksave(quicksaveData)
