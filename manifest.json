@@ -13,7 +13,8 @@
     "permissions": [
         "identity",
         "activeTab",
-        "storage"
+        "storage",
+        "contextMenus"
     ],
     "action": {
         "default_popup": "popup/popup.html"
