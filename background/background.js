@@ -1,7 +1,8 @@
 import config from '../config/config.js'
 import QuicksaveManager from './quicksaveManager.js'
 
-let CONTEXT_MENU_ID = 'quicksave'
+let CONTEXT_MENU_CURRENT = 'quicksaveCurrent'
+let CONTEXT_MENU_LINK = 'quicksaveLink'
 
 async function main() {
     setupListeners()
@@ -68,20 +69,34 @@ async function handleCommand(command) {
 
 function createContextMenu() {
     chrome.contextMenus.create({
-        title: 'Quicksave current video',
+        id: CONTEXT_MENU_CURRENT,
+        title: 'Quicksave Current',
         contexts: ['page'],
-        documentUrlPatterns: ['https://www.youtube.com/watch*'],
-        id: CONTEXT_MENU_ID
+        documentUrlPatterns: ['https://www.youtube.com/watch*']
+    })
+
+    chrome.contextMenus.create({
+        id: CONTEXT_MENU_LINK,
+        title: 'Quicksave Link',
+        contexts: ['link']
     })
 }
 
 async function handleContextMenu(info, tab) {
-    if (info.menuItemId != CONTEXT_MENU_ID) {
-        return
+    let url
+    switch (info.menuItemId) {
+        case CONTEXT_MENU_CURRENT:
+            url = info.pageUrl
+            break
+        case CONTEXT_MENU_LINK:
+            url = info.linkUrl
+            break
+        default:
+            return
     }
 
     let manager = await getQuicksaveManager()
-    await manager.quicksaveUrl(info.pageUrl, tab)
+    await manager.quicksaveUrl(url, tab)
 }
 
 async function getQuicksaveManager() {
