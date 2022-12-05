@@ -49,14 +49,18 @@ class QuicksaveManager {
         let currentTab = await this.getCurrentTab()
         let url = currentTab.url
 
-        await this.tryQuicksave(currentTab, url)
+        await this.tryQuicksave(url, currentTab)
     }
 
     async quicksaveHover() {
         let currentTab = await this.getCurrentTab()
         let hoverUrl = await this.sendGetHoverUrl(currentTab)
 
-        await this.tryQuicksave(currentTab, hoverUrl)
+        await this.tryQuicksave(hoverUrl, currentTab)
+    }
+
+    async quicksaveUrl(url, tab) {
+        await this.tryQuicksave(url, tab)
     }
 
     async deduplicate() {
@@ -120,7 +124,7 @@ class QuicksaveManager {
 
     // Misc
 
-    async tryQuicksave(tab, url) {
+    async tryQuicksave(url, tab) {
         if (!url) {
             return
         }
