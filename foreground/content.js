@@ -30,6 +30,8 @@ async function handleMessage(message) {
             return await showQuicksaveDone(quicksaveData)
         case 'getHoverUrl':
             return await getHoverUrl()
+        case 'notSignedIn':
+            return await showNotSignedIn()
     }
 
     return 'fail'
@@ -58,6 +60,20 @@ async function showQuicksaveDone(quicksaveData) {
     quicksaveToast.close()
 
     delete quicksaveToasts[quicksaveId]
+}
+
+async function showNotSignedIn() {
+    let toastParams = {
+        text: 'Quicksave: Not Signed In',
+        icon: 'warning',
+        position: 'top-left',
+        showHideTransition: 'slide',
+        showCloseButton: false,
+        hideAfter: DURATION_TOAST,
+        loader: false // todo: fix loader
+    }
+
+    $.toast(toastParams)
 }
 
 function getSecondaryToastParams(quicksaveData) {

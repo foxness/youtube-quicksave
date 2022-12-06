@@ -47,19 +47,34 @@ class QuicksaveManager {
 
     async quicksaveCurrent() {
         let currentTab = await this.getCurrentTab()
-        let url = currentTab.url
 
+        if (!this.isSignedIn()) {
+            this.sendNotSignedIn(currentTab)
+            return
+        }
+
+        let url = currentTab.url
         await this.tryQuicksave(url, currentTab)
     }
 
     async quicksaveHover() {
         let currentTab = await this.getCurrentTab()
-        let hoverUrl = await this.sendGetHoverUrl(currentTab)
 
+        if (!this.isSignedIn()) {
+            this.sendNotSignedIn(currentTab)
+            return
+        }
+
+        let hoverUrl = await this.sendGetHoverUrl(currentTab)
         await this.tryQuicksave(hoverUrl, currentTab)
     }
 
     async quicksaveUrl(url, tab) {
+        if (!this.isSignedIn()) {
+            this.sendNotSignedIn(tab)
+            return
+        }
+
         await this.tryQuicksave(url, tab)
     }
 
@@ -93,7 +108,7 @@ class QuicksaveManager {
     async updatePopup() {
         let popup
 
-        if (this.youtube.isSignedIn()) {
+        if (this.isSignedIn()) {
             popup = '/popup/popup.html'
         } else {
             popup = '/popup/popup-signed-out.html'
@@ -120,6 +135,30 @@ class QuicksaveManager {
 
     async serializeLogger() {
         await this.storage.setLogger(this.logger)
+    }
+
+    // Messaging
+
+    sendQuicksaveStart(tab, quicksaveId) {
+        let message = { kind: 'quicksaveStart', quicksaveId: quicksaveId }
+        chrome.tabs.sendMessage(tab.id, message) // intentionally no await
+    }
+
+    sendQuicksaveDone(tab, quicksaveId, quicksaveData) {
+        let message = { kind: 'quicksaveDone', quicksaveId: quicksaveId, ...quicksaveData }
+        chrome.tabs.sendMessage(tab.id, message) // intentionally no await
+    }
+
+    sendNotSignedIn(tab) {
+        let message = { kind: 'notSignedIn' }
+        chrome.tabs.sendMessage(tab.id, message) // intentionally no await
+    }
+
+    async sendGetHoverUrl(tab) {
+        let message = { kind: 'getHoverUrl' }
+        let hoverUrl = await chrome.tabs.sendMessage(tab.id, message)
+
+        return hoverUrl
     }
 
     // Misc
@@ -149,23 +188,6 @@ class QuicksaveManager {
         await this.logQuicksave(quicksaveData)
 
         this.sendQuicksaveDone(tab, quicksaveId, quicksaveData)
-    }
-
-    sendQuicksaveStart(tab, quicksaveId) {
-        let message = { kind: 'quicksaveStart', quicksaveId: quicksaveId }
-        chrome.tabs.sendMessage(tab.id, message) // intentionally no await
-    }
-
-    sendQuicksaveDone(tab, quicksaveId, quicksaveData) {
-        let message = { kind: 'quicksaveDone', quicksaveId: quicksaveId, ...quicksaveData }
-        chrome.tabs.sendMessage(tab.id, message) // intentionally no await
-    }
-
-    async sendGetHoverUrl(tab) {
-        let message = { kind: 'getHoverUrl' }
-        let hoverUrl = await chrome.tabs.sendMessage(tab.id, message)
-
-        return hoverUrl
     }
 
     async setupQuicksavePlaylistIdUsingRecent() {
