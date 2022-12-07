@@ -78,7 +78,8 @@ function createContextMenu() {
     chrome.contextMenus.create({
         id: CONTEXT_MENU_LINK,
         title: 'Quicksave Link',
-        contexts: ['link']
+        contexts: ['link'],
+        documentUrlPatterns: ['https://www.youtube.com/*']
     })
 }
 
