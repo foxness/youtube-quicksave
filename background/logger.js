@@ -2,20 +2,20 @@ class Logger {
 
     // Initialization
 
-    constructor(log, quicksavedCount) {
+    constructor(log, quicksaveCount) {
         this.SHOULD_LOG_ERRORS = false
 
         this.log = log || ''
-        this.quicksavedCount = quicksavedCount || 0
+        this.quicksaveCount = quicksaveCount || 0
     }
 
     static fromSerialized(serialized) {
         let parsed = JSON.parse(serialized)
         
         let log = parsed.log
-        let quicksavedCount = parsed.quicksavedCount
+        let quicksaveCount = parsed.quicksaveCount
 
-        return new Logger(log, quicksavedCount)
+        return new Logger(log, quicksaveCount)
     }
 
     // Public methods
@@ -40,7 +40,7 @@ class Logger {
             }
         } else {
             logItem += `[QS] [${videoId}: ${videoTitle}] was quicksaved to [${playlistTitle}]\n`
-            this.quicksavedCount += 1
+            this.quicksaveCount += 1
         }
 
         if (!data.error || this.SHOULD_LOG_ERRORS) {
@@ -54,10 +54,14 @@ class Logger {
         return this.log
     }
 
+    getQuicksaveCount() {
+        return this.quicksaveCount
+    }
+
     getSerialized() {
         let serialized = {
             log: this.log,
-            quicksavedCount: this.quicksavedCount
+            quicksaveCount: this.quicksaveCount
         }
 
         return JSON.stringify(serialized)

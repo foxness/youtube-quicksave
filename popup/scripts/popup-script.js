@@ -1,6 +1,7 @@
 async function main() {
     await makePlaylistSelector()
     await makeQuicksaveLog()
+    await makeQuicksaveCount()
 }
 
 async function makePlaylistSelector() {
@@ -44,6 +45,13 @@ async function makeQuicksaveLog() {
     
     container.append(textarea)
     textarea.scrollTop(textarea[0].scrollHeight)
+}
+
+async function makeQuicksaveCount() {
+    let quicksaveCount = await chrome.runtime.sendMessage({ kind: 'getQuicksaveCount' })
+
+    let container = $('#quicksave-count')
+    container.text(quicksaveCount)
 }
 
 $(window).on('load', main)

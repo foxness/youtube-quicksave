@@ -42,6 +42,8 @@ async function handleMessage(message) {
             return await manager.getPlaylists()
         case 'getQuicksaveLog':
             return await manager.getQuicksaveLog()
+        case 'getQuicksaveCount':
+            return await manager.getQuicksaveCount()
         case 'isSignedIn':
             return manager.isSignedIn()
     }
