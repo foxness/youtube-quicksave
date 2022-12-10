@@ -49,9 +49,7 @@ async function makeQuicksaveLog() {
 
 async function makeQuicksaveCount() {
     let quicksaveCount = await chrome.runtime.sendMessage({ kind: 'getQuicksaveCount' })
-
-    let container = $('#quicksave-count')
-    container.text(quicksaveCount)
+    $('#quicksave-count').text(quicksaveCount)
 }
 
 $(window).on('load', main)
