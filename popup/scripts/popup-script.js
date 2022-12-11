@@ -10,7 +10,7 @@ async function makePlaylistSelector() {
     let container = $('#playlist-selector')
     let fieldset = $('<fieldset>')
     
-    let legend = $('<legend>').text('Select a playlist for Quicksave:')
+    let legend = $('<legend>').text('Quicksave Playlist:')
     fieldset.append(legend)
 
     let select = $('<select>')

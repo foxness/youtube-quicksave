@@ -12,6 +12,7 @@ body {
     width: 300px;
     height: auto;
     font-family: "Open Sans", roboto, sans-serif;
+    color: #2d3c5d;
 }
 
 #header {
@@ -24,7 +25,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 5px;
+    padding: 8px;
+    padding-bottom: 14px;
 }
 
 #quicksave {
@@ -32,10 +34,10 @@ body {
 }
 
 .button-24 {
-    background: #2364d2;
-    border: 2px solid #2364d2;
+    background: #126ee9;
+    border: 2px solid #126ee9;
     border-radius: 6px;
-    box-shadow: 3px 10px 20px 0px rgb(35 100 210 / 30%);
+    box-shadow: 3px 10px 20px 0px #126ee94d;
     box-sizing: border-box;
     color: #FFFFFF;
     cursor: pointer;
@@ -59,7 +61,7 @@ body {
 .button-24:active {
     background-color: initial;
     background-position: 0 0;
-    color: #2364d2;
+    color: #126ee9;
 }
 
 .button-24:active {
@@ -69,15 +71,39 @@ body {
 /* --------------------------------------------------- */
 
 #playlist-selector legend {
-    /* margin-left: 10px; */
+    margin-left: 6px;
     font-size: 14px;
+    color: #646f87;
 }
 
 #playlist-selector fieldset {
     position: relative;
-    margin: 10px;
+    margin: 14px;
     padding: 10px;
-    min-width: 200px;
+    /* border: 1px dotted #e8eaed;
+    border-radius: 6px; */
+    border: none;
+}
+
+#playlist-selector select {
+    appearance: none;
+    padding: 7px 40px 7px 12px;
+    width: 100%;
+    border: 1px solid #e8eaed;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 1px 3px -2px #9098a9;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 16px;
+    transition: all 150ms ease;
+    color: #2d3c5d;
+}
+
+#playlist-selector select:focus {
+    outline: none;
+    border-color: #126ee9;
+    box-shadow: 0 0 0 2px #126ee933;
 }
 
 #playlist-selector svg {
@@ -94,32 +120,8 @@ body {
     pointer-events: none;
 }
 
-#playlist-selector select {
-    appearance: none;
-    padding: 7px 40px 7px 12px;
-    width: 100%;
-    border: 1px solid #e8eaed;
-    border-radius: 5px;
-    background: #fff;
-    box-shadow: 0 1px 3px -2px #9098a9;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 16px;
-    transition: all 150ms ease;
-}
-
-#playlist-selector select option {
-    color: #223254;
-}
-
-#playlist-selector select:focus {
-    outline: none;
-    border-color: #07f;
-    box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.2);
-}
-
 #playlist-selector select:hover+svg {
-    stroke: #07f;
+    stroke: #126ee9;
 }
 
 .sprites {
