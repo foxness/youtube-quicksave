@@ -11,7 +11,7 @@
 body {
     width: 300px;
     height: auto;
-    font-family: "Open Sans", roboto, sans-serif;
+    font-family: "Open Sans", "Roboto", sans-serif;
     color: #2d3c5d;
 }
 
@@ -37,12 +37,13 @@ body {
     background: #126ee9;
     border: 2px solid #126ee9;
     border-radius: 6px;
-    box-shadow: 3px 10px 20px 0px #126ee94d;
+    /* box-shadow: 3px 8px 16px 0px rgba(18, 110, 233, 0.4); */
+    box-shadow: 3px 10px 20px 0px rgba(18, 110, 233, 0.3);
     box-sizing: border-box;
     color: #FFFFFF;
     cursor: pointer;
     display: inline-block;
-    font-family: "Nunito", roboto, sans-serif;
+    font-family: "Nunito", "Open Sans", "Roboto", sans-serif;
     font-size: 16px;
     font-weight: 800;
     line-height: 16px;
@@ -95,15 +96,15 @@ body {
     box-shadow: 0 1px 3px -2px #9098a9;
     cursor: pointer;
     font-family: inherit;
+    color: inherit;
     font-size: 16px;
     transition: all 150ms ease;
-    color: #2d3c5d;
 }
 
 #playlist-selector select:focus {
     outline: none;
     border-color: #126ee9;
-    box-shadow: 0 0 0 2px #126ee933;
+    box-shadow: 0 0 0 2px rgba(18, 110, 233, 0.2);
 }
 
 #playlist-selector svg {
