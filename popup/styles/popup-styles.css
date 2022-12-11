@@ -18,12 +18,13 @@ body {
     margin: 10px;
 }
 
+/* --------------------------------------------------- */
+
 #button-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
-    padding-top: 0;
+    padding: 5px;
 }
 
 #quicksave {
@@ -50,7 +51,6 @@ body {
     text-rendering: geometricprecision;
     text-transform: none;
     user-select: none;
-    -webkit-user-select: none;
     touch-action: manipulation;
     vertical-align: middle;
 }
@@ -66,13 +66,71 @@ body {
     opacity: .5;
 }
 
-legend {
-    font-size: 1rem;
+/* --------------------------------------------------- */
+
+#playlist-selector legend {
+    /* margin-left: 10px; */
+    font-size: 14px;
 }
 
-input {
-    margin: .5rem;
+#playlist-selector fieldset {
+    position: relative;
+    margin: 10px;
+    padding: 10px;
+    min-width: 200px;
 }
+
+#playlist-selector svg {
+    position: absolute;
+    right: 24px;
+    top: calc(50% - 3px);
+    width: 10px;
+    height: 6px;
+    stroke-width: 2px;
+    stroke: #9098a9;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+}
+
+#playlist-selector select {
+    appearance: none;
+    padding: 7px 40px 7px 12px;
+    width: 100%;
+    border: 1px solid #e8eaed;
+    border-radius: 5px;
+    background: #fff;
+    box-shadow: 0 1px 3px -2px #9098a9;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 16px;
+    transition: all 150ms ease;
+}
+
+#playlist-selector select option {
+    color: #223254;
+}
+
+#playlist-selector select:focus {
+    outline: none;
+    border-color: #07f;
+    box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.2);
+}
+
+#playlist-selector select:hover+svg {
+    stroke: #07f;
+}
+
+.sprites {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* --------------------------------------------------- */
 
 textarea {
     font-family: monospace;
@@ -84,12 +142,7 @@ label {
     font-size: 1rem;
 }
 
-
-
-
-
-
-/* @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap"); */
+/* --------------------------------------------------- */
 
 /* * {
     -webkit-box-sizing: border-box;

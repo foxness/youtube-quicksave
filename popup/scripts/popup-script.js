@@ -34,6 +34,7 @@ async function makePlaylistSelector() {
     })
 
     fieldset.append(select)
+    fieldset.append('<svg><use xlink:href="#select-arrow-down"></use></svg>')
     container.append(fieldset)
 }
 
