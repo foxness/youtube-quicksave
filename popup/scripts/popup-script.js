@@ -61,10 +61,10 @@ $('#sign-out').click(async () => {
     }
 })
 
-$('#user-status').click(async () => {
-    let signedIn = await chrome.runtime.sendMessage({ kind: 'isSignedIn' })
-    alert(signedIn)
-})
+// $('#user-status').click(async () => {
+//     let signedIn = await chrome.runtime.sendMessage({ kind: 'isSignedIn' })
+//     alert(signedIn)
+// })
 
 $('#quicksave').click(async () => {
     let response = await chrome.runtime.sendMessage({ kind: 'quicksave' })

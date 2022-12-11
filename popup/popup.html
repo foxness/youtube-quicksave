@@ -7,17 +7,39 @@
     <title>Document</title>
     <script src="../thirdParty/jquery-3.6.1.min.js"></script>
     <link rel="stylesheet" href="styles/popup-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <h1>Successfully Signed-In</h1>
-    <div id='sign-out'>Sign Out</div>
-    <button id='user-status'>User Status</button>
-    <button id='quicksave'>Quicksave</button>
-    <button id='dew-it'>Dew It</button>
-    <span>Total Quicksaved: <span id='quicksave-count'>-</span></span>
-    <div id='playlist-selector'></div>
-    <div id='quicksave-log'></div>
+    <div id="container">
+        <input type="text" class="text" placeholder="Click on the dots" disabled>
+        <div id="menu-wrap">
+            <input type="checkbox" class="toggler" />
+            <div class="dots">
+                <div></div>
+            </div>
+            <div class="menu">
+                <div>
+                    <ul>
+                        <li><a href="#" class="link">Option one</a></li>
+                        <li><a href="#" class="link">Option two</a></li>
+                        <li><a href="#" class="link">Option three</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2>YouTube Quicksave</h2>
+    <div id="button-container">
+        <button id="quicksave" class="button-24">Quicksave</button>
+        <button id="sign-out" class="button-24">Sign Out</button>
+        <button id="dew-it" class="button-24">Deduplicate</button>
+    </div>
+    <span>Total Quicksaved: <span id="quicksave-count">-</span></span>
+    <div id="playlist-selector"></div>
+    <div id="quicksave-log"></div>
     <script src="scripts/popup-script.js"></script>
 </body>
 
