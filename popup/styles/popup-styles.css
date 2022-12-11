@@ -1,5 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
 * {
     /* border: 1px solid black; */
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
@@ -7,7 +11,7 @@
 body {
     width: 300px;
     height: auto;
-    font-family: nunito, roboto, sans-serif;
+    font-family: "Open Sans", roboto, sans-serif;
 }
 
 #header {
@@ -18,7 +22,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px;
+    padding: 20px;
+    padding-top: 0;
 }
 
 #quicksave {
@@ -26,15 +31,15 @@ body {
 }
 
 .button-24 {
-    background: #274690;
-    border: 2px solid #274690;
+    background: #2364d2;
+    border: 2px solid #2364d2;
     border-radius: 6px;
-    box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
+    box-shadow: 3px 10px 20px 0px rgb(35 100 210 / 30%);
     box-sizing: border-box;
     color: #FFFFFF;
     cursor: pointer;
     display: inline-block;
-    font-family: nunito, roboto, sans-serif;
+    font-family: "Nunito", roboto, sans-serif;
     font-size: 16px;
     font-weight: 800;
     line-height: 16px;
@@ -54,26 +59,29 @@ body {
 .button-24:active {
     background-color: initial;
     background-position: 0 0;
-    color: #274690;
+    color: #2364d2;
 }
 
 .button-24:active {
     opacity: .5;
 }
 
-/* legend,
-label {
+legend {
     font-size: 1rem;
-} */
+}
 
-/* input {
+input {
     margin: .5rem;
-} */
+}
 
 textarea {
     font-family: monospace;
     font-size: 0.5rem;
     width: 100%;
+}
+
+label {
+    font-size: 1rem;
 }
 
 
