@@ -247,9 +247,9 @@ body small a {
 #container #menu-wrap .dots>div:before {
     height: 6px;
     width: 6px;
-    background-color: rgba(49, 49, 49, 0.8);
+    background-color: rgba(45, 60, 93, 0.8);
     border-radius: 50%;
-    transition: 0.5s;
+    transition: 0.2s;
 }
 
 #container #menu-wrap .dots>div {
@@ -279,8 +279,6 @@ body small a {
     background-color: rgba(255, 255, 255, 0.8);
     padding: 20px 15px;
     box-shadow: 2px 4px 6px rgba(49, 49, 49, 0.2);
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -310,8 +308,6 @@ body small a {
     width: 100%;
     top: 0;
     left: 0;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     cursor: pointer;
     z-index: 2;
@@ -338,8 +334,8 @@ body small a {
 #container #menu-wrap .toggler:checked:hover+.dots>div,
 #container #menu-wrap .toggler:checked:hover+.dots>div:after,
 #container #menu-wrap .toggler:checked:hover+.dots>div:before {
-    background-color: rgba(49, 49, 49, 0.6);
-    transition: 0.5s;
+    background-color: rgba(45, 60, 93, 0.6);
+    transition: 0.2s;
 }
 
 #container #menu-wrap .toggler:checked~.menu {
@@ -347,13 +343,13 @@ body small a {
     visibility: visible;
     width: 150px;
     height: 130px;
-    transition: 0.5s;
+    transition: 0.2s;
 }
 
 #container #menu-wrap .toggler:checked~.menu ul .link {
     opacity: 1;
     visibility: visible;
-    transition: 0.5s ease 0.3s;
+    transition: 0.2s ease 0.1s;
 }
 
 #container #menu-wrap .toggler:checked~.menu ul .link:hover {
@@ -362,7 +358,7 @@ body small a {
 }
 
 #container #menu-wrap .toggler:not(:checked)~.menu {
-    transition: 0.5s;
+    transition: 0.2s;
 }
 
 #container #menu-wrap .toggler:not(:checked)~.menu ul .link {
@@ -370,12 +366,3 @@ body small a {
     visibility: hidden;
     transition: 0.1s;
 }
-
-/* @media (max-width: 600px) {
-    #container {
-        position: absolute;
-        top: 50px;
-        width: calc(100% - 40px);
-        margin: 0;
-    }
-} */
