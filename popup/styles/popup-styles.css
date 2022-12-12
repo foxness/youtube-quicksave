@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&display=swap');
 
 * {
     /* border: 1px solid black; */
@@ -207,20 +207,10 @@ body small a {
 } */
 
 #container {
-    /* height: 50px; */
-    /* background-color: #eee; */
     padding: 10px;
-    /* margin: 0 20px; */
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-
-#container .text {
-    border: none;
-    background: none;
-    font-size: 18px;
-    font-weight: 400;
 }
 
 #container #menu-wrap {
@@ -272,30 +262,37 @@ body small a {
 
 #container #menu-wrap .menu {
     position: absolute;
-    right: -10px;
-    top: calc(-12px + 50px);
+    right: -0px;
+    top: 30px;
     width: 0;
     height: 0;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 20px 15px;
-    box-shadow: 2px 4px 6px rgba(49, 49, 49, 0.2);
+    box-shadow: 3px 8px 16px 2px rgba(45, 60, 93, 0.4);
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
     opacity: 0;
     visibility: hidden;
+    z-index: 1;
 }
 
 #container #menu-wrap .menu ul {
     list-style: none;
+    display: flex;
+    flex-direction: column;
+    margin: 16px 24px;
+    gap: 14px;
 }
 
 #container #menu-wrap .menu ul li {
-    margin: 15px 0;
+    font-size: 14px;
+    font-weight: bold;
+    /* font-family: "Nunito"; */
+    white-space: pre;
 }
 
-#container #menu-wrap .menu ul li .link {
+#container #menu-wrap .menu ul li a {
     text-decoration: none;
     color: rgba(49, 49, 49, 0.85);
     opacity: 0;
@@ -341,27 +338,28 @@ body small a {
 #container #menu-wrap .toggler:checked~.menu {
     opacity: 1;
     visibility: visible;
-    width: 150px;
-    height: 130px;
+    width: auto;
+    height: auto;
     transition: 0.2s;
+    background: #ffffff;
 }
 
-#container #menu-wrap .toggler:checked~.menu ul .link {
+#container #menu-wrap .toggler:checked~.menu ul a {
     opacity: 1;
     visibility: visible;
     transition: 0.2s ease 0.1s;
 }
 
-#container #menu-wrap .toggler:checked~.menu ul .link:hover {
-    color: #2980b9;
-    transition: 0.2s;
+#container #menu-wrap .toggler:checked~.menu ul a:hover {
+    color: #126ee9;
+    transition: 0;
 }
 
 #container #menu-wrap .toggler:not(:checked)~.menu {
     transition: 0.2s;
 }
 
-#container #menu-wrap .toggler:not(:checked)~.menu ul .link {
+#container #menu-wrap .toggler:not(:checked)~.menu ul a {
     opacity: 0;
     visibility: hidden;
     transition: 0.1s;
