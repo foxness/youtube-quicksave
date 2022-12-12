@@ -261,42 +261,43 @@ body small a {
 }
 
 #container #menu-wrap .menu {
+    /* visibility: hidden; */
+    opacity: 0;
     position: absolute;
     right: -0px;
     top: 30px;
-    width: 0;
-    height: 0;
+    width: auto;
+    height: auto;
+    overflow: hidden;
+    background: #ffffff;
     box-shadow: 3px 8px 16px 2px rgba(45, 60, 93, 0.4);
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    opacity: 0;
-    visibility: hidden;
     z-index: 1;
+    transform: scale(.5);
+    transform-origin: top right;
 }
 
 #container #menu-wrap .menu ul {
     list-style: none;
     display: flex;
     flex-direction: column;
-    margin: 16px 24px;
-    gap: 14px;
 }
 
 #container #menu-wrap .menu ul li {
     font-size: 14px;
     font-weight: bold;
-    /* font-family: "Nunito"; */
     white-space: pre;
 }
 
 #container #menu-wrap .menu ul li a {
     text-decoration: none;
-    color: rgba(49, 49, 49, 0.85);
-    opacity: 0;
-    visibility: hidden;
+    display: block;
+    color: #2d3c5d;
+    padding: 8px 24px;
 }
 
 #container #menu-wrap .toggler {
@@ -313,7 +314,7 @@ body small a {
 #container #menu-wrap .toggler:hover+.dots>div,
 #container #menu-wrap .toggler:hover+.dots>div:after,
 #container #menu-wrap .toggler:hover+.dots>div:before {
-    background-color: rgba(49, 49, 49, 0.6);
+    background-color: rgba(45, 60, 93, 0.6);
 }
 
 #container #menu-wrap .toggler:checked+.dots>div {
@@ -337,30 +338,20 @@ body small a {
 
 #container #menu-wrap .toggler:checked~.menu {
     opacity: 1;
-    visibility: visible;
-    width: auto;
-    height: auto;
-    transition: 0.2s;
-    background: #ffffff;
-}
-
-#container #menu-wrap .toggler:checked~.menu ul a {
-    opacity: 1;
-    visibility: visible;
-    transition: 0.2s ease 0.1s;
-}
-
-#container #menu-wrap .toggler:checked~.menu ul a:hover {
-    color: #126ee9;
-    transition: 0;
+    transform: scale(1);
+    transition: transform 100ms ease-out, opacity 100ms ease-out;
 }
 
 #container #menu-wrap .toggler:not(:checked)~.menu {
-    transition: 0.2s;
+    opacity: 0;
+    transform: scale(.5);
+    transition: transform 100ms ease-in, opacity 100ms ease-in;
 }
 
-#container #menu-wrap .toggler:not(:checked)~.menu ul a {
-    opacity: 0;
-    visibility: hidden;
-    transition: 0.1s;
+#container #menu-wrap .toggler:checked~.menu ul li:hover {
+    background: #126ee9;
+}
+
+#container #menu-wrap .toggler:checked~.menu ul li:hover a {
+    color: white;
 }
