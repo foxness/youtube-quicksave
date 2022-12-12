@@ -53,19 +53,19 @@ async function makeQuicksaveCount() {
     $('#quicksave-count').text(quicksaveCount)
 }
 
+async function closeMenuWithoutAnimation() {
+    let menu = $('.menu')
+    menu.addClass('notransition')
+    $('.toggler').click()
+    await sleep(1)
+    menu.removeClass('notransition')
+}
+
+function sleep(duration) {
+    return new Promise(resolve => setTimeout(resolve, duration))
+}
+
 $(window).on('load', main)
-
-$('#sign-out').click(async () => {
-    let response = await chrome.runtime.sendMessage({ kind: 'signOut' })
-    if (response == 'success') {
-        window.close()
-    }
-})
-
-// $('#user-status').click(async () => {
-//     let signedIn = await chrome.runtime.sendMessage({ kind: 'isSignedIn' })
-//     alert(signedIn)
-// })
 
 $('#quicksave').click(async () => {
     let response = await chrome.runtime.sendMessage({ kind: 'quicksave' })
@@ -73,4 +73,20 @@ $('#quicksave').click(async () => {
 
 $('#dew-it').click(async () => {
     let response = await chrome.runtime.sendMessage({ kind: 'dewIt' })
+    closeMenuWithoutAnimation()
+})
+
+$('#change-shortcuts').click(async () => {
+    closeMenuWithoutAnimation()
+})
+
+$('#show-log').click(async () => {
+    closeMenuWithoutAnimation()
+})
+
+$('#sign-out').click(async () => {
+    let response = await chrome.runtime.sendMessage({ kind: 'signOut' })
+    if (response == 'success') {
+        window.close()
+    }
 })

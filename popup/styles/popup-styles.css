@@ -355,3 +355,7 @@ body small a {
 #container #menu-wrap .toggler:checked~.menu ul li:hover a {
     color: white;
 }
+
+.notransition {
+    transition: none !important;
+}
