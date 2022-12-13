@@ -78,7 +78,7 @@ class QuicksaveManager {
         await this.tryQuicksave(url, tab)
     }
 
-    async deduplicate() {
+    async deduplicatePlaylist() {
         await this.youtube.deduplicatePlaylist(this.quicksavePlaylistId)
         await this.serializeYoutube()
     }

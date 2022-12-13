@@ -4,8 +4,3 @@ $('#sign-in').click(async () => {
         window.close()
     }
 })
-
-$('#user-status').click(async () => {
-    let signedIn = await chrome.runtime.sendMessage({ kind: 'isSignedIn' })
-    alert(signedIn)
-})

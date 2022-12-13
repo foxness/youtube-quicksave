@@ -404,6 +404,28 @@ class Youtube {
         }
     }
 
+    async removeVideosFromPlaylist(itemIdsToDelete) {
+        for (let itemId of itemIdsToDelete) {
+            let urlQueryData = {
+                id: itemId
+            }
+
+            let requestParams = {
+                endpoint: this.ENDPOINT_PLAYLIST_ITEMS,
+                method: 'DELETE',
+                isAuthed: true,
+                urlQueryData: urlQueryData,
+                bodyData: null
+            }
+
+            let response = await this.executeRequest(requestParams)
+
+            if (!response.ok) {
+                throw 'Bad response'
+            }
+        }
+    }
+
     // Helper
 
     async executeRequest(requestParams) {
