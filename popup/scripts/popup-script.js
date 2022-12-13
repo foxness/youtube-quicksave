@@ -87,6 +87,7 @@ function setupListeners() {
     })
 
     $('#change-shortcuts').click(async () => {
+        openShortcuts()
         closeMenuWithoutAnimation()
     })
 
@@ -104,6 +105,11 @@ function setupListeners() {
 }
 
 // --- MISC METHODS -----------------------------------------
+
+function openShortcuts() {
+    let shortcutsUrl = 'chrome://extensions/shortcuts'
+    chrome.tabs.create({ url: shortcutsUrl }) // intentionally no await
+}
 
 function toggleLog() {
     let toggleText
