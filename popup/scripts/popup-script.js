@@ -71,8 +71,8 @@ $('#quicksave').click(async () => {
     let response = await chrome.runtime.sendMessage({ kind: 'quicksave' })
 })
 
-$('#dew-it').click(async () => {
-    let response = await chrome.runtime.sendMessage({ kind: 'dewIt' })
+$('#deduplicate-playlist').click(async () => {
+    chrome.runtime.sendMessage({ kind: 'deduplicatePlaylist' }) // intentionally no await because it's long
     closeMenuWithoutAnimation()
 })
 

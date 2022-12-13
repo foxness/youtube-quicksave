@@ -36,8 +36,8 @@ async function handleMessage(message) {
             return await manager.signOut()
         case 'quicksave':
             return await manager.quicksaveCurrent()
-        case 'dewIt':
-            return await manager.deduplicate()
+        case 'deduplicatePlaylist':
+            return await manager.deduplicatePlaylist()
         case 'getPlaylists':
             return await manager.getPlaylists()
         case 'getQuicksaveLog':
