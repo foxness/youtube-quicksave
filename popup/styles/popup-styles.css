@@ -364,14 +364,14 @@ body small a {
     visibility: visible;
     opacity: 1;
     transform: scale(1);
-    transition: transform 100ms ease-out, opacity 100ms ease-out;
+    transition: transform 100ms ease-out, visibility 100ms ease-out, opacity 100ms ease-out;
 }
 
 #container #menu-wrap .toggler:not(:checked)~.menu {
     visibility: hidden;
     opacity: 0;
     transform: scale(.5);
-    transition: transform 100ms ease-in, opacity 100ms ease-in;
+    transition: transform 100ms ease-in, visibility 100ms ease-in, opacity 100ms ease-in;
 }
 
 #container #menu-wrap .toggler:checked~.menu ul li:hover {
