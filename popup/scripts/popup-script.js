@@ -57,7 +57,7 @@ async function closeMenuWithoutAnimation() {
     let menu = $('.menu')
     menu.addClass('notransition')
     $('.toggler').click()
-    await sleep(1)
+    await sleep(1) // a necessary hack, works even with sleep(0)
     menu.removeClass('notransition')
 }
 

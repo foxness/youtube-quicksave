@@ -74,13 +74,14 @@ body {
 #playlist-selector legend {
     margin-left: 6px;
     font-size: 14px;
-    color: #646f87;
+    color: rgba(45, 60, 93, 0.7);
 }
 
 #playlist-selector fieldset {
     position: relative;
     margin: 14px;
     padding: 10px;
+    margin-bottom: 0;
     /* border: 1px dotted #e8eaed;
     border-radius: 6px; */
     border: none;
@@ -143,6 +144,23 @@ textarea {
 
 label {
     font-size: 1rem;
+}
+
+#quicksave-log {
+    display: none;
+}
+
+#total-quicksaved {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px;
+    padding-top: 4px;
+    color: rgba(45, 60, 93, 0.6);
+    font-size: 12px;
+}
+
+#quicksave-count {
+    font-weight: bold;
 }
 
 /* --------------------------------------------------- */
