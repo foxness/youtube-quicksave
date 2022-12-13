@@ -1,8 +1,15 @@
+
+// --- MAIN -------------------------------------------------
+
+let logShown = false
+
 async function main() {
     await makePlaylistSelector()
     await makeQuicksaveLog()
     await makeQuicksaveCount()
 }
+
+// --- BUILDER METHODS --------------------------------------
 
 async function makePlaylistSelector() {
     let playlists = await chrome.runtime.sendMessage({ kind: 'getPlaylists' })
@@ -53,17 +60,7 @@ async function makeQuicksaveCount() {
     $('#quicksave-count').text(quicksaveCount)
 }
 
-async function closeMenuWithoutAnimation() {
-    let menu = $('.menu')
-    menu.addClass('notransition')
-    $('.toggler').click()
-    await sleep(1) // a necessary hack, works even with sleep(0)
-    menu.removeClass('notransition')
-}
-
-function sleep(duration) {
-    return new Promise(resolve => setTimeout(resolve, duration))
-}
+// --- LISTENER METHODS -------------------------------------
 
 $(window).on('load', main)
 
@@ -80,7 +77,8 @@ $('#change-shortcuts').click(async () => {
     closeMenuWithoutAnimation()
 })
 
-$('#show-log').click(async () => {
+$('#toggle-log').click(async () => {
+    toggleLog()
     closeMenuWithoutAnimation()
 })
 
@@ -90,3 +88,43 @@ $('#sign-out').click(async () => {
         window.close()
     }
 })
+
+// --- MISC METHODS -----------------------------------------
+
+function toggleLog() {
+    let toggleText
+    let animationProps
+
+    if (logShown) {
+        toggleText = 'Show Log'
+        animationProps = {
+            height: 0,
+            opacity: 0,
+            margin: '0'
+        }
+    } else {
+        toggleText = 'Hide Log'
+        animationProps = {
+            height: 250,
+            opacity: 1,
+            margin: '10px 0'
+        }
+    }
+
+    $('#toggle-log').text(toggleText)
+    $('#quicksave-log').animate(animationProps, 200)
+
+    logShown = !logShown
+}
+
+async function closeMenuWithoutAnimation() {
+    let menu = $('.menu')
+    menu.addClass('notransition')
+    $('.toggler').click()
+    await sleep(1) // a necessary hack, works even with sleep(0)
+    menu.removeClass('notransition')
+}
+
+function sleep(duration) {
+    return new Promise(resolve => setTimeout(resolve, duration))
+}

@@ -136,18 +136,24 @@ body {
 
 /* --------------------------------------------------- */
 
-textarea {
-    font-family: monospace;
-    font-size: 0.5rem;
-    width: 100%;
-}
-
-label {
-    font-size: 1rem;
-}
-
 #quicksave-log {
-    display: none;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    padding: 0 6px;
+}
+
+#quicksave-log textarea {
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    border: 2px dashed rgba(45, 60, 93, 0.5);
+    border-radius: 10px;
+    resize: none;
+    outline: none;
+    color: #2d3c5d;
+    font-size: 8px;
+    font-family: monospace;
 }
 
 #total-quicksaved {
