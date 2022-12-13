@@ -16,7 +16,7 @@ async function makePlaylistSelector() {
 
     let container = $('#playlist-selector')
     let fieldset = $('<fieldset>')
-    
+
     let legend = $('<legend>').text('Quicksave Playlist:')
     fieldset.append(legend)
 
@@ -30,12 +30,12 @@ async function makePlaylistSelector() {
     select.change(async () => {
         let optionSelected = $('option:selected', select)
         let playlistId = select.val()
-        
+
         let message = {
             kind: 'playlistSelect',
             playlistId: playlistId
         }
-        
+
         await chrome.runtime.sendMessage(message)
         console.log(`selected ${optionSelected.text()}`)
     })
@@ -50,7 +50,7 @@ async function makeQuicksaveLog() {
 
     let container = $('#quicksave-log')
     let textarea = $('<textarea>', { rows: 10 }).prop('readonly', true).text(quicksaveLog)
-    
+
     container.append(textarea)
     textarea.scrollTop(textarea[0].scrollHeight)
 }
@@ -63,6 +63,17 @@ async function makeQuicksaveCount() {
 // --- LISTENER METHODS -------------------------------------
 
 $(window).on('load', main)
+
+$(document).click((event) => {
+    let menu = $('.menu')
+
+    let menuOpened = $('.toggler').prop('checked')
+    let clickedOnMenu = event.target == menu[0] || menu.has(event.target).length > 0 || event.target == $('.toggler')[0]
+
+    if (menuOpened && !clickedOnMenu) {
+        closeMenu()
+    }
+})
 
 $('#quicksave').click(async () => {
     let response = await chrome.runtime.sendMessage({ kind: 'quicksave' })
@@ -120,9 +131,15 @@ function toggleLog() {
 async function closeMenuWithoutAnimation() {
     let menu = $('.menu')
     menu.addClass('notransition')
-    $('.toggler').click()
+
+    closeMenu()
+
     await sleep(1) // a necessary hack, works even with sleep(0)
     menu.removeClass('notransition')
+}
+
+async function closeMenu() {
+    $('.toggler').prop('checked', false)
 }
 
 function sleep(duration) {
