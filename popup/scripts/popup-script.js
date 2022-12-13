@@ -3,7 +3,10 @@
 
 let logShown = false
 
+$(document).ready(main)
+
 async function main() {
+    setupListeners()
     await makePlaylistSelector()
     await makeQuicksaveLog()
     await makeQuicksaveCount()
@@ -62,43 +65,43 @@ async function makeQuicksaveCount() {
 
 // --- LISTENER METHODS -------------------------------------
 
-$(window).on('load', main)
+function setupListeners() {
+    $(document).click((event) => {
+        let menu = $('.menu')
 
-$(document).click((event) => {
-    let menu = $('.menu')
+        let menuOpened = $('.toggler').prop('checked')
+        let clickedOnMenu = event.target == menu[0] || menu.has(event.target).length > 0 || event.target == $('.toggler')[0]
 
-    let menuOpened = $('.toggler').prop('checked')
-    let clickedOnMenu = event.target == menu[0] || menu.has(event.target).length > 0 || event.target == $('.toggler')[0]
+        if (menuOpened && !clickedOnMenu) {
+            closeMenu()
+        }
+    })
 
-    if (menuOpened && !clickedOnMenu) {
-        closeMenu()
-    }
-})
+    $('#quicksave').click(async () => {
+        let response = await chrome.runtime.sendMessage({ kind: 'quicksave' })
+    })
 
-$('#quicksave').click(async () => {
-    let response = await chrome.runtime.sendMessage({ kind: 'quicksave' })
-})
+    $('#deduplicate-playlist').click(async () => {
+        chrome.runtime.sendMessage({ kind: 'deduplicatePlaylist' }) // intentionally no await because it's long
+        closeMenuWithoutAnimation()
+    })
 
-$('#deduplicate-playlist').click(async () => {
-    chrome.runtime.sendMessage({ kind: 'deduplicatePlaylist' }) // intentionally no await because it's long
-    closeMenuWithoutAnimation()
-})
+    $('#change-shortcuts').click(async () => {
+        closeMenuWithoutAnimation()
+    })
 
-$('#change-shortcuts').click(async () => {
-    closeMenuWithoutAnimation()
-})
+    $('#toggle-log').click(async () => {
+        toggleLog()
+        closeMenuWithoutAnimation()
+    })
 
-$('#toggle-log').click(async () => {
-    toggleLog()
-    closeMenuWithoutAnimation()
-})
-
-$('#sign-out').click(async () => {
-    let response = await chrome.runtime.sendMessage({ kind: 'signOut' })
-    if (response == 'success') {
-        window.close()
-    }
-})
+    $('#sign-out').click(async () => {
+        let response = await chrome.runtime.sendMessage({ kind: 'signOut' })
+        if (response == 'success') {
+            window.close()
+        }
+    })
+}
 
 // --- MISC METHODS -----------------------------------------
 
@@ -138,7 +141,7 @@ async function closeMenuWithoutAnimation() {
     menu.removeClass('notransition')
 }
 
-async function closeMenu() {
+function closeMenu() {
     $('.toggler').prop('checked', false)
 }
 
