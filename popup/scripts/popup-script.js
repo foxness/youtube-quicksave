@@ -86,18 +86,25 @@ function setupListeners() {
         let response = await chrome.runtime.sendMessage({ kind: 'quicksave' })
     })
 
-    $('#deduplicate-playlist').click(async () => {
+    $('#deduplicate-playlist').click(() => {
         chrome.runtime.sendMessage({ kind: 'deduplicatePlaylist' }) // intentionally no await because it's long
         closeMenuWithoutAnimation()
     })
 
-    $('#change-shortcuts').click(async () => {
+    $('#change-shortcuts').click(() => {
         openShortcuts()
         closeMenuWithoutAnimation()
     })
 
-    $('#toggle-log').click(async () => {
+    $('#toggle-log').click(() => {
         toggleLog()
+
+        let message = {
+            kind: 'setShouldShowLog',
+            shouldShowLog: logShown
+        }
+
+        chrome.runtime.sendMessage(message) // intentionally no await
         closeMenuWithoutAnimation()
     })
 

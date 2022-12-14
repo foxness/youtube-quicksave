@@ -50,9 +50,13 @@ async function handleMessage(message) {
             return manager.isSignedIn()
     }
 
-    if (message.kind == 'playlistSelect') {
-        let id = message.playlistId
-        return await manager.selectPlaylist(id)
+    switch (message.kind) {
+        case 'playlistSelect':
+            let id = message.playlistId
+            return await manager.selectPlaylist(id)
+        case 'setShouldShowLog':
+            let shouldShowLog = message.shouldShowLog
+            return await manager.setShouldShowLog(shouldShowLog)
     }
 
     return 'fail'

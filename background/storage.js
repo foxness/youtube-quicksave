@@ -39,7 +39,7 @@ class Storage {
 
     async getShouldShowLog() {
         let shouldShowLog = await this.getValue(Storage.KEY_SHOULD_SHOW_LOG)
-        return shouldShowLog ?? true
+        return shouldShowLog ?? false
     }
 
     // Setters
@@ -56,6 +56,10 @@ class Storage {
     async setLogger(logger) {
         let serialized = logger.getSerialized()
         await this.setValue(Storage.KEY_LOGGER, serialized, true)
+    }
+
+    async setShouldShowLog(shouldShowLog) {
+        await this.setValue(Storage.KEY_SHOULD_SHOW_LOG, shouldShowLog)
     }
 
     // Private methods

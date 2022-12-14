@@ -113,6 +113,10 @@ class QuicksaveManager {
         await this.serializeQuicksavePlaylistId()
     }
 
+    async setShouldShowLog(shouldShowLog) {
+        await this.storage.setShouldShowLog(shouldShowLog)
+    }
+
     async updatePopup() {
         let popup
 
