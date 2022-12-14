@@ -104,6 +104,10 @@ class QuicksaveManager {
         return this.logger.getQuicksaveCount()
     }
 
+    async getShouldShowLog() {
+        return await this.storage.getShouldShowLog()
+    }
+
     async selectPlaylist(playlistId) {
         this.quicksavePlaylistId = playlistId
         await this.serializeQuicksavePlaylistId()

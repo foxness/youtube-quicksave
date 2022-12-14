@@ -44,7 +44,9 @@ async function handleMessage(message) {
             return await manager.getQuicksaveLog()
         case 'getQuicksaveCount':
             return await manager.getQuicksaveCount()
-        case 'isSignedIn':
+        case 'getShouldShowLog':
+            return await manager.getShouldShowLog()
+        case 'isSignedIn': // todo: remove
             return manager.isSignedIn()
     }
 

@@ -50,12 +50,17 @@ async function makePlaylistSelector() {
 
 async function makeQuicksaveLog() {
     let quicksaveLog = await chrome.runtime.sendMessage({ kind: 'getQuicksaveLog' })
+    let shouldShowLog = await chrome.runtime.sendMessage({ kind: 'getShouldShowLog' })
 
     let container = $('#quicksave-log')
     let textarea = $('<textarea>', { rows: 10 }).prop('readonly', true).text(quicksaveLog)
 
     container.append(textarea)
     textarea.scrollTop(textarea[0].scrollHeight)
+
+    if (shouldShowLog) {
+        toggleLog(false)
+    }
 }
 
 async function makeQuicksaveCount() {
@@ -111,7 +116,7 @@ function openShortcuts() {
     chrome.tabs.create({ url: shortcutsUrl }) // intentionally no await
 }
 
-function toggleLog() {
+function toggleLog(animated = true) {
     let toggleText
     let animationProps
 
@@ -131,8 +136,10 @@ function toggleLog() {
         }
     }
 
+    let duration = animated ? 200 : 0
+
     $('#toggle-log').text(toggleText)
-    $('#quicksave-log').animate(animationProps, 200)
+    $('#quicksave-log').animate(animationProps, duration)
 
     logShown = !logShown
 }
