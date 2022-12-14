@@ -8,6 +8,7 @@ class Storage {
     static KEY_YOUTUBE = 'youtube'
     static KEY_QUICKSAVE_PLAYLIST_ID = 'quicksavePlaylistId0'
     static KEY_LOGGER = 'log'
+    static KEY_SHOULD_SHOW_LOG = 'shouldShowLog'
 
     // Initialization
 
@@ -36,6 +37,11 @@ class Storage {
         return serialized != null ? Logger.fromSerialized(serialized) : new Logger()
     }
 
+    async getShouldShowLog() {
+        let shouldShowLog = await this.getValue(Storage.KEY_SHOULD_SHOW_LOG)
+        return shouldShowLog ?? false
+    }
+
     // Setters
 
     async setYoutube(youtube) {
@@ -50,6 +56,10 @@ class Storage {
     async setLogger(logger) {
         let serialized = logger.getSerialized()
         await this.setValue(Storage.KEY_LOGGER, serialized, true)
+    }
+
+    async setShouldShowLog(shouldShowLog) {
+        await this.setValue(Storage.KEY_SHOULD_SHOW_LOG, shouldShowLog)
     }
 
     // Private methods

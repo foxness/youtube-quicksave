@@ -44,13 +44,19 @@ async function handleMessage(message) {
             return await manager.getQuicksaveLog()
         case 'getQuicksaveCount':
             return await manager.getQuicksaveCount()
-        case 'isSignedIn':
+        case 'getShouldShowLog':
+            return await manager.getShouldShowLog()
+        case 'isSignedIn': // todo: remove
             return manager.isSignedIn()
     }
 
-    if (message.kind == 'playlistSelect') {
-        let id = message.playlistId
-        return await manager.selectPlaylist(id)
+    switch (message.kind) {
+        case 'playlistSelect':
+            let id = message.playlistId
+            return await manager.selectPlaylist(id)
+        case 'setShouldShowLog':
+            let shouldShowLog = message.shouldShowLog
+            return await manager.setShouldShowLog(shouldShowLog)
     }
 
     return 'fail'

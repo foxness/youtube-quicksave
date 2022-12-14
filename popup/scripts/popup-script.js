@@ -50,12 +50,17 @@ async function makePlaylistSelector() {
 
 async function makeQuicksaveLog() {
     let quicksaveLog = await chrome.runtime.sendMessage({ kind: 'getQuicksaveLog' })
+    let shouldShowLog = await chrome.runtime.sendMessage({ kind: 'getShouldShowLog' })
 
     let container = $('#quicksave-log')
     let textarea = $('<textarea>', { rows: 10 }).prop('readonly', true).text(quicksaveLog)
 
     container.append(textarea)
     textarea.scrollTop(textarea[0].scrollHeight)
+
+    if (shouldShowLog) {
+        toggleLog(false)
+    }
 }
 
 async function makeQuicksaveCount() {
@@ -81,18 +86,25 @@ function setupListeners() {
         let response = await chrome.runtime.sendMessage({ kind: 'quicksave' })
     })
 
-    $('#deduplicate-playlist').click(async () => {
+    $('#deduplicate-playlist').click(() => {
         chrome.runtime.sendMessage({ kind: 'deduplicatePlaylist' }) // intentionally no await because it's long
         closeMenuWithoutAnimation()
     })
 
-    $('#change-shortcuts').click(async () => {
+    $('#change-shortcuts').click(() => {
         openShortcuts()
         closeMenuWithoutAnimation()
     })
 
-    $('#toggle-log').click(async () => {
+    $('#toggle-log').click(() => {
         toggleLog()
+
+        let message = {
+            kind: 'setShouldShowLog',
+            shouldShowLog: logShown
+        }
+
+        chrome.runtime.sendMessage(message) // intentionally no await
         closeMenuWithoutAnimation()
     })
 
@@ -111,7 +123,7 @@ function openShortcuts() {
     chrome.tabs.create({ url: shortcutsUrl }) // intentionally no await
 }
 
-function toggleLog() {
+function toggleLog(animated = true) {
     let toggleText
     let animationProps
 
@@ -131,8 +143,10 @@ function toggleLog() {
         }
     }
 
+    let duration = animated ? 200 : 0
+
     $('#toggle-log').text(toggleText)
-    $('#quicksave-log').animate(animationProps, 200)
+    $('#quicksave-log').animate(animationProps, duration)
 
     logShown = !logShown
 }
