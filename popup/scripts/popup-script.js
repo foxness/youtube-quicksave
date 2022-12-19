@@ -91,7 +91,15 @@ function handleDocumentClicked(event) {
 }
 
 async function handleQuicksaveButtonClicked() {
-    let response = await chrome.runtime.sendMessage({ kind: 'quicksave' })
+    await chrome.runtime.sendMessage({ kind: 'quicksave' })
+
+    chrome.runtime.sendMessage({ kind: 'getQuicksaveLog' }).then((quicksaveLog) => {
+        $('#quicksave-log textarea').text(quicksaveLog)
+    })
+
+    chrome.runtime.sendMessage({ kind: 'getQuicksaveCount' }).then((quicksaveCount) => {
+        $('#quicksave-count').text(quicksaveCount)
+    })
 }
 
 function handleDeduplicatePlaylistButtonClicked() {
