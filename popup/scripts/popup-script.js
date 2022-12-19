@@ -71,49 +71,56 @@ async function makeQuicksaveCount() {
 // --- LISTENER METHODS -------------------------------------
 
 function setupListeners() {
-    $(document).click((event) => {
-        let menu = $('.menu')
+    $(document).click(handleDocumentClicked)
+    $('#quicksave').click(handleQuicksaveButtonClicked)
+    $('#deduplicate-playlist').click(handleDeduplicatePlaylistButtonClicked)
+    $('#change-shortcuts').click(handleChangeShortcutsButtonClicked)
+    $('#toggle-log').click(handleToggleLogButtonClicked)
+    $('#sign-out').click(handleSignOutButtonClicked)
+}
 
-        let menuOpened = $('.toggler').prop('checked')
-        let clickedOnMenu = event.target == menu[0] || menu.has(event.target).length > 0 || event.target == $('.toggler')[0]
+function handleDocumentClicked(event) {
+    let menu = $('.menu')
 
-        if (menuOpened && !clickedOnMenu) {
-            closeMenu()
-        }
-    })
+    let menuOpened = $('.toggler').prop('checked')
+    let clickedOnMenu = event.target == menu[0] || menu.has(event.target).length > 0 || event.target == $('.toggler')[0]
 
-    $('#quicksave').click(async () => {
-        let response = await chrome.runtime.sendMessage({ kind: 'quicksave' })
-    })
+    if (menuOpened && !clickedOnMenu) {
+        closeMenu()
+    }
+}
 
-    $('#deduplicate-playlist').click(() => {
-        chrome.runtime.sendMessage({ kind: 'deduplicatePlaylist' }) // intentionally no await because it's long
-        closeMenuWithoutAnimation()
-    })
+async function handleQuicksaveButtonClicked() {
+    let response = await chrome.runtime.sendMessage({ kind: 'quicksave' })
+}
 
-    $('#change-shortcuts').click(() => {
-        openShortcuts()
-        closeMenuWithoutAnimation()
-    })
+function handleDeduplicatePlaylistButtonClicked() {
+    chrome.runtime.sendMessage({ kind: 'deduplicatePlaylist' }) // intentionally no await because it's long
+    closeMenuWithoutAnimation()
+}
 
-    $('#toggle-log').click(() => {
-        toggleLog()
+function handleChangeShortcutsButtonClicked() {
+    openShortcuts()
+    closeMenuWithoutAnimation()
+}
 
-        let message = {
-            kind: 'setShouldShowLog',
-            shouldShowLog: logShown
-        }
+function handleToggleLogButtonClicked() {
+    toggleLog()
 
-        chrome.runtime.sendMessage(message) // intentionally no await
-        closeMenuWithoutAnimation()
-    })
+    let message = {
+        kind: 'setShouldShowLog',
+        shouldShowLog: logShown
+    }
 
-    $('#sign-out').click(async () => {
-        let response = await chrome.runtime.sendMessage({ kind: 'signOut' })
-        if (response == 'success') {
-            window.close()
-        }
-    })
+    chrome.runtime.sendMessage(message) // intentionally no await
+    closeMenuWithoutAnimation()
+}
+
+async function handleSignOutButtonClicked() {
+    let response = await chrome.runtime.sendMessage({ kind: 'signOut' })
+    if (response == 'success') {
+        window.close()
+    }
 }
 
 // --- MISC METHODS -----------------------------------------
