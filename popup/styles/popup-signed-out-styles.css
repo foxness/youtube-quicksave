@@ -1,6 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&display=swap');
+
+* {
+    /* border: 1px solid black; */
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     width: 300px;
     height: auto;
+    font-family: "Open Sans", "Roboto", sans-serif;
+    color: #2d3c5d;
+}
+
+h2 {
+    text-align: center;
+    margin: 16px;
 }
 
 div {
@@ -8,26 +25,23 @@ div {
     justify-content: center;
 }
 
-h2 {
-    text-align: center;
-    font-family: nunito, roboto, sans-serif;
+#sign-in {
+    width: 70%;
+    margin: 24px;
+    margin-top: 12px;
 }
 
 .button-24 {
-    width: fit-content;
-    margin: 10px;
-}
-
-.button-24 {
-    background: #274690;
-    border: 2px solid #274690;
+    background: #126ee9;
+    border: 2px solid #126ee9;
     border-radius: 6px;
-    box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
+    /* box-shadow: 3px 8px 16px 0px rgba(18, 110, 233, 0.4); */
+    box-shadow: 3px 10px 20px 0px rgba(18, 110, 233, 0.3);
     box-sizing: border-box;
     color: #FFFFFF;
     cursor: pointer;
     display: inline-block;
-    font-family: nunito, roboto, sans-serif;
+    font-family: "Nunito", "Open Sans", "Roboto", sans-serif;
     font-size: 16px;
     font-weight: 800;
     line-height: 16px;
@@ -38,7 +52,6 @@ h2 {
     text-rendering: geometricprecision;
     text-transform: none;
     user-select: none;
-    -webkit-user-select: none;
     touch-action: manipulation;
     vertical-align: middle;
 }
@@ -47,7 +60,7 @@ h2 {
 .button-24:active {
     background-color: initial;
     background-position: 0 0;
-    color: #274690;
+    color: #126ee9;
 }
 
 .button-24:active {
