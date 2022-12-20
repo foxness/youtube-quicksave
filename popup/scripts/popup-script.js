@@ -2,6 +2,7 @@
 // --- MAIN -------------------------------------------------
 
 let logShown = false
+let playlistId = null
 
 $(document).ready(main)
 
@@ -17,22 +18,20 @@ async function main() {
 async function makePlaylistSelector() {
     let playlists = await chrome.runtime.sendMessage({ kind: 'getPlaylists' })
 
-    let container = $('#playlist-selector')
-    let fieldset = $('<fieldset>')
-
-    let legend = $('<legend>').text('Quicksave Playlist:')
-    fieldset.append(legend)
-
-    let select = $('<select>')
+    let select = $('#playlist-selector select')
 
     playlists.forEach(p => {
+        if (p.quicksave) {
+            playlistId = p.id
+        }
+
         let option = $('<option>', { value: p.id }).text(p.title).prop('selected', p.quicksave)
         select.append(option)
     })
 
     select.change(async () => {
         let optionSelected = $('option:selected', select)
-        let playlistId = select.val()
+        playlistId = select.val()
 
         let message = {
             kind: 'playlistSelect',
@@ -42,10 +41,6 @@ async function makePlaylistSelector() {
         await chrome.runtime.sendMessage(message)
         console.log(`selected ${optionSelected.text()}`)
     })
-
-    fieldset.append(select)
-    fieldset.append('<svg><use xlink:href="#select-arrow-down"></use></svg>')
-    container.append(fieldset)
 }
 
 async function makeQuicksaveLog() {
@@ -73,6 +68,7 @@ async function makeQuicksaveCount() {
 function setupListeners() {
     $(document).click(handleDocumentClicked)
     $('#quicksave').click(handleQuicksaveButtonClicked)
+    $('#open-playlist').click(handleOpenPlaylistButtonClicked)
     $('#deduplicate-playlist').click(handleDeduplicatePlaylistButtonClicked)
     $('#change-shortcuts').click(handleChangeShortcutsButtonClicked)
     $('#toggle-log').click(handleToggleLogButtonClicked)
@@ -100,6 +96,11 @@ async function handleQuicksaveButtonClicked() {
     chrome.runtime.sendMessage({ kind: 'getQuicksaveCount' }).then((quicksaveCount) => {
         $('#quicksave-count').text(quicksaveCount)
     })
+}
+
+function handleOpenPlaylistButtonClicked() {
+    let playlistUrl = `https://www.youtube.com/playlist?list=${playlistId}`
+    window.open(playlistUrl)
 }
 
 function handleDeduplicatePlaylistButtonClicked() {

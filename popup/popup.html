@@ -30,11 +30,22 @@
 
     <div id="button-container">
         <button id="quicksave" class="button-24">Quicksave</button>
-        <!-- <button id="sign-out" class="button-24">Sign Out</button> -->
-        <!-- <button id="dew-it" class="button-24">Deduplicate</button> -->
     </div>
 
-    <div id="playlist-selector"></div>
+    <div id="playlist-selector">
+        <fieldset>
+            <legend>Quicksave Playlist:</legend>
+            <div class="selector-row">
+                <div class="select-container">
+                    <select></select>
+                    <svg>
+                        <use xlink:href="#select-arrow-down"></use>
+                    </svg>
+                </div>
+                <button id="open-playlist" class="button-24">Open</button>
+            </div>
+        </fieldset>
+    </div>
 
     <div id="quicksave-log"></div>
 
