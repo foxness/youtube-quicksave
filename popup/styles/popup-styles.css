@@ -82,9 +82,9 @@ body {
     margin: 14px;
     padding: 10px;
     margin-bottom: 0;
-    /* border: 1px dotted #e8eaed;
-    border-radius: 6px; */
-    border: none;
+    border: 1px dotted #e8eaed;
+    border-radius: 6px;
+    /* border: none; */
 }
 
 #playlist-selector select {
