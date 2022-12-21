@@ -21,52 +21,45 @@ class Logger {
     // Public methods
 
     logQuicksave(data) {
-        let date = this.formatDate(new Date())
-        let logItem = `[${date}] `
-
         let videoId = data.videoId
         let videoTitle = data.videoTitle
         let playlistTitle = data.playlistTitle
 
+        let logItem
         if (data.error) {
             switch (data.error) {
                 case 'alreadyInPlaylist':
-                    logItem += `[ALREADY_IN_PLAYLIST] [${videoId}: ${videoTitle}] in [${playlistTitle}]\n`
+                    logItem = `[ALREADY_IN_PLAYLIST] [${videoId}: ${videoTitle}] in [${playlistTitle}]`
                     break
                 default:
-                    logItem += `[UNEXPECTED_ERROR] ${data.error}\n`
+                    logItem = `[UNEXPECTED_ERROR] ${data.error}`
                     console.log(data)
                     throw 'Unexpected error'
             }
         } else {
-            logItem += `[QS] [${videoId}: ${videoTitle}] was quicksaved to [${playlistTitle}]\n`
+            logItem = `[QS] [${videoId}: ${videoTitle}] was quicksaved to [${playlistTitle}]`
             this.quicksaveCount += 1
         }
 
         if (!data.error || this.SHOULD_LOG_ERRORS) {
-            this.log += logItem
+            this.loggy(logItem)
         }
-
-        console.log(logItem)
     }
 
     logDeduplication(data) {
-        let date = this.formatDate(new Date())
-        let logItem = `[${date}] `
-
         let playlistTitle = data.playlistTitle
         let playlistCount = data.playlistCount
         let deletedCount = data.deletedCount
 
+        let logItem
         if (deletedCount == 0) {
-            logItem += `[DP] no duplicate videos found in [${playlistTitle}]\n`
+            logItem = `[DP] no duplicate videos found in [${playlistTitle}]`
         } else {
             let vidText = `${deletedCount} duplicate video${deletedCount == 1 ? '' : 's'}`
-            logItem += `[DP] removed ${vidText} out of ${playlistCount} from [${playlistTitle}]\n`
+            logItem = `[DP] removed ${vidText} out of ${playlistCount} from [${playlistTitle}]`
         }
 
-        this.log += logItem
-        console.log(logItem)
+        this.loggy(logItem)
     }
 
     getLog() {
@@ -87,6 +80,13 @@ class Logger {
     }
 
     // Private methods
+
+    loggy(item) {
+        let date = this.formatDate(new Date())
+        let logItem = `[${date}] ${item}\n`
+        this.log += logItem
+        console.log(logItem)
+    }
 
     formatDate(date) {
         let year = date.getFullYear()
