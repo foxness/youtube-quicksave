@@ -11,7 +11,7 @@ class Logger {
 
     static fromSerialized(serialized) {
         let parsed = JSON.parse(serialized)
-        
+
         let log = parsed.log
         let quicksaveCount = parsed.quicksaveCount
 
@@ -46,7 +46,26 @@ class Logger {
         if (!data.error || this.SHOULD_LOG_ERRORS) {
             this.log += logItem
         }
-        
+
+        console.log(logItem)
+    }
+
+    logDeduplication(data) {
+        let date = this.formatDate(new Date())
+        let logItem = `[${date}] `
+
+        let playlistTitle = data.playlistTitle
+        let playlistCount = data.playlistCount
+        let deletedCount = data.deletedCount
+
+        if (deletedCount == 0) {
+            logItem += `[DP] no duplicate videos found in [${playlistTitle}]\n`
+        } else {
+            let vidText = `${deletedCount} duplicate video${deletedCount == 1 ? '' : 's'}`
+            logItem += `[DP] removed ${vidText} out of ${playlistCount} from [${playlistTitle}]\n`
+        }
+
+        this.log += logItem
         console.log(logItem)
     }
 

@@ -79,7 +79,9 @@ class QuicksaveManager {
     }
 
     async deduplicatePlaylist() {
-        await this.youtube.deduplicatePlaylist(this.quicksavePlaylistId)
+        let deduplicationData = await this.youtube.deduplicatePlaylist(this.quicksavePlaylistId)
+
+        await this.logDeduplication(deduplicationData)
         await this.serializeYoutube()
     }
 
@@ -209,6 +211,11 @@ class QuicksaveManager {
 
     async logQuicksave(data) {
         this.logger.logQuicksave(data)
+        await this.serializeLogger()
+    }
+
+    async logDeduplication(data) {
+        this.logger.logDeduplication(data)
         await this.serializeLogger()
     }
 

@@ -88,8 +88,18 @@ class Youtube {
         }
 
         await this.removeVideosFromPlaylist(videosToDelete.map(v => v.itemId))
+
+        let deletedCount = videosToDelete.length
+        let playlistCount = videos.length
+
         console.log(`deleted ${videosToDelete.length} duplicate videos:`)
         console.log(videosToDelete)
+
+        return {
+            playlistTitle: this.getPlaylistTitle(playlistId),
+            playlistCount: playlistCount,
+            deletedCount: deletedCount
+        }
     }
 
     async getPlaylists() {
@@ -320,7 +330,7 @@ class Youtube {
             videoId: videoId,
             videoTitle: json.snippet.title,
             playlistId: playlistId,
-            playlistTitle: this.playlists.find(p => p.id == playlistId).title
+            playlistTitle: this.getPlaylistTitle(playlistId)
         }
     }
 
@@ -400,7 +410,7 @@ class Youtube {
             videoId: videoId,
             videoTitle: json.items[0].snippet.title,
             playlistId: playlistId,
-            playlistTitle: this.playlists.find(p => p.id == playlistId).title
+            playlistTitle: this.getPlaylistTitle(playlistId)
         }
     }
 
@@ -491,6 +501,10 @@ class Youtube {
 
     getRandomState() {
         return Math.random().toString(36).substring(2, 15)
+    }
+
+    getPlaylistTitle(playlistId) {
+        return this.playlists.find(p => p.id == playlistId).title
     }
 }
 
