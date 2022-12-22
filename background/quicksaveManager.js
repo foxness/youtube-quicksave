@@ -98,12 +98,11 @@ class QuicksaveManager {
         })
     }
 
-    async getQuicksaveLog() {
-        return this.logger.getLog()
-    }
-
-    async getQuicksaveCount() {
-        return this.logger.getQuicksaveCount()
+    async getLogAndQuicksaveCount() {
+        return {
+            log: this.logger.getLog(),
+            quicksaveCount: this.logger.getQuicksaveCount()
+        }
     }
 
     async getShouldShowLog() {
@@ -175,6 +174,10 @@ class QuicksaveManager {
         return hoverUrl
     }
 
+    sendNewLogAvailable() {
+        chrome.runtime.sendMessage({ kind: 'newLogAvailable' }) // intentionally no await
+    }
+
     // Misc
 
     async tryQuicksave(url, tab) {
@@ -198,8 +201,8 @@ class QuicksaveManager {
         // await sleep(2000)
 
         let quicksaveData = await this.youtube.addToPlaylist(videoId, this.quicksavePlaylistId)
-        await this.serializeYoutube()
         await this.logQuicksave(quicksaveData)
+        await this.serializeYoutube()
 
         this.sendQuicksaveDone(tab, quicksaveId, quicksaveData)
     }
@@ -212,11 +215,13 @@ class QuicksaveManager {
     async logQuicksave(data) {
         this.logger.logQuicksave(data)
         await this.serializeLogger()
+        this.sendNewLogAvailable()
     }
 
     async logDeduplication(data) {
         this.logger.logDeduplication(data)
         await this.serializeLogger()
+        this.sendNewLogAvailable()
     }
 
     async getCurrentTab() {
