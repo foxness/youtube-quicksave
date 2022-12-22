@@ -40,10 +40,8 @@ async function handleMessage(message) {
             return await manager.deduplicatePlaylist()
         case 'getPlaylists':
             return await manager.getPlaylists()
-        case 'getQuicksaveLog':
-            return await manager.getQuicksaveLog()
-        case 'getQuicksaveCount':
-            return await manager.getQuicksaveCount()
+        case 'getLogAndQuicksaveCount':
+            return await manager.getLogAndQuicksaveCount()
         case 'getShouldShowLog':
             return await manager.getShouldShowLog()
         case 'isSignedIn': // todo: remove

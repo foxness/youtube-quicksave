@@ -9,8 +9,7 @@ $(document).ready(main)
 async function main() {
     setupListeners()
     await makePlaylistSelector()
-    await makeQuicksaveLog()
-    await makeQuicksaveCount()
+    await makeLogAndQuicksaveCount()
 }
 
 // --- BUILDER METHODS --------------------------------------
@@ -43,12 +42,20 @@ async function makePlaylistSelector() {
     })
 }
 
-async function makeQuicksaveLog() {
-    let quicksaveLog = await chrome.runtime.sendMessage({ kind: 'getQuicksaveLog' })
+async function makeLogAndQuicksaveCount() {
+    let data = await chrome.runtime.sendMessage({ kind: 'getLogAndQuicksaveCount' })
+    let log = data.log
+    let quicksaveCount = data.quicksaveCount
+
+    this.makeLog(log) // intentionally no await
+    this.makeQuicksaveCount(quicksaveCount) // intentionally no await
+}
+
+async function makeLog(log) {
     let shouldShowLog = await chrome.runtime.sendMessage({ kind: 'getShouldShowLog' })
 
     let container = $('#quicksave-log')
-    let textarea = $('<textarea>', { rows: 10 }).prop('readonly', true).text(quicksaveLog)
+    let textarea = $('<textarea>', { rows: 10 }).prop('readonly', true).text(log)
 
     container.append(textarea)
     textarea.scrollTop(textarea[0].scrollHeight)
@@ -58,8 +65,7 @@ async function makeQuicksaveLog() {
     }
 }
 
-async function makeQuicksaveCount() {
-    let quicksaveCount = await chrome.runtime.sendMessage({ kind: 'getQuicksaveCount' })
+async function makeQuicksaveCount(quicksaveCount) {
     $('#quicksave-count').text(quicksaveCount)
 }
 
@@ -89,13 +95,12 @@ function handleDocumentClicked(event) {
 async function handleQuicksaveButtonClicked() {
     await chrome.runtime.sendMessage({ kind: 'quicksave' })
 
-    chrome.runtime.sendMessage({ kind: 'getQuicksaveLog' }).then((quicksaveLog) => {
-        $('#quicksave-log textarea').text(quicksaveLog)
-    })
+    let data = await chrome.runtime.sendMessage({ kind: 'getLogAndQuicksaveCount' })
+    let log = data.log
+    let quicksaveCount = data.quicksaveCount
 
-    chrome.runtime.sendMessage({ kind: 'getQuicksaveCount' }).then((quicksaveCount) => {
-        $('#quicksave-count').text(quicksaveCount)
-    })
+    $('#quicksave-log textarea').text(log)
+    $('#quicksave-count').text(quicksaveCount)
 }
 
 function handleOpenPlaylistButtonClicked() {

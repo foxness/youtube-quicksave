@@ -98,12 +98,11 @@ class QuicksaveManager {
         })
     }
 
-    async getQuicksaveLog() {
-        return this.logger.getLog()
-    }
-
-    async getQuicksaveCount() {
-        return this.logger.getQuicksaveCount()
+    async getLogAndQuicksaveCount() {
+        return {
+            log: this.logger.getLog(),
+            quicksaveCount: this.logger.getQuicksaveCount()
+        }
     }
 
     async getShouldShowLog() {
