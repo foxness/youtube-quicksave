@@ -53,7 +53,7 @@ class Logger {
 
         let logItem
         if (deletedCount == 0) {
-            logItem = `[DP] no duplicate videos found in [${playlistTitle}]`
+            logItem = `[NO_DP] no duplicate videos found in [${playlistTitle}]`
         } else {
             let vidText = `${deletedCount} duplicate video${deletedCount == 1 ? '' : 's'}`
             logItem = `[DP] removed ${vidText} out of ${playlistCount} from [${playlistTitle}]`
