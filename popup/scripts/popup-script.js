@@ -79,6 +79,19 @@ function setupListeners() {
     $('#change-shortcuts').click(handleChangeShortcutsButtonClicked)
     $('#toggle-log').click(handleToggleLogButtonClicked)
     $('#sign-out').click(handleSignOutButtonClicked)
+
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        handleMessage(message).then(sendResponse)
+        return true // return true to indicate we want to send a response asynchronously
+    })
+}
+
+async function handleMessage(message) {
+    if (message.kind != 'newLogAvailable') {
+        return
+    }
+
+    await updateLogAndQuicksaveCount()
 }
 
 function handleDocumentClicked(event) {
@@ -94,13 +107,6 @@ function handleDocumentClicked(event) {
 
 async function handleQuicksaveButtonClicked() {
     await chrome.runtime.sendMessage({ kind: 'quicksave' })
-
-    let data = await chrome.runtime.sendMessage({ kind: 'getLogAndQuicksaveCount' })
-    let log = data.log
-    let quicksaveCount = data.quicksaveCount
-
-    $('#quicksave-log textarea').text(log)
-    $('#quicksave-count').text(quicksaveCount)
 }
 
 function handleOpenPlaylistButtonClicked() {
@@ -138,6 +144,15 @@ async function handleSignOutButtonClicked() {
 }
 
 // --- MISC METHODS -----------------------------------------
+
+async function updateLogAndQuicksaveCount() {
+    let data = await chrome.runtime.sendMessage({ kind: 'getLogAndQuicksaveCount' })
+    let log = data.log
+    let quicksaveCount = data.quicksaveCount
+
+    $('#quicksave-log textarea').text(log)
+    $('#quicksave-count').text(quicksaveCount)
+}
 
 function openShortcuts() {
     let shortcutsUrl = 'chrome://extensions/shortcuts'
