@@ -264,32 +264,51 @@ class Youtube {
     }
 
     async fetchPlaylists() {
+        console.log(`started fetching playlists`)
+
         let urlQueryData = {
             part: 'snippet',
             mine: true,
-            maxResults: 50 // todo: fetch all pages using page token
+            maxResults: 50
         }
 
-        let requestParams = {
-            endpoint: this.ENDPOINT_PLAYLISTS,
-            method: 'GET',
-            isAuthed: true,
-            urlQueryData: urlQueryData,
-            bodyData: null
-        }
+        let fetchedPlaylists = []
+        let pageIndex = 0
+        while (true) {
+            console.log(`fetching page ${pageIndex}`)
 
-        let response = await this.executeRequest(requestParams)
-        let json = await response.json()
-
-        let result = json.items.map((a) => {
-            return {
-                id: a.id,
-                title: a.snippet.title
+            // this should be in the loop because urlQueryData is modified here
+            let requestParams = {
+                endpoint: this.ENDPOINT_PLAYLISTS,
+                method: 'GET',
+                isAuthed: true,
+                urlQueryData: urlQueryData,
+                bodyData: null
             }
-        })
 
-        this.playlists = result
-        console.log(`fetched ${this.playlists.length} playlists`)
+            let response = await this.executeRequest(requestParams)
+            let json = await response.json()
+
+            let pageItems = json.items.map((a) => {
+                return {
+                    id: a.id,
+                    title: a.snippet.title
+                }
+            })
+
+            fetchedPlaylists.push(...pageItems)
+
+            let nextPageToken = json.nextPageToken
+            if (!nextPageToken) {
+                break
+            }
+
+            urlQueryData.pageToken = nextPageToken
+            pageIndex++
+        }
+
+        console.log(`fetched ${fetchedPlaylists.length} playlists`)
+        this.playlists = fetchedPlaylists
     }
 
     async addToPlaylist(videoId, playlistId, preventDuplicate = true) {
@@ -346,8 +365,9 @@ class Youtube {
         let videos = []
         let pageIndex = 0
         while (true) {
-            console.log(`fetching page ${pageIndex + 1}`)
+            console.log(`fetching page ${pageIndex}`)
 
+            // this should be in the loop because urlQueryData is modified here
             let requestParams = {
                 endpoint: this.ENDPOINT_PLAYLIST_ITEMS,
                 method: 'GET',
@@ -378,8 +398,7 @@ class Youtube {
             pageIndex++
         }
 
-        console.log(`finished fetching playlist videos`)
-
+        console.log(`fetched ${videos.length} playlist videos`)
         return videos
     }
 
