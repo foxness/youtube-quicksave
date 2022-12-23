@@ -18,6 +18,7 @@ async function makePlaylistSelector() {
     let playlists = await chrome.runtime.sendMessage({ kind: 'getPlaylists' })
 
     let select = $('#playlist-selector select')
+    select.empty()
 
     playlists.forEach(p => {
         if (p.quicksave) {
@@ -88,11 +89,14 @@ function setupListeners() {
 }
 
 async function handleMessage(message) {
-    if (message.kind != 'newLogAvailable') {
-        return
+    switch (message.kind) {
+        case 'newLogAvailable':
+            refreshLogAndQuicksaveCount() // intentionally no await
+            break
+        case 'newPlaylistsAvailable':
+            refreshPlaylists() // intentionally no await
+            break
     }
-
-    await updateLogAndQuicksaveCount()
 }
 
 function handleDocumentClicked(event) {
@@ -151,13 +155,17 @@ async function handleSignOutButtonClicked() {
 
 // --- MISC METHODS -----------------------------------------
 
-async function updateLogAndQuicksaveCount() {
+async function refreshLogAndQuicksaveCount() {
     let data = await chrome.runtime.sendMessage({ kind: 'getLogAndQuicksaveCount' })
     let log = data.log
     let quicksaveCount = data.quicksaveCount
 
     $('#quicksave-log textarea').text(log)
     $('#quicksave-count').text(quicksaveCount)
+}
+
+async function refreshPlaylists() {
+    await makePlaylistSelector()
 }
 
 function openShortcuts() {

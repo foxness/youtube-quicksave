@@ -98,7 +98,7 @@ class QuicksaveManager {
         await this.serializeYoutube()
     }
 
-    async getPlaylists() {
+    getPlaylists() {
         let playlists = this.youtube.getPlaylists()
 
         return playlists.map((p) => {
