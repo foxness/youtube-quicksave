@@ -69,12 +69,13 @@ async function makeQuicksaveCount(quicksaveCount) {
     $('#quicksave-count').text(quicksaveCount)
 }
 
-// --- LISTENER METHODS -------------------------------------
+// --- HANDLER METHODS --------------------------------------
 
 function setupListeners() {
     $(document).click(handleDocumentClicked)
     $('#quicksave').click(handleQuicksaveButtonClicked)
     $('#open-playlist').click(handleOpenPlaylistButtonClicked)
+    $('#refresh-playlists').click(handleRefreshPlaylistsButtonClicked)
     $('#deduplicate-playlist').click(handleDeduplicatePlaylistButtonClicked)
     $('#change-shortcuts').click(handleChangeShortcutsButtonClicked)
     $('#toggle-log').click(handleToggleLogButtonClicked)
@@ -114,8 +115,13 @@ function handleOpenPlaylistButtonClicked() {
     window.open(playlistUrl)
 }
 
+function handleRefreshPlaylistsButtonClicked() {
+    chrome.runtime.sendMessage({ kind: 'refreshPlaylists' }) // intentionally no await
+    closeMenuWithoutAnimation()
+}
+
 function handleDeduplicatePlaylistButtonClicked() {
-    chrome.runtime.sendMessage({ kind: 'deduplicatePlaylist' }) // intentionally no await because it's long
+    chrome.runtime.sendMessage({ kind: 'deduplicatePlaylist' }) // intentionally no await
     closeMenuWithoutAnimation()
 }
 
