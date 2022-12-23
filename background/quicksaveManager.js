@@ -78,6 +78,19 @@ class QuicksaveManager {
         await this.tryQuicksave(url, tab)
     }
 
+    async refreshPlaylists() {
+        await this.youtube.fetchPlaylists()
+        await this.serializeYoutube()
+
+        let playlists = this.youtube.getPlaylists()
+        let quicksavePlaylistIsIntact = playlists.find(a => a.id == this.quicksavePlaylistId) != null
+        if (!quicksavePlaylistIsIntact) {
+            await this.setupQuicksavePlaylistIdUsingRecent()
+        }
+
+        this.sendNewPlaylistsAvailable()
+    }
+
     async deduplicatePlaylist() {
         let deduplicationData = await this.youtube.deduplicatePlaylist(this.quicksavePlaylistId)
 
@@ -85,9 +98,8 @@ class QuicksaveManager {
         await this.serializeYoutube()
     }
 
-    async getPlaylists() {
-        let playlists = await this.youtube.getPlaylists()
-        await this.serializeYoutube()
+    getPlaylists() {
+        let playlists = this.youtube.getPlaylists()
 
         return playlists.map((p) => {
             return {
@@ -178,6 +190,10 @@ class QuicksaveManager {
         chrome.runtime.sendMessage({ kind: 'newLogAvailable' }) // intentionally no await
     }
 
+    sendNewPlaylistsAvailable() {
+        chrome.runtime.sendMessage({ kind: 'newPlaylistsAvailable' }) // intentionally no await
+    }
+
     // Misc
 
     async tryQuicksave(url, tab) {
@@ -208,7 +224,8 @@ class QuicksaveManager {
     }
 
     async setupQuicksavePlaylistIdUsingRecent() {
-        this.quicksavePlaylistId = this.youtube.playlists[0].id
+        let recentPlaylist = this.youtube.getPlaylists()[0]
+        this.quicksavePlaylistId = recentPlaylist.id
         await this.serializeQuicksavePlaylistId()
     }
 

@@ -18,6 +18,7 @@ async function makePlaylistSelector() {
     let playlists = await chrome.runtime.sendMessage({ kind: 'getPlaylists' })
 
     let select = $('#playlist-selector select')
+    select.empty()
 
     playlists.forEach(p => {
         if (p.quicksave) {
@@ -69,12 +70,13 @@ async function makeQuicksaveCount(quicksaveCount) {
     $('#quicksave-count').text(quicksaveCount)
 }
 
-// --- LISTENER METHODS -------------------------------------
+// --- HANDLER METHODS --------------------------------------
 
 function setupListeners() {
     $(document).click(handleDocumentClicked)
     $('#quicksave').click(handleQuicksaveButtonClicked)
     $('#open-playlist').click(handleOpenPlaylistButtonClicked)
+    $('#refresh-playlists').click(handleRefreshPlaylistsButtonClicked)
     $('#deduplicate-playlist').click(handleDeduplicatePlaylistButtonClicked)
     $('#change-shortcuts').click(handleChangeShortcutsButtonClicked)
     $('#toggle-log').click(handleToggleLogButtonClicked)
@@ -87,11 +89,14 @@ function setupListeners() {
 }
 
 async function handleMessage(message) {
-    if (message.kind != 'newLogAvailable') {
-        return
+    switch (message.kind) {
+        case 'newLogAvailable':
+            refreshLogAndQuicksaveCount() // intentionally no await
+            break
+        case 'newPlaylistsAvailable':
+            refreshPlaylists() // intentionally no await
+            break
     }
-
-    await updateLogAndQuicksaveCount()
 }
 
 function handleDocumentClicked(event) {
@@ -114,8 +119,13 @@ function handleOpenPlaylistButtonClicked() {
     window.open(playlistUrl)
 }
 
+function handleRefreshPlaylistsButtonClicked() {
+    chrome.runtime.sendMessage({ kind: 'refreshPlaylists' }) // intentionally no await
+    closeMenuWithoutAnimation()
+}
+
 function handleDeduplicatePlaylistButtonClicked() {
-    chrome.runtime.sendMessage({ kind: 'deduplicatePlaylist' }) // intentionally no await because it's long
+    chrome.runtime.sendMessage({ kind: 'deduplicatePlaylist' }) // intentionally no await
     closeMenuWithoutAnimation()
 }
 
@@ -145,13 +155,17 @@ async function handleSignOutButtonClicked() {
 
 // --- MISC METHODS -----------------------------------------
 
-async function updateLogAndQuicksaveCount() {
+async function refreshLogAndQuicksaveCount() {
     let data = await chrome.runtime.sendMessage({ kind: 'getLogAndQuicksaveCount' })
     let log = data.log
     let quicksaveCount = data.quicksaveCount
 
     $('#quicksave-log textarea').text(log)
     $('#quicksave-count').text(quicksaveCount)
+}
+
+async function refreshPlaylists() {
+    await makePlaylistSelector()
 }
 
 function openShortcuts() {
