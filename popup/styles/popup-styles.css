@@ -73,7 +73,7 @@ body {
     background: #ffffff;
     color: #126ee9;
     border: 2px solid #126ee9;
-    box-shadow: 2px 6px 10px 0px rgba(18, 110, 233, 0.35);
+    box-shadow: 2px 6px 10px 0px rgba(18, 110, 233, 0.2);
 }
 
 .secondary-button:hover,
