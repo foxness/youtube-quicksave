@@ -69,6 +69,19 @@ body {
     opacity: .5;
 }
 
+.secondary-button {
+    background: #ffffff;
+    color: #126ee9;
+    border: 2px solid #126ee9;
+    box-shadow: 2px 6px 10px 0px rgba(18, 110, 233, 0.35);
+}
+
+.secondary-button:hover,
+.secondary-button:active {
+    background: #126ee9;
+    color: #ffffff;
+}
+
 /* --------------------------------------------------- */
 
 #playlist-selector legend {
@@ -150,7 +163,6 @@ body {
     height: 38px;
     padding: 0 10px;
     font-size: 14px;
-    box-shadow: 2px 6px 10px 0px rgba(18, 110, 233, 0.35);
 }
 
 /* --------------------------------------------------- */
