@@ -111,7 +111,7 @@ function handleDocumentClicked(event) {
 }
 
 async function handleQuicksaveButtonClicked() {
-    await chrome.runtime.sendMessage({ kind: 'quicksave' })
+    chrome.runtime.sendMessage({ kind: 'quicksave' }) // intentionally no await
 }
 
 function handleOpenPlaylistButtonClicked() {

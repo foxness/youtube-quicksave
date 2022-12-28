@@ -29,17 +29,31 @@ function handleInstall() {
 async function handleMessage(message) {
     let manager = await getQuicksaveManager()
 
-    switch (message.kind) {
+    switch (message.kind) { // no return value, intentionally no await
+        case 'quicksave':
+            manager.quicksaveCurrent()
+            return
+        case 'refreshPlaylists':
+            manager.refreshPlaylists()
+            return
+        case 'deduplicatePlaylist':
+            manager.deduplicatePlaylist()
+            return
+        case 'playlistSelect':
+            let id = message.playlistId
+            manager.selectPlaylist(id)
+            return
+        case 'setShouldShowLog':
+            let shouldShowLog = message.shouldShowLog
+            manager.setShouldShowLog(shouldShowLog)
+            return
+    }
+
+    switch (message.kind) { // has a return value
         case 'signIn':
             return await manager.signIn()
         case 'signOut':
             return await manager.signOut()
-        case 'quicksave':
-            return await manager.quicksaveCurrent()
-        case 'refreshPlaylists':
-            return await manager.refreshPlaylists()
-        case 'deduplicatePlaylist':
-            return await manager.deduplicatePlaylist()
         case 'getPlaylists':
             return await manager.getPlaylists()
         case 'getLogAndQuicksaveCount':
@@ -49,17 +63,6 @@ async function handleMessage(message) {
         case 'isSignedIn': // todo: remove
             return manager.isSignedIn()
     }
-
-    switch (message.kind) {
-        case 'playlistSelect':
-            let id = message.playlistId
-            return await manager.selectPlaylist(id)
-        case 'setShouldShowLog':
-            let shouldShowLog = message.shouldShowLog
-            return await manager.setShouldShowLog(shouldShowLog)
-    }
-
-    return 'fail'
 }
 
 async function handleCommand(command) {
