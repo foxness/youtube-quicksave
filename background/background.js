@@ -60,8 +60,6 @@ async function handleMessage(message) {
             return await manager.getLogAndQuicksaveCount()
         case 'getShouldShowLog':
             return await manager.getShouldShowLog()
-        case 'isSignedIn': // todo: remove
-            return manager.isSignedIn()
     }
 }
 

@@ -142,10 +142,6 @@ class QuicksaveManager {
         await chrome.action.setPopup({ popup: popup })
     }
 
-    isSignedIn() {
-        return this.youtube.isSignedIn()
-    }
-
     // Private methods
 
     // Storage
