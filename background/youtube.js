@@ -24,7 +24,7 @@ class Youtube {
         this.playlists = null
     }
 
-    static async fromSerialized(config, serialized) {
+    static fromSerialized(config, serialized) {
         let youtube = new Youtube(config)
         let parsed = JSON.parse(serialized)
 
@@ -42,21 +42,19 @@ class Youtube {
     async signInAndFetchPlaylists() {
         await this.openSignInForm()
         if (this.authCode == null) {
-            return 'fail'
+            throw 'No Auth Code'
         }
 
         await this.fetchRefreshToken()
         if (!this.isSignedIn()) {
-            return 'fail'
+            throw 'Not Signed In'
         }
 
         await this.fetchPlaylists()
-        return 'success'
     }
 
-    async signOut() {
+    signOut() {
         this.refreshToken = null
-        return 'success'
     }
 
     async fetchPlaylists() {
@@ -174,8 +172,7 @@ class Youtube {
 
     async openSignInForm() {
         if (this.isSignedIn()) {
-            console.log("User is already signed in.")
-            return 'fail'
+            throw 'Already Signed In'
         }
 
         let redirectUrl = await chrome.identity.launchWebAuthFlow({
@@ -184,7 +181,7 @@ class Youtube {
         })
 
         if (chrome.runtime.lastError) {
-            return 'fail'
+            throw `Some error: ${chrome.runtime.lastError}`
         }
 
         console.log("redirect url: " + redirectUrl)
@@ -200,11 +197,10 @@ class Youtube {
         let scope = query.get('scope')
 
         if (state != this.state || code == null || scope != this.SCOPE) {
-            return 'fail'
+            throw 'Parsing error'
         }
 
         this.authCode = code
-        return 'success'
     }
 
     async fetchRefreshToken() {
@@ -239,7 +235,7 @@ class Youtube {
             || scope != this.SCOPE
             || tokenType != 'Bearer') {
 
-            return 'fail'
+            throw 'Parsing error'
         }
 
         this.accessToken = accessToken
@@ -247,7 +243,6 @@ class Youtube {
         this.accessTokenExpirationDate = this.getExpirationDate(expiresIn)
 
         console.log('fetched refresh token')
-        return 'success'
     }
 
     async refreshAccessToken() {
@@ -280,14 +275,13 @@ class Youtube {
             || scope != this.SCOPE
             || tokenType != 'Bearer') {
 
-            return 'fail'
+            throw 'Parsing error'
         }
 
         this.accessToken = accessToken
         this.accessTokenExpirationDate = this.getExpirationDate(expiresIn)
 
         console.log('refreshed access token')
-        return 'success'
     }
 
     async ensureValidAccessToken() {
@@ -298,7 +292,7 @@ class Youtube {
         await this.refreshAccessToken()
     }
 
-    async tryGetVideoId(url) {
+    tryGetVideoId(url) {
         let videoId = null
 
         if (url.startsWith(this.URL_WATCH_PAGE)) {

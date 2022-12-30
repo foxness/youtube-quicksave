@@ -29,37 +29,40 @@ function handleInstall() {
 async function handleMessage(message) {
     let manager = await getQuicksaveManager()
 
-    switch (message.kind) {
+    switch (message.kind) { // no return value, intentionally no await
         case 'signIn':
-            return await manager.signIn()
+            manager.signIn()
+            return
         case 'signOut':
-            return await manager.signOut()
+            manager.signOut()
+            return
         case 'quicksave':
-            return await manager.quicksaveCurrent()
+            manager.quicksaveCurrent()
+            return
         case 'refreshPlaylists':
-            return await manager.refreshPlaylists()
+            manager.refreshPlaylists()
+            return
         case 'deduplicatePlaylist':
-            return await manager.deduplicatePlaylist()
+            manager.deduplicatePlaylist()
+            return
+        case 'playlistSelect':
+            let id = message.playlistId
+            manager.selectPlaylist(id)
+            return
+        case 'setShouldShowLog':
+            let shouldShowLog = message.shouldShowLog
+            manager.setShouldShowLog(shouldShowLog)
+            return
+    }
+
+    switch (message.kind) { // has a return value
         case 'getPlaylists':
             return await manager.getPlaylists()
         case 'getLogAndQuicksaveCount':
-            return await manager.getLogAndQuicksaveCount()
+            return manager.getLogAndQuicksaveCount()
         case 'getShouldShowLog':
             return await manager.getShouldShowLog()
-        case 'isSignedIn': // todo: remove
-            return manager.isSignedIn()
     }
-
-    switch (message.kind) {
-        case 'playlistSelect':
-            let id = message.playlistId
-            return await manager.selectPlaylist(id)
-        case 'setShouldShowLog':
-            let shouldShowLog = message.shouldShowLog
-            return await manager.setShouldShowLog(shouldShowLog)
-    }
-
-    return 'fail'
 }
 
 async function handleCommand(command) {

@@ -27,22 +27,18 @@ class QuicksaveManager {
     // Public methods
 
     async signIn() {
-        let result = await this.youtube.signInAndFetchPlaylists()
-
+        await this.youtube.signInAndFetchPlaylists()
         await this.setupQuicksavePlaylistIdUsingRecent()
+
         await this.serializeYoutube()
         await this.updatePopup()
-
-        return result
     }
 
     async signOut() {
-        let result = await this.youtube.signOut()
+        this.youtube.signOut()
 
         await this.serializeYoutube()
         await this.updatePopup()
-
-        return result
     }
 
     async quicksaveCurrent() {
@@ -110,7 +106,7 @@ class QuicksaveManager {
         })
     }
 
-    async getLogAndQuicksaveCount() {
+    getLogAndQuicksaveCount() {
         return {
             log: this.logger.getLog(),
             quicksaveCount: this.logger.getQuicksaveCount()
@@ -140,10 +136,6 @@ class QuicksaveManager {
         }
 
         await chrome.action.setPopup({ popup: popup })
-    }
-
-    isSignedIn() {
-        return this.youtube.isSignedIn()
     }
 
     // Private methods
@@ -201,7 +193,7 @@ class QuicksaveManager {
             return
         }
 
-        let videoId = await this.youtube.tryGetVideoId(url)
+        let videoId = this.youtube.tryGetVideoId(url)
         if (!videoId) {
             return
         }
@@ -239,6 +231,10 @@ class QuicksaveManager {
         this.logger.logDeduplication(data)
         await this.serializeLogger()
         this.sendNewLogAvailable()
+    }
+
+    isSignedIn() {
+        return this.youtube.isSignedIn()
     }
 
     async getCurrentTab() {

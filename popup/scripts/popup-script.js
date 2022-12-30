@@ -111,7 +111,7 @@ function handleDocumentClicked(event) {
 }
 
 async function handleQuicksaveButtonClicked() {
-    await chrome.runtime.sendMessage({ kind: 'quicksave' })
+    chrome.runtime.sendMessage({ kind: 'quicksave' }) // intentionally no await
 }
 
 function handleOpenPlaylistButtonClicked() {
@@ -147,10 +147,8 @@ function handleToggleLogButtonClicked() {
 }
 
 async function handleSignOutButtonClicked() {
-    let response = await chrome.runtime.sendMessage({ kind: 'signOut' })
-    if (response == 'success') {
-        window.close()
-    }
+    chrome.runtime.sendMessage({ kind: 'signOut' }) // intentionally no await
+    window.close()
 }
 
 // --- MISC METHODS -----------------------------------------
