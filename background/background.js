@@ -57,7 +57,7 @@ async function handleMessage(message) {
         case 'getPlaylists':
             return await manager.getPlaylists()
         case 'getLogAndQuicksaveCount':
-            return await manager.getLogAndQuicksaveCount()
+            return manager.getLogAndQuicksaveCount()
         case 'getShouldShowLog':
             return await manager.getShouldShowLog()
     }

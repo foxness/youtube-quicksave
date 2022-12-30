@@ -37,7 +37,7 @@ class QuicksaveManager {
     }
 
     async signOut() {
-        let result = await this.youtube.signOut()
+        let result = this.youtube.signOut()
 
         await this.serializeYoutube()
         await this.updatePopup()
@@ -110,7 +110,7 @@ class QuicksaveManager {
         })
     }
 
-    async getLogAndQuicksaveCount() {
+    getLogAndQuicksaveCount() {
         return {
             log: this.logger.getLog(),
             quicksaveCount: this.logger.getQuicksaveCount()
@@ -197,7 +197,7 @@ class QuicksaveManager {
             return
         }
 
-        let videoId = await this.youtube.tryGetVideoId(url)
+        let videoId = this.youtube.tryGetVideoId(url)
         if (!videoId) {
             return
         }
@@ -235,6 +235,10 @@ class QuicksaveManager {
         this.logger.logDeduplication(data)
         await this.serializeLogger()
         this.sendNewLogAvailable()
+    }
+
+    isSignedIn() {
+        return this.youtube.isSignedIn()
     }
 
     async getCurrentTab() {

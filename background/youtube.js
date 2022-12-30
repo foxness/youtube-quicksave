@@ -24,7 +24,7 @@ class Youtube {
         this.playlists = null
     }
 
-    static async fromSerialized(config, serialized) {
+    static fromSerialized(config, serialized) {
         let youtube = new Youtube(config)
         let parsed = JSON.parse(serialized)
 
@@ -54,7 +54,7 @@ class Youtube {
         return 'success'
     }
 
-    async signOut() {
+    signOut() {
         this.refreshToken = null
         return 'success'
     }
@@ -298,7 +298,7 @@ class Youtube {
         await this.refreshAccessToken()
     }
 
-    async tryGetVideoId(url) {
+    tryGetVideoId(url) {
         let videoId = null
 
         if (url.startsWith(this.URL_WATCH_PAGE)) {
