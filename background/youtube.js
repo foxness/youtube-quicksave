@@ -235,7 +235,7 @@ class Youtube {
             || scope != this.SCOPE
             || tokenType != 'Bearer') {
 
-            return 'fail'
+            throw 'Parsing error'
         }
 
         this.accessToken = accessToken
@@ -243,7 +243,6 @@ class Youtube {
         this.accessTokenExpirationDate = this.getExpirationDate(expiresIn)
 
         console.log('fetched refresh token')
-        return 'success'
     }
 
     async refreshAccessToken() {
@@ -276,14 +275,13 @@ class Youtube {
             || scope != this.SCOPE
             || tokenType != 'Bearer') {
 
-            return 'fail'
+            throw 'Parsing error'
         }
 
         this.accessToken = accessToken
         this.accessTokenExpirationDate = this.getExpirationDate(expiresIn)
 
         console.log('refreshed access token')
-        return 'success'
     }
 
     async ensureValidAccessToken() {
