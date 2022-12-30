@@ -27,13 +27,10 @@ class QuicksaveManager {
     // Public methods
 
     async signIn() {
-        let result = await this.youtube.signInAndFetchPlaylists()
-
+        await this.youtube.signInAndFetchPlaylists()
         await this.setupQuicksavePlaylistIdUsingRecent()
         await this.serializeYoutube()
         await this.updatePopup()
-
-        return result
     }
 
     async signOut() {

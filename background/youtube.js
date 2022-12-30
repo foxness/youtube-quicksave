@@ -42,16 +42,15 @@ class Youtube {
     async signInAndFetchPlaylists() {
         await this.openSignInForm()
         if (this.authCode == null) {
-            return 'fail'
+            throw 'No Auth Code'
         }
 
         await this.fetchRefreshToken()
         if (!this.isSignedIn()) {
-            return 'fail'
+            throw 'Not Signed In'
         }
 
         await this.fetchPlaylists()
-        return 'success'
     }
 
     signOut() {
@@ -174,8 +173,7 @@ class Youtube {
 
     async openSignInForm() {
         if (this.isSignedIn()) {
-            console.log("User is already signed in.")
-            return 'fail'
+            throw 'Already Signed In'
         }
 
         let redirectUrl = await chrome.identity.launchWebAuthFlow({
@@ -184,7 +182,7 @@ class Youtube {
         })
 
         if (chrome.runtime.lastError) {
-            return 'fail'
+            throw `Some error: ${chrome.runtime.lastError}`
         }
 
         console.log("redirect url: " + redirectUrl)
@@ -200,11 +198,10 @@ class Youtube {
         let scope = query.get('scope')
 
         if (state != this.state || code == null || scope != this.SCOPE) {
-            return 'fail'
+            throw 'Parsing error'
         }
 
         this.authCode = code
-        return 'success'
     }
 
     async fetchRefreshToken() {

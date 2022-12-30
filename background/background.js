@@ -30,6 +30,9 @@ async function handleMessage(message) {
     let manager = await getQuicksaveManager()
 
     switch (message.kind) { // no return value, intentionally no await
+        case 'signIn':
+            manager.signIn()
+            return
         case 'quicksave':
             manager.quicksaveCurrent()
             return
@@ -50,8 +53,6 @@ async function handleMessage(message) {
     }
 
     switch (message.kind) { // has a return value
-        case 'signIn':
-            return await manager.signIn()
         case 'signOut':
             return await manager.signOut()
         case 'getPlaylists':
