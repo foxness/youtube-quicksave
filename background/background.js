@@ -33,6 +33,9 @@ async function handleMessage(message) {
         case 'signIn':
             manager.signIn()
             return
+        case 'signOut':
+            manager.signOut()
+            return
         case 'quicksave':
             manager.quicksaveCurrent()
             return
@@ -53,8 +56,6 @@ async function handleMessage(message) {
     }
 
     switch (message.kind) { // has a return value
-        case 'signOut':
-            return await manager.signOut()
         case 'getPlaylists':
             return await manager.getPlaylists()
         case 'getLogAndQuicksaveCount':

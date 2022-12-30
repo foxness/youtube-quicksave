@@ -55,7 +55,6 @@ class Youtube {
 
     signOut() {
         this.refreshToken = null
-        return 'success'
     }
 
     async fetchPlaylists() {
