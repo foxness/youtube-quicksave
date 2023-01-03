@@ -59,7 +59,7 @@ async function makeLog(log) {
     let textarea = $('<textarea>', { rows: 10 }).prop('readonly', true).text(log)
 
     container.append(textarea)
-    textarea.scrollTop(textarea[0].scrollHeight)
+    scrollToBottom(textarea)
 
     if (shouldShowLog) {
         toggleLog(false)
@@ -158,7 +158,10 @@ async function refreshLogAndQuicksaveCount() {
     let log = data.log
     let quicksaveCount = data.quicksaveCount
 
-    $('#quicksave-log textarea').text(log)
+    let textarea = $('#quicksave-log textarea')
+    textarea.text(log)
+    scrollToBottom(textarea)
+
     $('#quicksave-count').text(quicksaveCount)
 }
 
@@ -211,6 +214,10 @@ async function closeMenuWithoutAnimation() {
 
 function closeMenu() {
     $('.toggler').prop('checked', false)
+}
+
+function scrollToBottom(textarea) {
+    textarea.scrollTop(textarea[0].scrollHeight)
 }
 
 function sleep(duration) {
