@@ -10,6 +10,7 @@ async function main() {
     setupListeners()
     await makePlaylistSelector()
     await makeLogAndQuicksaveCount()
+    await makeQuicksaveButton()
 }
 
 // --- BUILDER METHODS --------------------------------------
@@ -50,6 +51,12 @@ async function makeLogAndQuicksaveCount() {
 
     this.makeLog(log) // intentionally no await
     this.makeQuicksaveCount(quicksaveCount) // intentionally no await
+}
+
+async function makeQuicksaveButton() {
+    let quicksaveDisabled = await chrome.runtime.sendMessage({ kind: 'getQuicksaveDisabled' })
+    console.log('quicksaveDisabled ', quicksaveDisabled)
+    $('#quicksave').prop('disabled', quicksaveDisabled)
 }
 
 async function makeLog(log) {
