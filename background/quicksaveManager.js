@@ -117,6 +117,14 @@ class QuicksaveManager {
         return await this.storage.getShouldShowLog()
     }
 
+    async getQuicksaveDisabled() {
+        let currentTab = await this.getCurrentTab()
+        let url = currentTab.url
+        let quicksaveDisabled = this.youtube.tryGetVideoId(url) == null
+
+        return quicksaveDisabled
+    }
+
     async selectPlaylist(playlistId) {
         this.quicksavePlaylistId = playlistId
         await this.serializeQuicksavePlaylistId()

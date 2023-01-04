@@ -62,6 +62,8 @@ async function handleMessage(message) {
             return manager.getLogAndQuicksaveCount()
         case 'getShouldShowLog':
             return await manager.getShouldShowLog()
+        case 'getQuicksaveDisabled':
+            return await manager.getQuicksaveDisabled()
     }
 }
 
