@@ -58,15 +58,23 @@ body {
     vertical-align: middle;
 }
 
-.button-24:hover,
-.button-24:active {
+.button-24:hover:enabled,
+.button-24:active:enabled {
     background-color: initial;
     background-position: 0 0;
-    color: #126ee9;
+    color: #116fe8;
 }
 
-.button-24:active {
+.button-24:active:enabled {
     opacity: .5;
+}
+
+.button-24:disabled {
+    opacity: 0.5;
+    /* background-color: #b3b3b3;
+    border: 2px solid #b3b3b3;
+    box-shadow: 3px 10px 20px 0px hsla(0, 0%, 70%, 0.3); */
+    cursor: not-allowed;
 }
 
 .secondary-button {
