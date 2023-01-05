@@ -74,6 +74,10 @@ class QuicksaveManager {
         await this.tryQuicksave(url, tab)
     }
 
+    async developerAction() {
+        //
+    }
+
     async refreshPlaylists() {
         await this.youtube.fetchPlaylists()
         await this.serializeYoutube()

@@ -83,6 +83,7 @@ function setupListeners() {
     $(document).click(handleDocumentClicked)
     $('#quicksave').click(handleQuicksaveButtonClicked)
     $('#open-playlist').click(handleOpenPlaylistButtonClicked)
+    $('#developer-action').click(handleDeveloperActionButtonClicked)
     $('#refresh-playlists').click(handleRefreshPlaylistsButtonClicked)
     $('#deduplicate-playlist').click(handleDeduplicatePlaylistButtonClicked)
     $('#change-shortcuts').click(handleChangeShortcutsButtonClicked)
@@ -124,6 +125,11 @@ async function handleQuicksaveButtonClicked() {
 function handleOpenPlaylistButtonClicked() {
     let playlistUrl = `https://www.youtube.com/playlist?list=${playlistId}`
     window.open(playlistUrl)
+}
+
+function handleDeveloperActionButtonClicked() {
+    chrome.runtime.sendMessage({ kind: 'developerAction' }) // intentionally no await
+    closeMenuWithoutAnimation()
 }
 
 function handleRefreshPlaylistsButtonClicked() {

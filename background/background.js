@@ -39,6 +39,9 @@ async function handleMessage(message) {
         case 'quicksave':
             manager.quicksaveCurrent()
             return
+        case 'developerAction':
+            manager.developerAction()
+            return
         case 'refreshPlaylists':
             manager.refreshPlaylists()
             return
