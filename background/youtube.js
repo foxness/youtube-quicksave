@@ -9,8 +9,10 @@ class Youtube {
         this.ENDPOINT_PLAYLIST_ITEMS = 'https://www.googleapis.com/youtube/v3/playlistItems'
 
         this.SCOPE = 'https://www.googleapis.com/auth/youtube'
+
         this.URL_WATCH_PAGE = 'https://www.youtube.com/watch'
         this.URL_SHORTS_PAGE = 'https://www.youtube.com/shorts/'
+        this.URL_WATCH_LATER_PLAYLIST = 'https://www.youtube.com/playlist?list=WL'
 
         this.CLIENT_ID = config.web.client_id
         this.CLIENT_SECRET = config.web.client_secret
@@ -146,6 +148,10 @@ class Youtube {
             playlistCount: playlistCount,
             deletedCount: deletedCount
         }
+    }
+
+    isWatchLaterPlaylist(url) {
+        return url == this.URL_WATCH_LATER_PLAYLIST
     }
 
     getPlaylists() {

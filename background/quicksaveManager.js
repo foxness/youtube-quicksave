@@ -75,7 +75,14 @@ class QuicksaveManager {
     }
 
     async developerAction() {
-        //
+        let currentTab = await this.getCurrentTab()
+        let url = currentTab.url
+
+        if (this.youtube.isWatchLaterPlaylist(url)) {
+            let videos = await this.sendGetWatchLaterVideos(currentTab)
+            console.log('watch later videos')
+            console.log(videos)
+        }
     }
 
     async refreshPlaylists() {
@@ -188,6 +195,13 @@ class QuicksaveManager {
         let hoverUrl = await chrome.tabs.sendMessage(tab.id, message)
 
         return hoverUrl
+    }
+
+    async sendGetWatchLaterVideos(tab) {
+        let message = { kind: 'getWatchLaterVideos' }
+        let videos = await chrome.tabs.sendMessage(tab.id, message)
+
+        return videos
     }
 
     sendNewLogAvailable() {
