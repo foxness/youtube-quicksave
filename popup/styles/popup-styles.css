@@ -84,8 +84,8 @@ body {
     box-shadow: 2px 6px 10px 0px rgba(18, 110, 233, 0.2);
 }
 
-.secondary-button:hover,
-.secondary-button:active {
+.secondary-button:hover:enabled,
+.secondary-button:active:enabled {
     background: #126ee9;
     color: #ffffff;
 }
