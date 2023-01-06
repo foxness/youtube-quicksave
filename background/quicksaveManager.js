@@ -75,7 +75,7 @@ class QuicksaveManager {
     }
 
     async developerAction() {
-        //
+        // \\
     }
 
     async copyPlaylist() {
@@ -84,13 +84,17 @@ class QuicksaveManager {
 
         if (this.youtube.isWatchLaterPlaylist(url)) {
             let videos = await this.sendGetWatchLaterVideos(currentTab)
-            console.log('watch later videos')
+            await this.storage.setClipboard(videos)
+            console.log('copy')
             console.log(videos)
         }
     }
 
     async pastePlaylist() {
-        //
+        let videos = await this.storage.getClipboard()
+
+        console.log('paste')
+        console.log(videos)
     }
 
     async refreshPlaylists() {
