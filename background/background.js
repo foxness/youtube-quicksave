@@ -42,6 +42,12 @@ async function handleMessage(message) {
         case 'developerAction':
             manager.developerAction()
             return
+        case 'copyPlaylist':
+            manager.copyPlaylist()
+            return
+        case 'pastePlaylist':
+            manager.pastePlaylist()
+            return
         case 'refreshPlaylists':
             manager.refreshPlaylists()
             return

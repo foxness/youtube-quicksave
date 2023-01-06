@@ -75,6 +75,10 @@ class QuicksaveManager {
     }
 
     async developerAction() {
+        //
+    }
+
+    async copyPlaylist() {
         let currentTab = await this.getCurrentTab()
         let url = currentTab.url
 
@@ -83,6 +87,10 @@ class QuicksaveManager {
             console.log('watch later videos')
             console.log(videos)
         }
+    }
+
+    async pastePlaylist() {
+        //
     }
 
     async refreshPlaylists() {

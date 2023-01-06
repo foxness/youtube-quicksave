@@ -84,6 +84,8 @@ function setupListeners() {
     $('#quicksave').click(handleQuicksaveButtonClicked)
     $('#open-playlist').click(handleOpenPlaylistButtonClicked)
     $('#developer-action').click(handleDeveloperActionButtonClicked)
+    $('#copy-playlist').click(handleCopyPlaylistButtonClicked)
+    $('#paste-playlist').click(handlePastePlaylistButtonClicked)
     $('#refresh-playlists').click(handleRefreshPlaylistsButtonClicked)
     $('#deduplicate-playlist').click(handleDeduplicatePlaylistButtonClicked)
     $('#change-shortcuts').click(handleChangeShortcutsButtonClicked)
@@ -129,6 +131,16 @@ function handleOpenPlaylistButtonClicked() {
 
 function handleDeveloperActionButtonClicked() {
     chrome.runtime.sendMessage({ kind: 'developerAction' }) // intentionally no await
+    closeMenuWithoutAnimation()
+}
+
+function handleCopyPlaylistButtonClicked() {
+    chrome.runtime.sendMessage({ kind: 'copyPlaylist' }) // intentionally no await
+    closeMenuWithoutAnimation()
+}
+
+function handlePastePlaylistButtonClicked() {
+    chrome.runtime.sendMessage({ kind: 'pastePlaylist' }) // intentionally no await
     closeMenuWithoutAnimation()
 }
 
