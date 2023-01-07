@@ -83,18 +83,30 @@ class QuicksaveManager {
         let url = currentTab.url
 
         if (this.youtube.isWatchLaterPlaylist(url)) {
-            let videos = await this.sendGetWatchLaterVideos(currentTab)
-            await this.storage.setClipboard(videos)
+            let videoIds = await this.sendGetWatchLaterVideos(currentTab)
+            await this.storage.setClipboard(videoIds)
             console.log('copy')
-            console.log(videos)
+            console.log(videoIds)
         }
     }
 
     async pastePlaylist() {
-        let videos = await this.storage.getClipboard()
+        let currentTab = await this.getCurrentTab()
+        let url = currentTab.url
 
-        console.log('paste')
-        console.log(videos)
+        let videoIds = await this.storage.getClipboard()
+
+        if (this.youtube.isWatchLaterPlaylist(url)) {
+            return // todo: send toast
+        }
+
+        let playlistId = this.youtube.tryGetPlaylistId(url)
+        if (!playlistId) {
+            return // todo: send toast 
+        }
+
+        await this.youtube.bulkAddToPlaylist(videoIds, playlistId)
+        console.log('paste done')
     }
 
     async refreshPlaylists() {

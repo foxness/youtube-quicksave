@@ -12,7 +12,9 @@ class Youtube {
 
         this.URL_WATCH_PAGE = 'https://www.youtube.com/watch'
         this.URL_SHORTS_PAGE = 'https://www.youtube.com/shorts/'
-        this.URL_WATCH_LATER_PLAYLIST = 'https://www.youtube.com/playlist?list=WL'
+        this.URL_PLAYLIST_PAGE = 'https://www.youtube.com/playlist'
+
+        this.ID_WATCH_LATER = 'WL'
 
         this.CLIENT_ID = config.web.client_id
         this.CLIENT_SECRET = config.web.client_secret
@@ -150,8 +152,44 @@ class Youtube {
         }
     }
 
+    async bulkAddToPlaylist(videoIds, playlistId, preventDuplicate = true) {
+        let idsToAdd
+        if (preventDuplicate) {
+            let playlistVideos = await this.fetchPlaylistVideos(playlistId)
+            let playlistVideoIds = playlistVideos.map(v => v.videoId)
+            let difference = videoIds.filter(a => !playlistVideoIds.includes(a))
+
+            idsToAdd = difference
+        } else {
+            idsToAdd = videoIds
+        }
+
+        console.log('started adding videos')
+
+        let addedVideos = []
+        for (let id of idsToAdd) {
+            console.log(`adding video ${id}`)
+            let addedVideo = await this.addToPlaylist(id, playlistId, false)
+            addedVideos.push(addedVideo)
+        }
+
+        console.log('finished adding videos')
+        return addedVideos
+    }
+
     isWatchLaterPlaylist(url) {
-        return url == this.URL_WATCH_LATER_PLAYLIST
+        return this.tryGetPlaylistId(url) == this.ID_WATCH_LATER
+    }
+
+    tryGetPlaylistId(url) {
+        let playlistId = null
+
+        if (url.startsWith(this.URL_PLAYLIST_PAGE)) {
+            let query = new URL(url).searchParams
+            playlistId = query.get('list')
+        }
+
+        return playlistId
     }
 
     getPlaylists() {
@@ -298,7 +336,7 @@ class Youtube {
         await this.refreshAccessToken()
     }
 
-    tryGetVideoId(url) {
+    tryGetVideoId(url) { // todo: move to public methods
         let videoId = null
 
         if (url.startsWith(this.URL_WATCH_PAGE)) {
@@ -311,7 +349,7 @@ class Youtube {
         return videoId
     }
 
-    async addToPlaylist(videoId, playlistId, preventDuplicate = true) {
+    async addToPlaylist(videoId, playlistId, preventDuplicate = true) { // todo: move to public methods
         if (preventDuplicate) {
             let video = await this.checkIfPlaylistContainsVideo(playlistId, videoId)
             if (video) {
