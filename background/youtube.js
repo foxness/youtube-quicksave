@@ -152,6 +152,48 @@ class Youtube {
         }
     }
 
+    async addToPlaylist(videoId, playlistId, preventDuplicate = true) {
+        if (preventDuplicate) {
+            let video = await this.checkIfPlaylistContainsVideo(playlistId, videoId)
+            if (video) {
+                video.error = 'alreadyInPlaylist'
+                return video
+            }
+        }
+
+        let urlQueryData = {
+            part: 'snippet'
+        }
+
+        let bodyData = {
+            snippet: {
+                playlistId: playlistId,
+                resourceId: {
+                    kind: 'youtube#video',
+                    videoId: videoId
+                }
+            }
+        }
+
+        let requestParams = {
+            endpoint: this.ENDPOINT_PLAYLIST_ITEMS,
+            method: 'POST',
+            isAuthed: true,
+            urlQueryData: urlQueryData,
+            bodyData: bodyData
+        }
+
+        let response = await this.executeRequest(requestParams)
+        let json = await response.json()
+
+        return {
+            videoId: videoId,
+            videoTitle: json.snippet.title,
+            playlistId: playlistId,
+            playlistTitle: this.getPlaylistTitle(playlistId)
+        }
+    }
+
     async bulkAddToPlaylist(videoIds, playlistId, preventDuplicate = true) {
         let idsToAdd
         if (preventDuplicate) {
@@ -175,6 +217,19 @@ class Youtube {
 
         console.log('finished adding videos')
         return addedVideos
+    }
+
+    tryGetVideoId(url) {
+        let videoId = null
+
+        if (url.startsWith(this.URL_WATCH_PAGE)) {
+            let query = new URL(url).searchParams
+            videoId = query.get('v')
+        } else if (url.startsWith(this.URL_SHORTS_PAGE)) {
+            videoId = url.split('/').at(-1)
+        }
+
+        return videoId
     }
 
     isWatchLaterPlaylist(url) {
@@ -334,61 +389,6 @@ class Youtube {
         }
 
         await this.refreshAccessToken()
-    }
-
-    tryGetVideoId(url) { // todo: move to public methods
-        let videoId = null
-
-        if (url.startsWith(this.URL_WATCH_PAGE)) {
-            let query = new URL(url).searchParams
-            videoId = query.get('v')
-        } else if (url.startsWith(this.URL_SHORTS_PAGE)) {
-            videoId = url.split('/').at(-1)
-        }
-
-        return videoId
-    }
-
-    async addToPlaylist(videoId, playlistId, preventDuplicate = true) { // todo: move to public methods
-        if (preventDuplicate) {
-            let video = await this.checkIfPlaylistContainsVideo(playlistId, videoId)
-            if (video) {
-                video.error = 'alreadyInPlaylist'
-                return video
-            }
-        }
-
-        let urlQueryData = {
-            part: 'snippet'
-        }
-
-        let bodyData = {
-            snippet: {
-                playlistId: playlistId,
-                resourceId: {
-                    kind: 'youtube#video',
-                    videoId: videoId
-                }
-            }
-        }
-
-        let requestParams = {
-            endpoint: this.ENDPOINT_PLAYLIST_ITEMS,
-            method: 'POST',
-            isAuthed: true,
-            urlQueryData: urlQueryData,
-            bodyData: bodyData
-        }
-
-        let response = await this.executeRequest(requestParams)
-        let json = await response.json()
-
-        return {
-            videoId: videoId,
-            videoTitle: json.snippet.title,
-            playlistId: playlistId,
-            playlistTitle: this.getPlaylistTitle(playlistId)
-        }
     }
 
     async fetchPlaylistVideos(playlistId) {
