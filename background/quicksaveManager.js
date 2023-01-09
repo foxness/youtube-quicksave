@@ -74,6 +74,41 @@ class QuicksaveManager {
         await this.tryQuicksave(url, tab)
     }
 
+    async developerAction() {
+        // \\
+    }
+
+    async copyPlaylist() {
+        let currentTab = await this.getCurrentTab()
+        let url = currentTab.url
+
+        if (this.youtube.isWatchLaterPlaylist(url)) {
+            let videoIds = await this.sendGetWatchLaterVideos(currentTab)
+            await this.storage.setClipboard(videoIds)
+            console.log('copy')
+            console.log(videoIds)
+        }
+    }
+
+    async pastePlaylist() {
+        let currentTab = await this.getCurrentTab()
+        let url = currentTab.url
+
+        let videoIds = await this.storage.getClipboard()
+
+        if (this.youtube.isWatchLaterPlaylist(url)) {
+            return // todo: send toast
+        }
+
+        let playlistId = this.youtube.tryGetPlaylistId(url)
+        if (!playlistId) {
+            return // todo: send toast 
+        }
+
+        await this.youtube.bulkAddToPlaylist(videoIds, playlistId)
+        console.log('paste done')
+    }
+
     async refreshPlaylists() {
         await this.youtube.fetchPlaylists()
         await this.serializeYoutube()
@@ -184,6 +219,13 @@ class QuicksaveManager {
         let hoverUrl = await chrome.tabs.sendMessage(tab.id, message)
 
         return hoverUrl
+    }
+
+    async sendGetWatchLaterVideos(tab) {
+        let message = { kind: 'getWatchLaterVideos' }
+        let videos = await chrome.tabs.sendMessage(tab.id, message)
+
+        return videos
     }
 
     sendNewLogAvailable() {

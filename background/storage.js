@@ -9,6 +9,7 @@ class Storage {
     static KEY_QUICKSAVE_PLAYLIST_ID = 'quicksavePlaylistId0'
     static KEY_LOGGER = 'log'
     static KEY_SHOULD_SHOW_LOG = 'shouldShowLog'
+    static KEY_CLIPBOARD = 'clipboard'
 
     // Initialization
 
@@ -42,6 +43,10 @@ class Storage {
         return shouldShowLog ?? false
     }
 
+    async getClipboard() {
+        return await this.getValue(Storage.KEY_CLIPBOARD, true)
+    }
+
     // Setters
 
     async setYoutube(youtube) {
@@ -60,6 +65,10 @@ class Storage {
 
     async setShouldShowLog(shouldShowLog) {
         await this.setValue(Storage.KEY_SHOULD_SHOW_LOG, shouldShowLog)
+    }
+
+    async setClipboard(clipboard) {
+        await this.setValue(Storage.KEY_CLIPBOARD, clipboard, true)
     }
 
     // Private methods

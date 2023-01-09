@@ -39,6 +39,15 @@ async function handleMessage(message) {
         case 'quicksave':
             manager.quicksaveCurrent()
             return
+        case 'developerAction':
+            manager.developerAction()
+            return
+        case 'copyPlaylist':
+            manager.copyPlaylist()
+            return
+        case 'pastePlaylist':
+            manager.pastePlaylist()
+            return
         case 'refreshPlaylists':
             manager.refreshPlaylists()
             return

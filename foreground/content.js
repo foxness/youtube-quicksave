@@ -30,11 +30,13 @@ async function handleMessage(message) {
             return await showQuicksaveDone(quicksaveData)
         case 'getHoverUrl':
             return await getHoverUrl()
+        case 'getWatchLaterVideos':
+            return await getWatchLaterVideos()
         case 'notSignedIn':
             return await showNotSignedIn()
     }
 
-    return 'fail'
+    return 'fail' // todo: remove
 }
 
 async function showQuicksaveStart(quicksaveId) {
@@ -106,10 +108,44 @@ function getSecondaryToastParams(quicksaveData) {
 async function getHoverUrl() {
     let url = document.elementsFromPoint(mouseX, mouseY)
         .filter(e => e.tagName.toLowerCase() == 'a')
-        .map(a => a.href)
-        [0]
-        
+        .map(a => a.href)[0]
+
     return url
+}
+
+async function getWatchLaterVideos() {
+    if (window.location.href != 'https://www.youtube.com/playlist?list=WL') {
+        return null
+    }
+
+    let html = document.documentElement.outerHTML
+
+    let DATA_START = 'ytd-playlist-video-renderer" href="/watch?v='
+    let DATA_END = '&'
+
+    let videos = []
+    let currentIndex = 0
+
+    while (true) {
+        let startIndex = html.indexOf(DATA_START, currentIndex)
+        if (startIndex == -1) {
+            break
+        }
+
+        startIndex += DATA_START.length
+        let endIndex = html.indexOf(DATA_END, startIndex + 1)
+
+        let data = html.substring(startIndex, endIndex)
+        currentIndex = endIndex + DATA_END.length + 1
+
+        if (data.length == 11) { // video ids are always 11 characters long
+            videos.push(data)
+        }
+    }
+
+    console.log(`copied video count: ${videos.length}`) // todo: add toast showing copied count
+
+    return videos
 }
 
 function makePlaylistLink(playlistTitle, playlistId) {
