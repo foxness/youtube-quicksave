@@ -82,30 +82,58 @@ class QuicksaveManager {
         let currentTab = await this.getCurrentTab()
         let url = currentTab.url
 
+        let clipboard = null
+
         if (this.youtube.isWatchLaterPlaylist(url)) {
             let videoIds = await this.sendGetWatchLaterVideos(currentTab)
-            await this.storage.setClipboard(videoIds)
-            console.log('copy')
-            console.log(videoIds)
+
+            clipboard = {
+                kind: 'videoIds',
+                videoIds: videoIds
+            }
+        } else {
+            let playlistId = this.youtube.tryGetPlaylistId(url)
+            if (!playlistId) {
+                return
+            }
+
+            clipboard = {
+                kind: 'playlistId',
+                playlistId: playlistId
+            }
         }
+
+        await this.storage.setClipboard(clipboard)
+        console.log('copy')
+        console.log(clipboard)
+        // todo: show copied toast
     }
 
     async pastePlaylist() {
         let currentTab = await this.getCurrentTab()
         let url = currentTab.url
 
-        let videoIds = await this.storage.getClipboard()
-
         if (this.youtube.isWatchLaterPlaylist(url)) {
             return // todo: send toast
         }
 
-        let playlistId = this.youtube.tryGetPlaylistId(url)
-        if (!playlistId) {
+        let destinationId = this.youtube.tryGetPlaylistId(url)
+        if (!destinationId) {
             return // todo: send toast 
         }
 
-        await this.youtube.bulkAddToPlaylist(videoIds, playlistId)
+        let clipboard = await this.storage.getClipboard()
+        switch (clipboard.kind) {
+            case 'videoIds':
+                let videoIds = clipboard.videoIds
+                await this.youtube.bulkAddToPlaylist(videoIds, destinationId)
+                break
+            case 'playlistId':
+                let sourceId = clipboard.playlistId
+                await this.youtube.copyPlaylist(sourceId, destinationId)
+                break
+        }
+
         console.log('paste done')
     }
 

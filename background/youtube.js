@@ -194,6 +194,15 @@ class Youtube {
         }
     }
 
+    async copyPlaylist(sourceId, destinationId, preventDuplicate = true) {
+        console.log('started fetching source videos')
+        let sourceVideos = await this.fetchPlaylistVideos(sourceId)
+        console.log('finished fetching source videos')
+
+        let sourceVideoIds = sourceVideos.map(v => v.videoId)
+        return await this.bulkAddToPlaylist(sourceVideoIds, destinationId, preventDuplicate)
+    }
+
     async bulkAddToPlaylist(videoIds, playlistId, preventDuplicate = true) {
         let idsToAdd
         if (preventDuplicate) {
