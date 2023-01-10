@@ -117,8 +117,8 @@ class QuicksaveManager {
             return // todo: send toast
         }
 
-        let playlistId = this.youtube.tryGetPlaylistId(url)
-        if (!playlistId) {
+        let destinationId = this.youtube.tryGetPlaylistId(url)
+        if (!destinationId) {
             return // todo: send toast 
         }
 
@@ -126,10 +126,12 @@ class QuicksaveManager {
         switch (clipboard.kind) {
             case 'videoIds':
                 let videoIds = clipboard.videoIds
-                await this.youtube.bulkAddToPlaylist(videoIds, playlistId)
+                await this.youtube.bulkAddToPlaylist(videoIds, destinationId)
                 break
             case 'playlistId':
-                throw 'notImplementedYet'
+                let sourceId = clipboard.playlistId
+                await this.youtube.copyPlaylist(sourceId, destinationId)
+                break
         }
 
         console.log('paste done')
