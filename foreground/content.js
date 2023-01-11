@@ -21,22 +21,26 @@ function setupListeners() {
 }
 
 async function handleMessage(message) {
-    switch (message.kind) {
+    switch (message.kind) { // no return value, intentionally no await
         case 'quicksaveStart':
-            return await showQuicksaveStart(message.quicksaveId)
+            showQuicksaveStart(message.quicksaveId)
+            return
         case 'quicksaveDone':
             let quicksaveData = message
             delete quicksaveData.kind
-            return await showQuicksaveDone(quicksaveData)
+            showQuicksaveDone(quicksaveData)
+            return
+        case 'notSignedIn':
+            showNotSignedIn()
+            return
+    }
+
+    switch (message.kind) { // has a return value
         case 'getHoverUrl':
             return await getHoverUrl()
         case 'getWatchLaterVideos':
             return await getWatchLaterVideos()
-        case 'notSignedIn':
-            return await showNotSignedIn()
     }
-
-    return 'fail' // todo: remove
 }
 
 async function showQuicksaveStart(quicksaveId) {
