@@ -34,8 +34,8 @@ async function handleMessage(message) {
             showNotSignedIn()
             return
         case 'copiedVideos':
-            let videoCount = await getPlaylistVideoCount()
-            showCopiedVideosToast(videoCount)
+            let copiedCount = await getPlaylistVideoCount()
+            showCopiedVideosToast(copiedCount)
             return
     }
 
@@ -44,7 +44,10 @@ async function handleMessage(message) {
             return await getHoverUrl()
         case 'getWatchLaterVideos':
             let videos = await getWatchLaterVideos()
-            showCopiedVideosToast(videos.length)
+            let copiedCount = videos.length
+            let totalCount = await getPlaylistVideoCount()
+            showCopiedVideosToast(copiedCount, totalCount)
+
             return videos
     }
 }
@@ -88,9 +91,16 @@ async function showNotSignedIn() { // todo: remove unnecessary asyncs in this fi
     $.toast(toastParams)
 }
 
-function showCopiedVideosToast(videoCount) {
+function showCopiedVideosToast(copiedCount, totalCount) {
+    let text
+    if (totalCount === undefined) {
+        text = `Copied ${copiedCount} videos`
+    } else {
+        text = `Copied ${copiedCount} out of ${totalCount} videos`
+    }
+
     let toastParams = {
-        text: `Copied ${videoCount} videos`,
+        text: text,
         icon: 'info',
         position: 'top-left',
         showHideTransition: 'slide',
