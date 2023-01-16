@@ -39,7 +39,9 @@ async function handleMessage(message) {
         case 'getHoverUrl':
             return await getHoverUrl()
         case 'getWatchLaterVideos':
-            return await getWatchLaterVideos()
+            let videos = await getWatchLaterVideos()
+            showCopiedVideosToast(videos.length)
+            return videos
     }
 }
 
@@ -68,15 +70,29 @@ async function showQuicksaveDone(quicksaveData) {
     delete quicksaveToasts[quicksaveId]
 }
 
-async function showNotSignedIn() {
+async function showNotSignedIn() { // todo: remove unnecessary asyncs in this file
     let toastParams = {
         text: 'Quicksave: Not Signed In',
         icon: 'warning',
+        position: 'top-left', // todo: extract
+        showHideTransition: 'slide', // todo: extract
+        showCloseButton: false, // todo: extract
+        hideAfter: DURATION_TOAST,
+        loader: false // todo: fix loader
+    }
+
+    $.toast(toastParams)
+}
+
+function showCopiedVideosToast(videoCount) {
+    let toastParams = {
+        text: `Copied ${videoCount} videos`,
+        icon: 'info',
         position: 'top-left',
         showHideTransition: 'slide',
         showCloseButton: false,
         hideAfter: DURATION_TOAST,
-        loader: false // todo: fix loader
+        loader: false
     }
 
     $.toast(toastParams)
