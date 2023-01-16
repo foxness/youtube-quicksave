@@ -33,13 +33,22 @@ async function handleMessage(message) {
         case 'notSignedIn':
             showNotSignedIn()
             return
+        case 'copiedVideos':
+            let copiedCount = await getPlaylistVideoCount()
+            showCopiedVideosToast(copiedCount)
+            return
     }
 
     switch (message.kind) { // has a return value
         case 'getHoverUrl':
             return await getHoverUrl()
         case 'getWatchLaterVideos':
-            return await getWatchLaterVideos()
+            let videos = await getWatchLaterVideos()
+            let copiedCount = videos.length
+            let totalCount = await getPlaylistVideoCount()
+            showCopiedVideosToast(copiedCount, totalCount)
+
+            return videos
     }
 }
 
@@ -68,15 +77,36 @@ async function showQuicksaveDone(quicksaveData) {
     delete quicksaveToasts[quicksaveId]
 }
 
-async function showNotSignedIn() {
+async function showNotSignedIn() { // todo: remove unnecessary asyncs in this file
     let toastParams = {
         text: 'Quicksave: Not Signed In',
         icon: 'warning',
+        position: 'top-left', // todo: extract
+        showHideTransition: 'slide', // todo: extract
+        showCloseButton: false, // todo: extract
+        hideAfter: DURATION_TOAST,
+        loader: false // todo: fix loader
+    }
+
+    $.toast(toastParams)
+}
+
+function showCopiedVideosToast(copiedCount, totalCount) {
+    let text
+    if (totalCount === undefined) {
+        text = `Copied ${copiedCount} videos`
+    } else {
+        text = `Copied ${copiedCount} out of ${totalCount} videos`
+    }
+
+    let toastParams = {
+        text: text,
+        icon: 'info',
         position: 'top-left',
         showHideTransition: 'slide',
         showCloseButton: false,
         hideAfter: DURATION_TOAST,
-        loader: false // todo: fix loader
+        loader: false
     }
 
     $.toast(toastParams)
@@ -150,6 +180,33 @@ async function getWatchLaterVideos() {
     console.log(`copied video count: ${videos.length}`) // todo: add toast showing copied count
 
     return videos
+}
+
+async function getPlaylistVideoCount() {
+    if (!window.location.href.startsWith('https://www.youtube.com/playlist?list=')) {
+        return null
+    }
+
+    let html = document.documentElement.outerHTML
+
+    let DATA_START = '<yt-formatted-string class="byline-item style-scope ytd-playlist-byline-renderer"><span dir="auto" class="style-scope yt-formatted-string">'
+    let DATA_END = '</span>'
+
+    let startIndex = html.indexOf(DATA_START)
+    if (startIndex == -1) {
+        return null
+    }
+
+    startIndex += DATA_START.length
+    let endIndex = html.indexOf(DATA_END, startIndex + 1)
+    if (endIndex == -1) {
+        return null
+    }
+
+    let rawData = html.substring(startIndex, endIndex)
+    let videoCount = parseInt(rawData.replace(',', ''))
+
+    return videoCount
 }
 
 function makePlaylistLink(playlistTitle, playlistId) {

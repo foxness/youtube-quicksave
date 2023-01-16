@@ -101,12 +101,11 @@ class QuicksaveManager {
                 kind: 'playlistId',
                 playlistId: playlistId
             }
+
+            this.sendCopiedVideos(currentTab)
         }
 
         await this.storage.setClipboard(clipboard)
-        console.log('copy')
-        console.log(clipboard)
-        // todo: show copied toast
     }
 
     async pastePlaylist() {
@@ -239,6 +238,11 @@ class QuicksaveManager {
 
     sendNotSignedIn(tab) {
         let message = { kind: 'notSignedIn' }
+        chrome.tabs.sendMessage(tab.id, message) // intentionally no await
+    }
+
+    sendCopiedVideos(tab) {
+        let message = { kind: 'copiedVideos' }
         chrome.tabs.sendMessage(tab.id, message) // intentionally no await
     }
 
