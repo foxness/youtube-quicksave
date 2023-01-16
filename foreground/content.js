@@ -33,6 +33,10 @@ async function handleMessage(message) {
         case 'notSignedIn':
             showNotSignedIn()
             return
+        case 'copiedVideos':
+            let videoCount = await getPlaylistVideoCount()
+            showCopiedVideosToast(videoCount)
+            return
     }
 
     switch (message.kind) { // has a return value
@@ -166,6 +170,33 @@ async function getWatchLaterVideos() {
     console.log(`copied video count: ${videos.length}`) // todo: add toast showing copied count
 
     return videos
+}
+
+async function getPlaylistVideoCount() {
+    if (!window.location.href.startsWith('https://www.youtube.com/playlist?list=')) {
+        return null
+    }
+
+    let html = document.documentElement.outerHTML
+
+    let DATA_START = '<yt-formatted-string class="byline-item style-scope ytd-playlist-byline-renderer"><span dir="auto" class="style-scope yt-formatted-string">'
+    let DATA_END = '</span>'
+
+    let startIndex = html.indexOf(DATA_START)
+    if (startIndex == -1) {
+        return null
+    }
+
+    startIndex += DATA_START.length
+    let endIndex = html.indexOf(DATA_END, startIndex + 1)
+    if (endIndex == -1) {
+        return null
+    }
+
+    let rawData = html.substring(startIndex, endIndex)
+    let videoCount = parseInt(rawData.replace(',', ''))
+
+    return videoCount
 }
 
 function makePlaylistLink(playlistTitle, playlistId) {
