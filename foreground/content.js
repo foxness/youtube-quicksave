@@ -1,4 +1,4 @@
-let DURATION_TOAST = 3000
+let TOAST_DURATION = 3000
 
 let quicksaveToasts = {}
 let mouseX = null
@@ -53,15 +53,7 @@ async function handleMessage(message) {
 }
 
 async function showQuicksaveStart(quicksaveId) {
-    let toastParams = {
-        text: 'Quicksaving...',
-        icon: 'loading',
-        position: 'top-left',
-        showHideTransition: 'slide',
-        showCloseButton: false,
-        hideAfter: false
-    }
-
+    let toastParams = makeToastParams('Quicksaving...', 'loading', false)
     quicksaveToasts[quicksaveId] = $.toast(toastParams)
 }
 
@@ -71,23 +63,14 @@ async function showQuicksaveDone(quicksaveData) {
     let quicksaveToast = quicksaveToasts[quicksaveId]
 
     quicksaveToast.update(toastParams)
-    await sleep(DURATION_TOAST)
+    await sleep(TOAST_DURATION)
     quicksaveToast.close()
 
     delete quicksaveToasts[quicksaveId]
 }
 
 async function showNotSignedIn() { // todo: remove unnecessary asyncs in this file
-    let toastParams = {
-        text: 'Quicksave: Not Signed In',
-        icon: 'warning',
-        position: 'top-left', // todo: extract
-        showHideTransition: 'slide', // todo: extract
-        showCloseButton: false, // todo: extract
-        hideAfter: DURATION_TOAST,
-        loader: false // todo: fix loader
-    }
-
+    let toastParams = makeToastParams('Quicksave: Not Signed In', 'warning')
     $.toast(toastParams)
 }
 
@@ -99,16 +82,7 @@ function showCopiedVideosToast(copiedCount, totalCount) {
         text = `Copied ${copiedCount} out of ${totalCount} videos`
     }
 
-    let toastParams = {
-        text: text,
-        icon: 'info',
-        position: 'top-left',
-        showHideTransition: 'slide',
-        showCloseButton: false,
-        hideAfter: DURATION_TOAST,
-        loader: false
-    }
-
+    let toastParams = makeToastParams(text, 'info')
     $.toast(toastParams)
 }
 
@@ -134,6 +108,27 @@ function getSecondaryToastParams(quicksaveData) {
     let toastParams = {
         text: text,
         icon: icon
+    }
+
+    return toastParams
+}
+
+function makeToastParams(text, icon, hideAfter = null) {
+    let TOAST_POSITION = 'top-left'
+    let TOAST_TRANSITION = 'slide'
+    let TOAST_SHOW_CLOSE_BUTTON = false
+    let TOAST_LOADER = false
+
+    let toastHideAfter = hideAfter === null ? TOAST_DURATION : hideAfter
+
+    let toastParams = {
+        text: text,
+        icon: icon,
+        position: TOAST_POSITION,
+        showHideTransition: TOAST_TRANSITION,
+        showCloseButton: TOAST_SHOW_CLOSE_BUTTON,
+        hideAfter: toastHideAfter,
+        loader: TOAST_LOADER // todo: fix loader
     }
 
     return toastParams
