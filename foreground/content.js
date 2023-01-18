@@ -52,7 +52,7 @@ async function handleMessage(message) {
     }
 }
 
-async function showQuicksaveStart(quicksaveId) {
+function showQuicksaveStart(quicksaveId) {
     let toastParams = makeToastParams('Quicksaving...', 'loading', false)
     quicksaveToasts[quicksaveId] = $.toast(toastParams)
 }
@@ -69,7 +69,7 @@ async function showQuicksaveDone(quicksaveData) {
     delete quicksaveToasts[quicksaveId]
 }
 
-async function showNotSignedIn() { // todo: remove unnecessary asyncs in this file
+function showNotSignedIn() {
     let toastParams = makeToastParams('Quicksave: Not Signed In', 'warning')
     $.toast(toastParams)
 }
@@ -134,7 +134,7 @@ function makeToastParams(text, icon, hideAfter = null) {
     return toastParams
 }
 
-async function getHoverUrl() {
+function getHoverUrl() {
     let url = document.elementsFromPoint(mouseX, mouseY)
         .filter(e => e.tagName.toLowerCase() == 'a')
         .map(a => a.href)[0]
@@ -142,7 +142,7 @@ async function getHoverUrl() {
     return url
 }
 
-async function getWatchLaterVideos() {
+function getWatchLaterVideos() {
     if (window.location.href != 'https://www.youtube.com/playlist?list=WL') {
         return null
     }
@@ -172,12 +172,10 @@ async function getWatchLaterVideos() {
         }
     }
 
-    console.log(`copied video count: ${videos.length}`) // todo: add toast showing copied count
-
     return videos
 }
 
-async function getPlaylistVideoCount() {
+function getPlaylistVideoCount() {
     if (!window.location.href.startsWith('https://www.youtube.com/playlist?list=')) {
         return null
     }
