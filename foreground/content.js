@@ -20,36 +20,44 @@ function setupListeners() {
     })
 }
 
-async function handleMessage(message) {
-    switch (message.kind) { // no return value, intentionally no await
+function handleMessage(message) {
+    switch (message.kind) { // no return value
         case 'quicksaveStart':
             showQuicksaveStart(message.quicksaveId)
             return
         case 'quicksaveDone':
             let quicksaveData = message
             delete quicksaveData.kind
-            showQuicksaveDone(quicksaveData)
+            showQuicksaveDone(quicksaveData) // intentionally no await
             return
         case 'notSignedIn':
             showNotSignedIn()
             return
         case 'copiedVideos':
-            let copiedCount = await getPlaylistVideoCount()
-            showCopiedVideosToast(copiedCount)
+            showRegularPlaylistCopiedToast()
             return
     }
 
     switch (message.kind) { // has a return value
         case 'getHoverUrl':
-            return await getHoverUrl()
+            return getHoverUrl()
         case 'getWatchLaterVideos':
-            let videos = await getWatchLaterVideos()
-            let copiedCount = videos.length
-            let totalCount = await getPlaylistVideoCount()
-            showCopiedVideosToast(copiedCount, totalCount)
-
-            return videos
+            return getWatchLaterVideosAndShowToast()
     }
+}
+
+function getWatchLaterVideosAndShowToast() {
+    let videos = getWatchLaterVideos()
+    let copiedCount = videos.length
+    let totalCount = getPlaylistVideoCount()
+    showCopiedVideosToast(copiedCount, totalCount)
+
+    return videos
+}
+
+function showRegularPlaylistCopiedToast() {
+    let copiedCount = getPlaylistVideoCount()
+    showCopiedVideosToast(copiedCount)
 }
 
 function showQuicksaveStart(quicksaveId) {
