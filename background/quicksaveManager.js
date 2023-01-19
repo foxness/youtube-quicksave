@@ -118,7 +118,7 @@ class QuicksaveManager {
 
         let destinationId = this.youtube.tryGetPlaylistId(url)
         if (!destinationId) {
-            return // todo: send toast 
+            return // todo: send toast
         }
 
         let clipboard = await this.storage.getClipboard()
@@ -193,15 +193,11 @@ class QuicksaveManager {
 
         let isPlaylistPage = this.youtube.tryGetPlaylistId(url) != null
         let isWatchLaterPage = this.youtube.isWatchLaterPlaylist(url)
-
-        console.log({
-            copyAvailable: isPlaylistPage,
-            pasteAvailable: isPlaylistPage && !isWatchLaterPage
-        })
+        let clipboardNotEmpty = (await this.storage.getClipboard()) != null
 
         return {
             copyAvailable: isPlaylistPage,
-            pasteAvailable: isPlaylistPage && !isWatchLaterPage
+            pasteAvailable: isPlaylistPage && !isWatchLaterPage && clipboardNotEmpty
         }
     }
 
