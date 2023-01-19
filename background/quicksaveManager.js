@@ -187,6 +187,24 @@ class QuicksaveManager {
         return quicksaveDisabled
     }
 
+    async getCopyPasteAvailable() {
+        let currentTab = await this.getCurrentTab()
+        let url = currentTab.url
+
+        let isPlaylistPage = this.youtube.tryGetPlaylistId(url) != null
+        let isWatchLaterPage = this.youtube.isWatchLaterPlaylist(url)
+
+        console.log({
+            copyAvailable: isPlaylistPage,
+            pasteAvailable: isPlaylistPage && !isWatchLaterPage
+        })
+
+        return {
+            copyAvailable: isPlaylistPage,
+            pasteAvailable: isPlaylistPage && !isWatchLaterPage
+        }
+    }
+
     async selectPlaylist(playlistId) {
         this.quicksavePlaylistId = playlistId
         await this.serializeQuicksavePlaylistId()
