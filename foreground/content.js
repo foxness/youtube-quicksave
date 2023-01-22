@@ -20,7 +20,7 @@ function setupListeners() {
     })
 }
 
-function handleMessage(message) {
+async function handleMessage(message) { // do not remove async
     switch (message.kind) { // no return value
         case 'quicksaveStart':
             showQuicksaveStart(message.quicksaveId)
