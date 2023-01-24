@@ -190,10 +190,11 @@ class QuicksaveManager {
         let isPlaylistPage = playlistId != null
         let isWatchLaterPage = this.youtube.isWatchLaterPlaylistId(playlistId)
         let clipboardNotEmpty = (await this.storage.getClipboard()) != null
+        let ownedByUser = this.youtube.getPlaylists().map(p => p.id).includes(playlistId)
 
         return {
             copyAvailable: isPlaylistPage,
-            pasteAvailable: isPlaylistPage && !isWatchLaterPage && clipboardNotEmpty
+            pasteAvailable: isPlaylistPage && !isWatchLaterPage && clipboardNotEmpty && ownedByUser
         }
     }
 
