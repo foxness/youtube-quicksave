@@ -241,8 +241,8 @@ class Youtube {
         return videoId
     }
 
-    isWatchLaterPlaylist(url) {
-        return this.tryGetPlaylistId(url) == this.ID_WATCH_LATER
+    isWatchLaterPlaylistId(playlistId) {
+        return playlistId == this.ID_WATCH_LATER
     }
 
     tryGetPlaylistId(url) {

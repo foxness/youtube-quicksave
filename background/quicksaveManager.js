@@ -81,10 +81,14 @@ class QuicksaveManager {
     async copyPlaylist() {
         let currentTab = await this.getCurrentTab()
         let url = currentTab.url
+        let playlistId = this.youtube.tryGetPlaylistId(url)
+
+        if (!playlistId) {
+            return
+        }
 
         let clipboard = null
-
-        if (this.youtube.isWatchLaterPlaylist(url)) {
+        if (this.youtube.isWatchLaterPlaylistId(playlistId)) {
             let videoIds = await this.sendGetWatchLaterVideos(currentTab)
 
             clipboard = {
@@ -92,11 +96,6 @@ class QuicksaveManager {
                 videoIds: videoIds
             }
         } else {
-            let playlistId = this.youtube.tryGetPlaylistId(url)
-            if (!playlistId) {
-                return
-            }
-
             clipboard = {
                 kind: 'playlistId',
                 playlistId: playlistId
@@ -111,13 +110,9 @@ class QuicksaveManager {
     async pastePlaylist() {
         let currentTab = await this.getCurrentTab()
         let url = currentTab.url
-
-        if (this.youtube.isWatchLaterPlaylist(url)) {
-            return // todo: send toast
-        }
-
         let destinationId = this.youtube.tryGetPlaylistId(url)
-        if (!destinationId) {
+
+        if (!destinationId || this.youtube.isWatchLaterPlaylistId(destinationId)) {
             return // todo: send toast
         }
 
@@ -190,14 +185,16 @@ class QuicksaveManager {
     async getCopyPasteAvailable() {
         let currentTab = await this.getCurrentTab()
         let url = currentTab.url
+        let playlistId = this.youtube.tryGetPlaylistId(url)
 
-        let isPlaylistPage = this.youtube.tryGetPlaylistId(url) != null
-        let isWatchLaterPage = this.youtube.isWatchLaterPlaylist(url)
+        let isPlaylistPage = playlistId != null
+        let isWatchLaterPage = this.youtube.isWatchLaterPlaylistId(playlistId)
         let clipboardNotEmpty = (await this.storage.getClipboard()) != null
+        let ownedByUser = this.youtube.getPlaylists().map(p => p.id).includes(playlistId)
 
         return {
             copyAvailable: isPlaylistPage,
-            pasteAvailable: isPlaylistPage && !isWatchLaterPage && clipboardNotEmpty
+            pasteAvailable: isPlaylistPage && !isWatchLaterPage && clipboardNotEmpty && ownedByUser
         }
     }
 
