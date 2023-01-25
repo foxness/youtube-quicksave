@@ -1,8 +1,14 @@
+// --- Constants ------------------------
+
 let TOAST_DURATION = 3000
+
+// --- Global variables -----------------
 
 let quicksaveToasts = {}
 let mouseX = null
 let mouseY = null
+
+// --- Listening ------------------------
 
 function main() {
     setupListeners()
@@ -19,6 +25,8 @@ function setupListeners() {
         mouseY = event.clientY
     })
 }
+
+// --- Messaging ------------------------
 
 async function handleMessage(message) { // do not remove async
     switch (message.kind) { // no return value
@@ -45,6 +53,8 @@ async function handleMessage(message) { // do not remove async
             return getWatchLaterVideosAndShowToast()
     }
 }
+
+// --- Toasts ---------------------------
 
 function getWatchLaterVideosAndShowToast() {
     let videos = getWatchLaterVideos()
@@ -94,6 +104,8 @@ function showCopiedVideosToast(copiedCount, totalCount) {
     $.toast(toastParams)
 }
 
+// --- Toast helper ---------------------
+
 function getSecondaryToastParams(quicksaveData) {
     let text, icon
     if (quicksaveData.error) {
@@ -141,6 +153,8 @@ function makeToastParams(text, icon, hideAfter = null) {
 
     return toastParams
 }
+
+// --- Parsing --------------------------
 
 function getHoverUrl() {
     let url = document.elementsFromPoint(mouseX, mouseY)
