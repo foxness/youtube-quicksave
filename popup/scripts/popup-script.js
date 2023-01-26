@@ -11,7 +11,7 @@ async function main() {
     await makePlaylistSelector()
     await makeLogAndQuicksaveCount()
     await makeQuicksaveButton()
-    await makeCopyPasteButtons()
+    await makeButtons()
 }
 
 // --- BUILDER METHODS --------------------------------------
@@ -60,15 +60,19 @@ async function makeQuicksaveButton() {
     $('#quicksave').prop('disabled', quicksaveDisabled)
 }
 
-async function makeCopyPasteButtons() {
-    let copypaste = await chrome.runtime.sendMessage({ kind: 'getCopyPasteAvailable' })
+async function makeButtons() {
+    let availability = await chrome.runtime.sendMessage({ kind: 'getActionAvailability' })
 
-    if (!copypaste.copyAvailable) {
+    if (!availability.copyAvailable) {
         $('#copy-playlist').css('display', 'none')
     }
 
-    if (!copypaste.pasteAvailable) {
+    if (!availability.pasteAvailable) {
         $('#paste-playlist').css('display', 'none')
+    }
+
+    if (!availability.deduplicateAvailable) {
+        $('#deduplicate-playlist').css('display', 'none')
     }
 }
 

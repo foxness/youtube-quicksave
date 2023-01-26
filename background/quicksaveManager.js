@@ -145,7 +145,14 @@ class QuicksaveManager {
     }
 
     async deduplicatePlaylist() {
-        let deduplicationData = await this.youtube.deduplicatePlaylist(this.quicksavePlaylistId)
+        let currentTab = await this.getCurrentTab()
+        let url = currentTab.url
+        let playlistId = this.youtube.tryGetPlaylistId(url)
+        if (!playlistId) {
+            return
+        }
+
+        let deduplicationData = await this.youtube.deduplicatePlaylist(playlistId)
 
         await this.logDeduplication(deduplicationData)
         await this.serializeYoutube()
@@ -182,7 +189,7 @@ class QuicksaveManager {
         return quicksaveDisabled
     }
 
-    async getCopyPasteAvailable() {
+    async getActionAvailability() {
         let currentTab = await this.getCurrentTab()
         let url = currentTab.url
         let playlistId = this.youtube.tryGetPlaylistId(url)
@@ -194,7 +201,8 @@ class QuicksaveManager {
 
         return {
             copyAvailable: isPlaylistPage,
-            pasteAvailable: isPlaylistPage && !isWatchLaterPage && clipboardNotEmpty && ownedByUser
+            pasteAvailable: isPlaylistPage && !isWatchLaterPage && clipboardNotEmpty && ownedByUser,
+            deduplicateAvailable: isPlaylistPage && !isWatchLaterPage && ownedByUser
         }
     }
 

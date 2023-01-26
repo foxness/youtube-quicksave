@@ -73,8 +73,8 @@ async function handleMessage(message) {
             return await manager.getShouldShowLog()
         case 'getQuicksaveDisabled':
             return await manager.getQuicksaveDisabled()
-        case 'getCopyPasteAvailable':
-            return await manager.getCopyPasteAvailable()
+        case 'getActionAvailability':
+            return await manager.getActionAvailability()
     }
 }
 
