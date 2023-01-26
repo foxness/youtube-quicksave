@@ -189,7 +189,7 @@ class QuicksaveManager {
         return quicksaveDisabled
     }
 
-    async getCopyPasteAvailable() {
+    async getActionAvailability() {
         let currentTab = await this.getCurrentTab()
         let url = currentTab.url
         let playlistId = this.youtube.tryGetPlaylistId(url)
@@ -201,7 +201,8 @@ class QuicksaveManager {
 
         return {
             copyAvailable: isPlaylistPage,
-            pasteAvailable: isPlaylistPage && !isWatchLaterPage && clipboardNotEmpty && ownedByUser
+            pasteAvailable: isPlaylistPage && !isWatchLaterPage && clipboardNotEmpty && ownedByUser,
+            deduplicateAvailable: isPlaylistPage && !isWatchLaterPage && ownedByUser
         }
     }
 
