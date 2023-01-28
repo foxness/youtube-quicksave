@@ -128,6 +128,7 @@ class QuicksaveManager {
                 break
         }
 
+        await this.serializeYoutube()
         console.log('paste done')
     }
 
