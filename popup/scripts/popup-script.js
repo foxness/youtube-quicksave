@@ -177,12 +177,8 @@ function handleDeduplicatePlaylistButtonClicked() {
 }
 
 function handleChangeShortcutsButtonClicked() {
-    openMenuItem(openShortcuts)
-}
-
-function openMenuItem(itemFunction) {
-    itemFunction()
-    closeMenuWithoutAnimation()
+    let shortcutsUrl = 'chrome://extensions/shortcuts'
+    chrome.tabs.create({ url: shortcutsUrl }) // intentionally no await
 }
 
 function handleToggleLogButtonClicked() {
@@ -221,11 +217,6 @@ async function refreshPlaylists() {
     await makePlaylistSelector()
 }
 
-function openShortcuts() {
-    let shortcutsUrl = 'chrome://extensions/shortcuts'
-    chrome.tabs.create({ url: shortcutsUrl }) // intentionally no await
-}
-
 function toggleLog(animated = true) {
     let toggleText
     let animationProps
@@ -252,6 +243,11 @@ function toggleLog(animated = true) {
     $('#quicksave-log').animate(animationProps, duration)
 
     logShown = !logShown
+}
+
+function openMenuItem(itemFunction) {
+    itemFunction()
+    closeMenuWithoutAnimation()
 }
 
 async function closeMenuWithoutAnimation() {
