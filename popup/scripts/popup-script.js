@@ -147,45 +147,55 @@ function handleOpenPlaylistButtonClicked() {
 }
 
 function handleDeveloperActionButtonClicked() {
-    chrome.runtime.sendMessage({ kind: 'developerAction' }) // intentionally no await
-    closeMenuWithoutAnimation()
+    openMenuItem(() => {
+        chrome.runtime.sendMessage({ kind: 'developerAction' }) // intentionally no await
+    })
 }
 
 function handleCopyPlaylistButtonClicked() {
-    chrome.runtime.sendMessage({ kind: 'copyPlaylist' }) // intentionally no await
-    closeMenuWithoutAnimation()
+    openMenuItem(() => {
+        chrome.runtime.sendMessage({ kind: 'copyPlaylist' }) // intentionally no await
+    })
 }
 
 function handlePastePlaylistButtonClicked() {
-    chrome.runtime.sendMessage({ kind: 'pastePlaylist' }) // intentionally no await
-    closeMenuWithoutAnimation()
+    openMenuItem(() => {
+        chrome.runtime.sendMessage({ kind: 'pastePlaylist' }) // intentionally no await
+    })
 }
 
 function handleRefreshPlaylistsButtonClicked() {
-    chrome.runtime.sendMessage({ kind: 'refreshPlaylists' }) // intentionally no await
-    closeMenuWithoutAnimation()
+    openMenuItem(() => {
+        chrome.runtime.sendMessage({ kind: 'refreshPlaylists' }) // intentionally no await
+    })
 }
 
 function handleDeduplicatePlaylistButtonClicked() {
-    chrome.runtime.sendMessage({ kind: 'deduplicatePlaylist' }) // intentionally no await
-    closeMenuWithoutAnimation()
+    openMenuItem(() => {
+        chrome.runtime.sendMessage({ kind: 'deduplicatePlaylist' }) // intentionally no await
+    })
 }
 
 function handleChangeShortcutsButtonClicked() {
-    openShortcuts()
+    openMenuItem(openShortcuts)
+}
+
+function openMenuItem(itemFunction) {
+    itemFunction()
     closeMenuWithoutAnimation()
 }
 
 function handleToggleLogButtonClicked() {
-    toggleLog()
+    openMenuItem(() => {
+        toggleLog()
 
-    let message = {
-        kind: 'setShouldShowLog',
-        shouldShowLog: logShown
-    }
+        let message = {
+            kind: 'setShouldShowLog',
+            shouldShowLog: logShown
+        }
 
-    chrome.runtime.sendMessage(message) // intentionally no await
-    closeMenuWithoutAnimation()
+        chrome.runtime.sendMessage(message) // intentionally no await
+    })
 }
 
 async function handleSignOutButtonClicked() {
